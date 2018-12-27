@@ -19,7 +19,7 @@ class BoatDetailPage extends StatefulWidget {
 
 class BoatDetailPageState extends State<BoatDetailPage>{
 
-  String carId; //船舶号
+  String carId; //船舶号 这个
   BoatDetailPageState({this.carId});
   final TextEditingController facIdController = new TextEditingController();
   final TextEditingController carNoController = new TextEditingController();

@@ -325,7 +325,7 @@ class SwiperPageState extends State<HomePage> {
           context, new MaterialPageRoute(builder: (context) => BoatQuery()));
     } else if (_page == '6') {
       Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => StateWidgetPage()));
+          new MaterialPageRoute(builder: (context) => MemberCenter()));
     }
   }
 

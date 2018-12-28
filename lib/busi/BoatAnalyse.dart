@@ -82,6 +82,14 @@ class BoatAnalyseState extends State<BoatAnalyse> {
     getGangkouData();
   }
 
+  
+  Future searchGangkouData() async {
+    await getGangkouData().then((_v){
+      Navigator.pop(context);
+      showPicker();
+    });
+  }
+
   Future getGangkouData() async {
     String title = '苏州码头';
     if (null != gangkou && gangkou.isNotEmpty) {
@@ -728,13 +736,15 @@ void _handlerDrawerButtonEnd(BuildContext context) {
             IconButton(
               icon: Icon(Icons.search),
               iconSize: 40.0,
-              onPressed: getGangkouData,
+              onPressed: searchGangkouData,
               color: Colors.greenAccent,
             ),),
           ],
         ),
       );
   }
+
+
 
 
   showPicker() {

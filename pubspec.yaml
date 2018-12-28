@@ -62,6 +62,14 @@ flutter:
     - images/lunch_yasuo.png
     - images/life.png
     - images/oil.png
+    - images/ic_my_message.png
+    - images/ic_my_blog.png
+    - images/ic_my_question.png
+    - images/ic_discover_pos.png
+    - images/ic_my_team.png
+    - images/ic_my_recommend.png
+    - images/ic_arrow_right.png
+    - images/ic_avatar_default.png
     # - assets/NVpose1.obj
     # - assets/bb.obj
     # - images/lake.jpg

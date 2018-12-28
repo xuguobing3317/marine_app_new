@@ -151,6 +151,13 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
     return _result;
   }
 
+    Future searchGangkouData() async {
+    await getGangkouData().then((_v){
+      Navigator.pop(context);
+      showPicker();
+    });
+  }
+
   Widget buildCard2(String rType, String weight, String count, String dgtime) {
     return new Card(
       color: Colors.white,
@@ -749,7 +756,7 @@ void _handlerDrawerButtonEnd(BuildContext context) {
             IconButton(
               icon: Icon(Icons.search),
               iconSize: 40.0,
-              onPressed: getGangkouData,
+              onPressed: searchGangkouData,
               color: Colors.greenAccent,
             ),),
           ],

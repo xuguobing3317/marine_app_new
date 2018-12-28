@@ -415,7 +415,7 @@ await Future.delayed(Duration(seconds: 3), () {
       child: InkWell(
         onTap: (){},
         child: ListTile(
-          contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
+          contentPadding: EdgeInsets.only(left: 1.0, right: 1.0),
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -423,7 +423,7 @@ await Future.delayed(Duration(seconds: 3), () {
             ],
           ),
           title: Padding(
-            padding: EdgeInsets.only(bottom: 10.0),
+            padding: EdgeInsets.only(bottom: 1.0),
             child: Text(
               '船号(船主): $boatNo($boatOwner)',
               maxLines: 2,

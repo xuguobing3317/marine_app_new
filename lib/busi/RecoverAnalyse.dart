@@ -124,7 +124,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
               child:new Row(
               children: <Widget>[
                 Expanded( child:
-                new Text(total1, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0), ),),
+                new Text(total1, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0,color: Colors.white), ),),
               ],
             ));
         },
@@ -142,26 +142,137 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
       String count = _map['count'];
       String dgtime = _s;
       String rType = _map['rType'];
-      Widget _item = buildCard(rType, weight, count, dgtime);
+      int index = _result.length +1;
+      Widget _item = buildOutCard(index,rType, weight, count, dgtime);
       _result.add(_item);
+
     }
     );
     return _result;
   }
 
-
-  Widget buildCard(String rType, String weight, String count, String dgtime) {
+  Widget buildCard2(String rType, String weight, String count, String dgtime) {
     return new Card(
       color: Colors.white,
       elevation: 5.0,
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          buildRow( rType,  weight,  count,  dgtime),
             // buildColumn3(dgtime),
-            buildColumn1(dgtime, rType),
-            buildColumn2(weight, count),
+            // buildColumn1(dgtime, rType),
+            // buildColumn2(weight, count),
         ],
       ),
+    ); 
+  }
+
+  Widget buildRow(String rType, String weight, String count, String dgtime) {
+    return new Row(
+              children: <Widget>[
+                Expanded(
+                  child: Icon(Icons.directions_boat, color:Colors.greenAccent, size:20.0),
+                ),
+                Expanded( child: buildRowItem1(dgtime, weight),),
+                Expanded( child: buildRowItem2(rType, count),)
+              ],
+    );
+  }
+  
+  Widget buildRowItem1(String dgTime, String weight) {
+    return new Column(
+              children: <Widget>[
+                Expanded( child:
+                new Text('日期:$dgTime', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.0), ),),
+                Expanded( child:
+                new Text('重量:$weight', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.0), ),)
+              ],
+    );
+  }
+
+
+  
+  Widget buildRowItem2(String rType, String count) {
+    return new Column(
+              children: <Widget>[
+                Expanded( child:
+                new Text('类别:$rType', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.0), ),),
+                Expanded( child:
+                new Text('趟次:$count', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.0), ),)
+              ],
+    );
+  }
+
+
+  Widget buildOutCard(int index, String rType, String weight, String count, String dgtime) {
+    return new Card(
+      child: InkWell(
+        onTap: (){},
+        child: ListTile(
+          contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              rType == '生活垃圾' ? 
+              Image.asset('images/life.png',width: 45.0, height: 50.0):
+              Image.asset('images/oil.png',width: 45.0, height: 50.0),
+            ],
+          ),
+          title: Padding(
+            padding: EdgeInsets.only(bottom: 10.0),
+            child: Text(
+              '日期: $dgtime',
+              maxLines: 1,
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
+            ),
+          ),
+          subtitle: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Text(
+                  "重量:",
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Text(
+                  '$weight吨',
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Text(
+                  "趟次:",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ),
+              Text(
+                '$count次',
+                style: TextStyle(fontSize: 12.0),
+              ),
+            ],
+          ),
+          // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCard(String rType, String weight, String count, String dgtime) {
+    return  
+      new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+            buildColumn1(dgtime, rType),
+            Divider(),
+            buildColumn2(weight, count),
+        ],
     );
   }
 
@@ -190,13 +301,10 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
 
   
   
-  Widget buildColumn3(String dgtime) {
-    return new Row(
-              children: <Widget>[
-                Expanded( child:
-                new Text('日期: $dgtime ', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.0), ),),
-              ],
-    );
+  Widget buildColumn3() {
+    return new Container(child: 
+                Icon(Icons.directions_boat, color: Colors.greenAccent, size:40.0),
+                alignment: Alignment.center,);
   }
 
 
@@ -392,8 +500,8 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
           setState(() {
                       dataMap.clear();
                       dataMap.addAll(dataMapQuery);
-                      total1 = '总计: 1000 吨 983次';
-                      bootSheetColor = Colors.lightGreenAccent;
+                      total1 = '总计: 1000吨\t\t 983次';
+                      bootSheetColor = Colors.greenAccent;
                       dataFlag = '3';
                     });
         });}

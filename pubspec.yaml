@@ -60,6 +60,8 @@ flutter:
   assets:
     - images/spash.jpg
     - images/lunch_yasuo.png
+    - images/life.png
+    - images/oil.png
     # - assets/NVpose1.obj
     # - assets/bb.obj
     # - images/lake.jpg

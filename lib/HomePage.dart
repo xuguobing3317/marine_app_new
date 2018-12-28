@@ -202,18 +202,11 @@ Flexible cardExpanded() {
             child: new Column(
             children: <Widget>[
               new Text(
-                '',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontFamily:'serif',
-                ),
-                textAlign: TextAlign.left,
-              ),
-              new Text(
                 AppConst.corpName + ' 版权所有',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontFamily:'serif',
+                  color: Colors.greenAccent
                 ),
                 textAlign: TextAlign.left,
               ),new Text(
@@ -221,6 +214,7 @@ Flexible cardExpanded() {
                 style: TextStyle(
                   fontSize: 14.0,
                   fontFamily:'serif',
+                  color: Colors.greenAccent
                 ),
                 textAlign: TextAlign.left,
               )

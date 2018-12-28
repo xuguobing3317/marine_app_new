@@ -129,9 +129,9 @@ class BoatAnalyseState extends State<BoatAnalyse> {
               child:new Row(
               children: <Widget>[
                 Expanded( child:
-                new Text(total1, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0), ),),
+                new Text(total1, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0, color: Colors.white), ),),
                 Expanded( child:
-                new Text(total2, textAlign: TextAlign.right, style: TextStyle(fontSize: 14.0), ),)
+                new Text(total2, textAlign: TextAlign.right, style: TextStyle(fontSize: 14.0, color: Colors.white), ),)
               ],
             ));
         },
@@ -171,7 +171,7 @@ class BoatAnalyseState extends State<BoatAnalyse> {
       String weight = _map['weight'];
       String count = _map['count'];
       String dgtime = _map['dgtime'];
-      Widget _item = buildCard(boatNo, boatOwner, weight, count, dgtime);
+      Widget _item = buildOutCard(boatNo, boatOwner, weight, count, dgtime);
       _result.add(_item);
     }
     );
@@ -396,9 +396,9 @@ await Future.delayed(Duration(seconds: 3), () {
           setState(() {
                       dataMap.clear();
                       dataMap.addAll(dataMapQuery);
-                      total1 = '累计重量: 1000 吨';
-                      total2 = '累计趟次： 983 次';
-                      bootSheetColor = Colors.lightGreenAccent;
+                      total1 = '累计重量:1000吨';
+                      total2 = '累计趟次:983次';
+                      bootSheetColor = Colors.greenAccent;
                       dataFlag = '3';
                     });
         });
@@ -407,6 +407,87 @@ await Future.delayed(Duration(seconds: 3), () {
       return false;
     }
     return true;
+  }
+
+
+  Widget buildOutCard(boatNo, boatOwner, weight, count, dgtime) {
+    return new Card(
+      child: InkWell(
+        onTap: (){},
+        child: ListTile(
+          contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.directions_boat, size: 45.0, color: Colors.greenAccent,)
+            ],
+          ),
+          title: Padding(
+            padding: EdgeInsets.only(bottom: 10.0),
+            child: Text(
+              '船号(船主): $boatNo($boatOwner)',
+              maxLines: 2,
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.greenAccent, fontSize: 12.0),
+            ),
+          ),
+          subtitle: 
+          Column(children: <Widget>[
+          
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 1.0),
+                child: Text(
+                  "重量:",
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 1.0),
+                child: Text(
+                  '$weight吨',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 1.0),
+                child: Text(
+                  "\t趟次:",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Text(
+                '$count次',
+                style: TextStyle(fontSize: 10.0),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 1.0),
+                child: Text(
+                  "最近到港时间:",
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 1.0),
+                child: Text(
+                  '$dgtime',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+            ],
+          ),
+          ],),
+          // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
+        ),
+      ),
+    );
   }
 
 void _handlerDrawerButtonEnd(BuildContext context) {

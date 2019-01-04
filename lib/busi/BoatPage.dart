@@ -46,11 +46,16 @@ class BoatPageState extends State<BoatPage> {
     }
     
     await Future.delayed(Duration(seconds: 3), () {
+      try {
       setState(() {
+        
         _itemMap = List.generate(10, (i)=>
           {'carid': '$title$i', 'facid':'$title2$i', 'empId': 'empId$i', 'carNo':'carNo$i'});
           listLen = _itemMap.length;
-      });
+          });
+      }catch(e){
+
+      }
     });
   }
 
@@ -121,10 +126,10 @@ Future _getMore() async {
         new Stack(
               children: <Widget>[        new Padding(
                   padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
-                  child: new Center( child: SpinKitFadingCircle( color: Colors.blueAccent, size: 30.0, ), ),
+                  child: new Center( child: SpinKitFadingCircle( color: Colors.greenAccent, size: 30.0, ), ),
                 ),        new Padding(
                   padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
-                  child: new Center( child: new Text('船舶列表加载中....'), ),
+                  child: new Center( child: new Text('船舶列表加载中....',style: TextStyle(color: Colors.greenAccent),), ),
                 ),
               ],
             )
@@ -237,11 +242,12 @@ Future _getMore() async {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            SpinKitFadingCircle( color: Colors.greenAccent, size: 30.0, ),
             Text(
               '加载中...',
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(fontSize: 16.0, color: Colors.greenAccent),
             ),
-            SpinKitFadingCircle( color: Colors.blueAccent, size: 30.0, )
+            
             // CircularProgressIndicator(
             //   strokeWidth: 1.0,
             // )

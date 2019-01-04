@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MemberCenter extends StatefulWidget {
   @override
-  _MyInfoPageState createState() => _MyInfoPageState();
+  State<StatefulWidget> createState() => _ExpandedAppBarState();
 }
 
-class _MyInfoPageState extends State<MemberCenter> {
-  static const double IMAGE_ICON_WIDTH = 30.0;
-  static const double ARROW_ICON_WIDTH = 16.0;
+class _ExpandedAppBarState extends State<MemberCenter> {
 
-  var userName = 'admin';
-  var   userAvatar = 'http://www.wanandroid.com/resources/image/pc/logo.png';
-  var titles = ["我的消息", "阅读记录", "我的博客", "我的问答", "我的活动", "我的团队", "邀请好友"];
+  var titles = ["我的消息", "我的博客", "我的问答", "我的活动", "我的团队", "邀请好友"];
   var imagePaths = [
     "images/ic_my_message.png",
-    "images/ic_my_blog.png",
     "images/ic_my_blog.png",
     "images/ic_my_question.png",
     "images/ic_discover_pos.png",
@@ -22,122 +18,161 @@ class _MyInfoPageState extends State<MemberCenter> {
     "images/ic_my_recommend.png"
   ];
 
-  var titleTextStyle = new TextStyle(fontSize: 16.0);
-  var rightArrowIcon = new Image.asset(
-    'images/ic_arrow_right.png',
-    width: ARROW_ICON_WIDTH,
-    height: ARROW_ICON_WIDTH,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-     
-  }
-
   @override
   Widget build(BuildContext context) {
-    return initView();
-  }
-
-//  构建布局
-  Widget initView() {
-    return new CustomScrollView(reverse: false, shrinkWrap: false, slivers: <
-        Widget>[
-      new SliverAppBar(
-        pinned: false,
-        backgroundColor: Colors.green,
-        expandedHeight: 200.0,
-        iconTheme: new IconThemeData(color: Colors.transparent),
-        flexibleSpace: new InkWell(
-            onTap: () {
-              _login();
-            },
-            child: new Column(
+    final heightScreen = MediaQuery.of(context).size.height;
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Text(''),
+          backgroundColor: Colors.greenAccent,
+          expandedHeight: heightScreen/4,
+          floating: false,
+          pinned  :true,
+          flexibleSpace:  new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                userAvatar == null
-                    ? new Image.asset(
-                        "images/lunch_yasuo.png",
-                        width: 60.0,
-                        height: 60.0,
-                      )
-                    : new Container(
-                        width: 60.0,
-                        height: 60.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                            image: new DecorationImage(
-                                image: new NetworkImage(userAvatar),
-                                fit: BoxFit.cover),
-                            border: new Border.all(
-                                color: Colors.white, width: 2.0)),
-                      ),
+                new Container(
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
+                      image: new DecorationImage(
+                          image: new AssetImage('images/lunch_yasuo.png'),
+                          fit: BoxFit.none),
+                      border: new Border.all(color: Colors.white, width: 2.0)),
+                ),
                 new Container(
                   margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                   child: new Text(
-                    userName == null ? '点击头像登录' : userName,
-                    style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                    '欢迎您，admin',
+                    style: new TextStyle(color: Colors.white, fontSize: 14.0),
                   ),
                 )
               ],
-            )),
-      ),
-      new SliverFixedExtentList(
+            ),
+        ),
+          new SliverFixedExtentList(
           delegate:
               new SliverChildBuilderDelegate((BuildContext context, int index) {
-            String title = titles[index];
-            return new Container(
-                alignment: Alignment.centerLeft,
-                child: new InkWell(
-                  onTap: () {
-                    // print("the is the item of $title");
-                  },
-                  child: new Row(
-                          children: <Widget>[
-                            new Expanded(
-                                child: new Text(
-                              title,
-                              style: titleTextStyle,
-                            )),
-                            rightArrowIcon
-                          ],
-                        ),
-                  
-                  // new Column(
-                  //   children: <Widget>[
-                  //     new Container(
-                  //       child: new Row(
-                  //         children: <Widget>[
-                  //           new Expanded(
-                  //               child: new Text(
-                  //             title,
-                  //             style: titleTextStyle,
-                  //           )),
-                  //           rightArrowIcon
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     new Divider(
-                  //       height: 1.0,
-                  //     )
-                  //   ],
-                  // ),
-                ));
-          }, childCount: titles.length),
-          itemExtent: 50.0),
-    ]);
+            return _buildItem(index);
+          }, childCount: titles.length+1),
+          itemExtent: 50.0)
+        ],
+      ),
+    );
   }
 
-  _login() async {
-    // final result = await Navigator.of(context)
-    //     .push(new MaterialPageRoute(builder: (context) {
-    //   return new LoginPage();
-    // }));
+  Widget _buildItem(int index) {
+    if (index == titles.length) {
+      return geneButton();
+    } else {
+      return _buildItem2(index);
+    }
+  }
+
+
+
+  Widget _buildItem2(int index) {
+    String _title = titles[index];
+    return new InkWell(
+      onTap: (){ 
+        Fluttertoast.showToast(
+              msg: " 您点击的是:$_title ",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos:1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF)
+          );
+
+      },
+      child: Container(
+      decoration: new BoxDecoration(
+    border: new Border.all(width:1.0,color: Colors.green[50]),
+    borderRadius: new BorderRadius.all(new Radius.circular(1.0)),),
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: <Widget>[
+          Positioned(
+              left: 40.0,
+              child:  Text(
+                    titles[index],
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              )),
+          ClipRRect(
+            child: SizedBox(
+              width: 25.0,
+              height: 25.0,
+              child: Image.asset(
+                imagePaths[index],
+                fit: BoxFit.cover,
+                color: Colors.greenAccent,
+              ),
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+        ],
+      ),
+    ),
+    );  
     
-    Navigator.of(context).pushReplacementNamed('/LoginPage');
   }
 
- 
+  Widget geneButton() {
+    return new Container(
+      color: Colors.white70,
+      height: 60.0,
+      child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            new Container(
+              width: 50.0,
+              child: new Text(
+                '',
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+            Expanded(
+                child: new Container(
+              padding: new EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
+              child: new RaisedButton(
+                color: Colors.redAccent,
+                elevation: 10,
+                highlightElevation: 10,
+                disabledElevation: 10,
+                child: new Text(
+                  '退出登录',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0),
+                ),
+                onPressed: () {
+                 Navigator.of(context).pushReplacementNamed('/LoginPage');
+                },
+              ),
+            )),
+            new Container(
+                    width: 50.0,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.camera_enhance,
+                        size: 40.0,
+                        color: Colors.white,
+                      ),
+                      onPressed: null,
+                    ),
+                  )
+          ]),
+    );
+  }
 }

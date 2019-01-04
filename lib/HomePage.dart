@@ -12,6 +12,7 @@ import 'package:marine_app/busi/MemberCenter.dart';
 import 'package:marine_app/busi/StateWidgetPage.dart';
 import 'package:marine_app/busi/RecoverAnalyse.dart';
 import 'package:marine_app/busi/RecoverPage.dart';
+import 'package:marine_app/busi/extends/MyInfoPage.dart';
 import 'dart:async';
 
 class HomePage extends StatefulWidget {

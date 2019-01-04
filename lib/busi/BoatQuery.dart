@@ -107,7 +107,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.blueAccent,
+              color: Colors.greenAccent,
               size: 30.0,
             ),
           ),
@@ -115,7 +115,7 @@ class BoatQueryPageState extends State<BoatQuery> {
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
           child: new Center(
-            child: new Text('船舶信息加载中...'),
+            child: new Text('船舶信息加载中...', style: TextStyle(color: Colors.greenAccent),),
           ),
         ),
       ],

@@ -71,6 +71,15 @@ class SwiperPageState extends State<HomePage> {
               ],
             )),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat ,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.greenAccent,
+          foregroundColor: Colors.white,
+          shape: new CircleBorder(),
+          isExtended: false,
+          onPressed: () => toBoat('2'),
+          child: Text('回收', style:TextStyle(fontWeight:FontWeight.w800, fontSize:20.0)),
+        ),
     );
   }
 

@@ -8,7 +8,7 @@ class MemberCenter extends StatefulWidget {
 
 class _ExpandedAppBarState extends State<MemberCenter> {
 
-  var titles = ["我的消息", "我的博客", "我的问答", "我的活动", "我的团队", "邀请好友"];
+  var titles = ["我的信息", "帮助中心", "修改密码", "系统简介", "关于雅雀漾", "关于宝码"];
   var imagePaths = [
     "images/ic_my_message.png",
     "images/ic_my_blog.png",

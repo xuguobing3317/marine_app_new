@@ -11,6 +11,7 @@ import 'package:path/path.dart';
  String columnName = "name";
  String columnPwd = "pwd";
  String columnFlag = "flag";
+ String columnToken = "token";
  String dbName = "marine.db";
 
  String sql_createTable =
@@ -18,6 +19,7 @@ import 'package:path/path.dart';
         '$columnId integer primary key autoincrement, '+
         '$columnName text not null, '+
         '$columnPwd text not null,'+
+        '$columnToken text not null,'+
         '$columnFlag text not null)';
 
 class MarineUser {
@@ -25,10 +27,11 @@ class MarineUser {
   String name;
   String pwd;
   String flag;
+  String token;
 
   Map toMap() {
     Map<String, dynamic> map = 
-    {columnName: name, columnPwd: pwd, columnFlag:flag};
+    {columnName: name, columnPwd: pwd, columnFlag:flag, columnToken:token};
     if (id != null) {
       map[columnId] = id;
     }
@@ -42,6 +45,7 @@ class MarineUser {
     name = map[columnName];
     pwd = map[columnPwd];
     flag = map[columnFlag];
+    token = map[columnToken];
   }
 }
 
@@ -78,7 +82,7 @@ class MarineUserProvider {
   Future<Map> getDataByUserName(String userName, String dbPath) async {
     Database db = await openDatabase(dbPath);
     List<Map> maps = await db.query(tableName,
-        columns: [columnId, columnName, columnPwd, columnPwd],
+        columns: [columnId, columnName, columnPwd, columnFlag, columnToken],
         where: "$columnName = ?",
         whereArgs: [userName]);
     await db.close();
@@ -91,7 +95,7 @@ class MarineUserProvider {
   Future<Map> getDataById(int id, String dbPath) async {
     Database db = await openDatabase(dbPath);
     List<Map> maps = await db.query(tableName,
-        columns: [columnId, columnName, columnPwd, columnPwd],
+        columns: [columnId, columnName, columnPwd, columnFlag, columnToken],
         where: "$columnId = ?",
         whereArgs: [id]);
     await db.close();
@@ -104,7 +108,7 @@ class MarineUserProvider {
   Future<Map> getFirstData(String dbPath) async {
     Database db = await openDatabase(dbPath);
     List<Map> maps = await db.query(tableName,
-        columns: [columnId, columnName, columnPwd, columnFlag]);
+        columns: [columnId, columnName, columnPwd, columnFlag, columnToken]);
     await db.close();
     if (maps.length > 0) {
       return maps.first;
@@ -116,7 +120,7 @@ class MarineUserProvider {
   Future<Map> getData(int id, String dbPath) async {
     Database db = await openDatabase(dbPath);
     List<Map> maps = await db.query(tableName,
-        columns: [columnId, columnName, columnPwd, columnPwd],
+        columns: [columnId, columnName, columnPwd, columnFlag, columnToken],
         where: "$columnId = ?",
         whereArgs: [id]);
     await db.close();

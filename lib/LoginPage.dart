@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:marine_app/contain/MyContainUtils.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
+import 'package:marine_app/common/AppConst.dart';
 
 class MyLoginWidget extends StatefulWidget {
   @override
@@ -24,6 +26,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
   GlobalKey<FormState> _formKey1 = GlobalKey<FormState>();
   String _userPhone;
   String _passWold;
+  String _token;
   int _id;
   bool select = false;
 
@@ -40,6 +43,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
         mUser.name = _userPhone;
         mUser.pwd = _passWold;
         mUser.flag = flag;
+        mUser.token = _token;
         await marineUser.insert(mUser.toMap(), dbPath);
     } else {
       DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
@@ -49,6 +53,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
         mUser.name = _userPhone;
         mUser.pwd = _passWold;
         mUser.flag = flag;
+        mUser.token = _token;
         await marineUser.update(mUser.toMap(), dbPath);}
     }
     
@@ -62,6 +67,8 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     super.initState();
     animationController=new AnimationController(vsync:this,duration:Duration(milliseconds: 2000));
     getDataForSql().then((dataMap){
+      if (null != dataMap) {
+
       setState(() {
         _userPhone = dataMap[DBUtil.columnName];
         _passWold = dataMap[DBUtil.columnPwd];
@@ -75,7 +82,9 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
         userNameController.text = _userPhone;
         passwordController.text = _passWold;
       });
+      }
     });
+      
   }
 
   Future<Map> getDataForSql() async {
@@ -96,35 +105,37 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
 
   Future<bool> _Login(
       String userName, String password, BuildContext context) async {
-    String url =
-        "http://116.62.149.237:8080/USR000100001?usrName=$userName&passwd=$password";
+    String url = marineURL.LoginUrl;
     bool result;
     try {
-      result = await http.get(url).then((http.Response response) {
+      Map _params = {'UserName':userName, 'Password':password};
+      result = await http.post(url, body: _params).then((http.Response response) {
         var data = json.decode(response.body);
-        String rescode = data["rescode"];
-        if (userName == 'admin' && password == '123456') {
-          rescode = '000000';
-        }
-        if (rescode == '999999') {
+        print('请求报文:body:$_params');
+        print('响应报文:$data');
+        int type = data[AppConst.RESP_CODE];
+        String rescode = '$type';
+        String resMsg = data[AppConst.RESP_MSG];
+        if (rescode != '10') {
+          String _msg = '登录失败';
+          if (resMsg != null) {
+              _msg = "登录失败[$resMsg]";
+          }
           Fluttertoast.showToast(
-              msg: " 登录失败 ",
+              msg: _msg,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIos:1,
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF)
           );
-        } else if (rescode == '000000') {
+        } else {
+          setState(() {
+            var content = json.decode(data[AppConst.RESP_DATA]);
+                       _token = content['token'];
+                    });
           _savaDate2DB();
           Navigator.of(context).pushReplacementNamed('/HomePage');
-          // Navigator.pushReplacementNamed(context, '/HomePage');
-          // Navigator.of(context).push(new PageRouteBuilder(
-          //       opaque: false,
-          //       pageBuilder: (BuildContext context, _, __) {
-          //         return new HomePage();
-          //       },
-          //     ));
           Fluttertoast.showToast(
               msg: "  登录成功！ ",
               toastLength: Toast.LENGTH_SHORT,
@@ -136,6 +147,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
         }
       });
     } catch (e) {
+      print(e);
       return result;
     }
 

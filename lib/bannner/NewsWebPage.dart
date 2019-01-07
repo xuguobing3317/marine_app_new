@@ -83,6 +83,7 @@ class NewsWebPageState extends State<NewsWebPage>{
       key: scaffoldKey,
       url:news_url, // 登录的URL
       appBar: new AppBar(
+        backgroundColor: Colors.greenAccent,
         title: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: titleContent,

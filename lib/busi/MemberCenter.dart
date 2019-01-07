@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 
 class MemberCenter extends StatefulWidget {
   @override
@@ -7,6 +8,8 @@ class MemberCenter extends StatefulWidget {
 }
 
 class _ExpandedAppBarState extends State<MemberCenter> {
+DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+  String userName='';
 
   var titles = ["我的信息", "帮助中心", "修改密码", "系统简介", "关于雅雀漾", "关于宝码"];
   var imagePaths = [
@@ -17,6 +20,26 @@ class _ExpandedAppBarState extends State<MemberCenter> {
     "images/ic_my_team.png",
     "images/ic_my_recommend.png"
   ];
+
+  Future<Map> getDataForSql() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.createTable(dbPath);
+    Map uMap = await marineUser.getFirstData(dbPath);
+    return uMap;
+  }
+
+   @override
+  void initState() {
+    super.initState();
+    getDataForSql().then((dataMap){
+      if (null != dataMap) {
+
+      setState(() {
+        userName = dataMap[DBUtil.columnName];
+      });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +70,7 @@ class _ExpandedAppBarState extends State<MemberCenter> {
                 new Container(
                   margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
                   child: new Text(
-                    '欢迎您，admin',
+                    '欢迎您，$userName',
                     style: new TextStyle(color: Colors.white, fontSize: 14.0),
                   ),
                 )
@@ -121,6 +144,15 @@ class _ExpandedAppBarState extends State<MemberCenter> {
     
   }
 
+
+  Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteByName(userName, dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
+    
+  }
+
   Widget geneButton() {
     return new Container(
       color: Colors.white70,
@@ -156,9 +188,7 @@ class _ExpandedAppBarState extends State<MemberCenter> {
                       fontWeight: FontWeight.w500,
                       fontSize: 16.0),
                 ),
-                onPressed: () {
-                 Navigator.of(context).pushReplacementNamed('/LoginPage');
-                },
+                onPressed: _logout,
               ),
             )),
             new Container(

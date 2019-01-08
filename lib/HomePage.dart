@@ -9,10 +9,9 @@ import 'package:marine_app/busi/BoatQuery.dart';
 import 'package:marine_app/busi/BoatAnalyse.dart';
 import 'package:marine_app/busi/BoatPage.dart';
 import 'package:marine_app/busi/MemberCenter.dart';
-import 'package:marine_app/busi/StateWidgetPage.dart';
 import 'package:marine_app/busi/RecoverAnalyse.dart';
 import 'package:marine_app/busi/RecoverPage.dart';
-import 'package:marine_app/busi/extends/MyInfoPage.dart';
+import 'package:marine_app/busi/GonggaoPage.dart';
 import 'dart:async';
 
 class HomePage extends StatefulWidget {
@@ -352,11 +351,8 @@ class SwiperPageState extends State<HomePage> {
   }
 
   void onGonggaoMore() {
-    String h5_url = 'https://www.baidu.com';
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new NewsWebPage(h5_url, '公告列表')));
+   Navigator.push(
+          context, new MaterialPageRoute(builder: (context) => GonggaoPage()));
   }
 
   void onItemGonggaoClick(int i, String articleTitle) {

@@ -26,3 +26,7 @@ const RubiAnalyseListUrl  = '$BaseUrl/RubishBasal/RubiAnalyse';
 //回收分析列表查询
 const GetLastRubishDataUrl  = '$BaseUrl/ShipBasal/GetLastRubishData';
 
+
+//船舶列表URL
+const RecoverListUrl = '$BaseUrl/RubiBasal/GetRbList';
+

@@ -211,7 +211,7 @@ class BoatPageState extends State<BoatPage> {
           child: new Column(
             children: <Widget>[
               AppBar(
-                title: Text('船舶信息'),
+                title: Text('船舶列表'),
                 backgroundColor: Colors.greenAccent,
                 actions: <Widget>[
                   IconButton(

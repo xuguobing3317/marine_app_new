@@ -12,6 +12,7 @@ import 'package:marine_app/busi/MemberCenter.dart';
 import 'package:marine_app/busi/RecoverAnalyse.dart';
 import 'package:marine_app/busi/RecoverPage.dart';
 import 'package:marine_app/busi/GonggaoPage.dart';
+import 'package:marine_app/busi/RecoverListPage.dart';
 import 'dart:async';
 
 class HomePage extends StatefulWidget {
@@ -76,7 +77,10 @@ class SwiperPageState extends State<HomePage> {
           foregroundColor: Colors.white,
           shape: new CircleBorder(),
           isExtended: false,
-          onPressed: () => toBoat('2'),
+          onPressed: (){
+            Navigator.push(
+          context, new MaterialPageRoute(builder: (context) => RecoverPage()));
+          },
           child: Text('回收', style:TextStyle(fontWeight:FontWeight.w800, fontSize:20.0)),
         ),
     );
@@ -324,7 +328,7 @@ class SwiperPageState extends State<HomePage> {
           context, new MaterialPageRoute(builder: (context) => BoatPage()));
     } else if (_page == '2') {
       Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => RecoverPage()));
+          context, new MaterialPageRoute(builder: (context) => RecoverListPage()));
     } else if (_page == '3') {
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => BoatAnalyse()));

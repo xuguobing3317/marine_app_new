@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marine_app/HomePage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 class BoatDetailPage extends StatefulWidget {
   final String carId;
@@ -16,20 +17,32 @@ class BoatDetailPage extends StatefulWidget {
 }
 
 class BoatDetailPageState extends State<BoatDetailPage> {
-  String carId; //船舶号 这个
+  String carId;
   BoatDetailPageState({this.carId});
-  final TextEditingController facIdController = new TextEditingController();
   final TextEditingController carNoController = new TextEditingController();
-  final TextEditingController carTypeController = new TextEditingController();
   final TextEditingController carBelongController = new TextEditingController();
   final TextEditingController carUnitController = new TextEditingController();
   final TextEditingController carOwnerController = new TextEditingController();
-  final TextEditingController carContactController =
-      new TextEditingController();
+  final TextEditingController carContactController = new TextEditingController();
 
-  String facId = ""; //港口信息
+
+   List<PickerItem> boatTypeItems = new List();
+  List<Map> boatTypeList = [
+    {'rbCode': 'Nl', 'rbName': '常规船只'},
+    {'rbCode': 'Dg', 'rbName': '危险品船只'}
+  ];
+
+   List<PickerItem> gkTypeItems = new List();
+  List<Map> gkTypeList = [
+    {'rbCode': 'A', 'rbName': '常规港口'},
+    {'rbCode': 'B', 'rbName': '危险品港口'}
+  ];
+
+  String facIdName = ""; //港口信息
+  String facId = ""; //港口信息代码
   String carNo = ""; //船舶牌照
   String carType = ""; //船舶类型
+  String carTypeName = ""; //船舶类型
   String carBelong = ""; //船港籍
   String carUnit = ""; //船吨位
   String carOwner = ""; //船主
@@ -40,6 +53,15 @@ class BoatDetailPageState extends State<BoatDetailPage> {
   void initState() {
     super.initState();
     getData();
+
+    boatTypeList.forEach((item) {
+        PickerItem gangkouItem = new PickerItem(text: Text(item['rbName']));
+        boatTypeItems.add(gangkouItem);
+      });
+      gkTypeList.forEach((item) {
+        PickerItem gangkouItem = new PickerItem(text: Text(item['rbName']));
+        gkTypeItems.add(gangkouItem);
+      });
   }
 
   Future getData() async {
@@ -47,16 +69,16 @@ class BoatDetailPageState extends State<BoatDetailPage> {
       isLoading = true;
       await Future.delayed(Duration(seconds: 1), () {
         setState(() {
-          facId = "KXXX_000001"; //港口信息
+          facIdName = "常规港口"; //港口信息
+          facId = "A";
           carNo = "CBPZ_000002"; //船舶牌照
-          carType = "CBLX_00000r"; //船舶类型
+          carType = "Nl"; //船舶类型
+          carTypeName = "常规船只";
           carBelong = "CGJ_999999"; //船港籍
           carUnit = "CDW_877666"; //船吨位
           carOwner = "CZ_OWNER_123"; //船主
           carContact = "13888888888"; //联系方式
-          facIdController.text = facId;
           carNoController.text = carNo;
-          carTypeController.text = carType;
           carBelongController.text = carBelong;
           carUnitController.text = carUnit;
           carOwnerController.text = carOwner;
@@ -71,7 +93,9 @@ class BoatDetailPageState extends State<BoatDetailPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text('船舶详情'),
+        title: Text(
+          carId.isNotEmpty?'船舶详情':'新增船舶'
+        ),
         backgroundColor: Colors.greenAccent,
       ),
       body: isLoading ? loading() : geneColumn(),
@@ -102,11 +126,11 @@ class BoatDetailPageState extends State<BoatDetailPage> {
 
   Widget geneColumn() {
     return new Column(children: <Widget>[
-      _geneRow('港口信息', 'facId', facIdController),
+      _geneRow2('港口信息', facIdName, w3:_gkType()),
+      _div(),
+      _geneRow2('船舶类型', carTypeName, w3:_boatType()),
       _div(),
       _geneRow('船舶牌照', 'carNo', carNoController),
-      _div(),
-      _geneRow('船舶类型', 'carType', carTypeController),
       _div(),
       _geneRow('船港籍', 'carBelong', carBelongController),
       _div(),
@@ -240,6 +264,134 @@ class BoatDetailPageState extends State<BoatDetailPage> {
       child: new Divider(
         color: Colors.greenAccent,
       ),
+    );
+  }
+
+
+  Widget _gkType() {
+    return IconButton(
+      icon: Icon(
+        Icons.navigation,
+        size: 30.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: showGkTypePicker,
+    );
+  }
+
+  showGkTypePicker() {
+    Picker picker = new Picker(
+        adapter: PickerDataAdapter(
+          data: gkTypeItems,
+        ),
+        changeToFirst: true,
+        textAlign: TextAlign.left,
+        cancelText: '取消',
+        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmText: '确定',
+        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        textStyle: TextStyle(fontSize: 30.0),
+        // hideHeader: true,
+        columnPadding: const EdgeInsets.all(8.0),
+        onConfirm: (Picker picker, List value) {
+          String _value = value[0].toString();
+          int index = int.parse(_value);
+          setState(() {
+            facIdName = gkTypeList[index]['rbName'];
+            facId = boatTypeList[index]['rbCode'];
+          });
+        });
+    picker.showModal(context);
+    // picker.show(_scaffoldKey.currentState);
+  }
+
+
+  Widget _boatType() {
+    return IconButton(
+      icon: Icon(
+        Icons.directions_boat,
+        size: 30.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: showBoatTypePicker,
+    );
+  }
+
+  showBoatTypePicker() {
+    Picker picker = new Picker(
+        adapter: PickerDataAdapter(
+          data: boatTypeItems,
+        ),
+        changeToFirst: true,
+        textAlign: TextAlign.left,
+        cancelText: '取消',
+        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmText: '确定',
+        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        textStyle: TextStyle(fontSize: 30.0),
+        // hideHeader: true,
+        columnPadding: const EdgeInsets.all(8.0),
+        onConfirm: (Picker picker, List value) {
+          String _value = value[0].toString();
+          int index = int.parse(_value);
+          setState(() {
+            carTypeName = boatTypeList[index]['rbName'];
+            carType = boatTypeList[index]['rbCode'];
+          });
+        });
+    picker.showModal(context);
+    // picker.show(_scaffoldKey.currentState);
+  }
+
+  Widget _geneRow2(String _title, String _key,
+      {Widget w3}) {
+    return new Container(
+      color: Colors.white70,
+      height: 50.0,
+      child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            new Container(
+              width: 100.0,
+              child: new Text(
+                '$_title:',
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+            Expanded(
+              child: new Container(
+                alignment: Alignment.center,
+                child: new Text(
+                  (_key == null || _key.isEmpty)?'请选择$_title':_key,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.w400),
+                )
+              ),
+            ),
+            null == w3
+                ? new Container(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.camera_enhance,
+                        size: 40.0,
+                        color: Colors.white,
+                      ),
+                      onPressed: null,
+                    ),
+                  )
+                : w3
+          ]),
     );
   }
 

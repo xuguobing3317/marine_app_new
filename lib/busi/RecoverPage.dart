@@ -102,7 +102,7 @@ class RecoverPageState extends State<RecoverPage> {
   Widget _div2() {
     return new Container(
       color: Colors.greenAccent,
-      height: 5.0,
+      height: 1.5,
       child: new Divider(),
     );
   }

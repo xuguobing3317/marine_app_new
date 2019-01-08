@@ -25,7 +25,6 @@ class RecoverPageState extends State<RecoverPage> {
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
 
-  String _dateTime = "";
   String _fomesWeight = "";
 
   List<PickerItem> rbTypeItems = new List();
@@ -37,15 +36,12 @@ class RecoverPageState extends State<RecoverPage> {
   String rbName = '油污垃圾';
   String rbCode = 'B';
 
-  final TextEditingController boatController = new TextEditingController();
-  final TextEditingController timeController = new TextEditingController();
   final TextEditingController rbTypeController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      timeController.text = _recoverDate;
       rbTypeController.text = rbName;
       rbTypeList.forEach((item) {
         PickerItem gangkouItem = new PickerItem(text: Text(item['rbName']));
@@ -247,6 +243,7 @@ class RecoverPageState extends State<RecoverPage> {
                     hintText: '请输入$_title ',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(color: Colors.greenAccent),
                     ),
                     labelStyle:
                         TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
@@ -322,7 +319,9 @@ class RecoverPageState extends State<RecoverPage> {
               child: new Container(
                 alignment: Alignment.center,
                 child: new Text(
-                  (_keyValue==null || _keyValue.isEmpty)?'请扫描二维码':_keyValue,
+                  (_keyValue == null || _keyValue.isEmpty)
+                      ? '请扫描二维码'
+                      : _keyValue,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   textAlign: TextAlign.right,
@@ -509,21 +508,19 @@ class RecoverPageState extends State<RecoverPage> {
   }
 
   Future<Null> toSetTime() async {
-    DatePicker.showDatePicker(context, showTitleActions: true,
+    DatePicker.showDateTimePicker(context, showTitleActions: true,
         onChanged: (date) {
-      _dateTime = date.year.toString() +
-          '-' +
-          date.month.toString() +
-          "-" +
-          date.day.toString();
+      setState(() {
+        _recoverDate =
+            DateUtil.getDateStrByDateTime(date, format: DateFormat.NORMAL);
+      });
     }, onConfirm: (date) {
-      _dateTime = date.year.toString() +
-          '-' +
-          date.month.toString() +
-          "-" +
-          date.day.toString();
-      timeController.text = _dateTime;
-    }, locale: LocaleType.zh);
+      setState(() {
+        _recoverDate =
+            DateUtil.getDateStrByDateTime(date, format: DateFormat.NORMAL);
+      });
+    }, locale: LocaleType.zh,
+    currentTime:DateUtil.getDateTime(_recoverDate));
   }
 
   Future<void> queryBoatDetail() async {
@@ -583,10 +580,9 @@ class RecoverPageState extends State<RecoverPage> {
       String barcode2 = await BarcodeScanner.scan();
 
       setState(() {
-              barcode = barcode2;
-              queryBoatDetail();
-            });
-      
+        barcode = barcode2;
+        queryBoatDetail();
+      });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {

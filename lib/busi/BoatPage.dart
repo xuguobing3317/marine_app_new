@@ -237,6 +237,8 @@ class BoatPageState extends State<BoatPage> {
 
   Widget itemCard(int i) {
     return new Card(
+      child: InkWell(
+        onTap: () => showBoatDetail(_itemMap[i]['boatNo']),
         child: new ListTile(
             title: new Text(_itemMap[i]['carid']),
             subtitle: new Text(_itemMap[i]['facid']),
@@ -246,7 +248,14 @@ class BoatPageState extends State<BoatPage> {
               color: Colors.greenAccent,
               size: 30.0,
             ),
-            onTap: () => showBoatDetail(_itemMap[i]['boatNo'])));
+            trailing: new Icon(
+              Icons.arrow_right,
+              color: Colors.greenAccent,
+              size: 30.0,
+            )
+          )
+      )
+    );
   }
 
   void showBoatDetail(String _v) {
@@ -277,49 +286,6 @@ class BoatPageState extends State<BoatPage> {
     return itemCard(index);
   }
 
-  // Widget _getMoreWidget2() {
-  //   return Center(
-  //     child: Padding(
-  //       padding: EdgeInsets.all(10.0),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: <Widget>[
-  //           Text(
-  //             '',
-  //             style: TextStyle(fontSize: 16.0),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _getMoreWidget() {
-  //   return Center(
-  //     child: Padding(
-  //       padding: EdgeInsets.all(10.0),
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: <Widget>[
-  //           SpinKitFadingCircle(
-  //             color: Colors.greenAccent,
-  //             size: 30.0,
-  //           ),
-  //           Text(
-  //             '加载中...',
-  //             style: TextStyle(fontSize: 16.0, color: Colors.greenAccent),
-  //           ),
-
-  //           // CircularProgressIndicator(
-  //           //   strokeWidth: 1.0,
-  //           // )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget search() {
     return new Container(

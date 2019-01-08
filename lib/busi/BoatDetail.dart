@@ -45,7 +45,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
   Future getData() async {
     if (carId.isNotEmpty) {
       isLoading = true;
-      await Future.delayed(Duration(seconds: 3), () {
+      await Future.delayed(Duration(seconds: 1), () {
         setState(() {
           facId = "KXXX_000001"; //港口信息
           carNo = "CBPZ_000002"; //船舶牌照

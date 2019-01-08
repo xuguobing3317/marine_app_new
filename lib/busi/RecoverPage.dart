@@ -385,7 +385,7 @@ class RecoverPageState extends State<RecoverPage> {
                       fontSize: 16.0),
                 ),
                 onPressed: () {
-                  _forSubmitted('', context);
+                  _forSubmitted(context);
                 },
               ),
             )),
@@ -632,7 +632,7 @@ class RecoverPageState extends State<RecoverPage> {
     }
   }
 
-  Future<bool> _forSubmitted(String _fileOwner, BuildContext context) async {
+  Future<bool> _forSubmitted(BuildContext context) async {
     try {
       if (barcode == '') {
         Fluttertoast.showToast(
@@ -645,9 +645,9 @@ class RecoverPageState extends State<RecoverPage> {
         return false;
       }
 
-      if (_fileOwner == '') {
+      if (_fomesWeight == '') {
         Fluttertoast.showToast(
-            msg: " 请输入船舶所有人 ",
+            msg: " 请输入污染物重量 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIos: 1,
@@ -655,6 +655,19 @@ class RecoverPageState extends State<RecoverPage> {
             textColor: Color(0xFFFFFFFF));
         return false;
       }
+
+      if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(_fomesWeight)) {
+      Fluttertoast.showToast(
+            msg: " 请输入正确的数值 ",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        return false;
+      }
+
+
 
       String url =
           "http://116.62.149.237:8080/USR000100001?usrName=admin&passwd=123456";

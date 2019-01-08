@@ -93,26 +93,63 @@ class GonggaoPageState extends State<GonggaoPage> {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
           _listMap = [
-            {'ggTitle':'系统上线','ggTime':'2019-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告1','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告2','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告3','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告4','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告5','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告6','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告7','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告8','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'},
-            {'ggTitle':'系统上线公告9','ggTime':'2018-01-08 08:08:08', 'ggUrl':'https://www.baidu.com'}
+            {
+              'ggTitle': '系统上线',
+              'ggTime': '2019-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告1',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告2',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告3',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告4',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告5',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告6',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告7',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告8',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            },
+            {
+              'ggTitle': '系统上线公告9',
+              'ggTime': '2018-01-08 08:08:08',
+              'ggUrl': 'https://www.baidu.com'
+            }
           ];
           _listMap.forEach((listItem) {
             String ggTitle = listItem['ggTitle'].toString();
             String ggTime = listItem['ggTime'].toString();
             String ggUrl = listItem['ggUrl'].toString();
-            _queryItemMap.add({
-              'ggTitle': ggTitle,
-              'ggTime': ggTime,
-              'ggUrl': ggUrl
-            });
+            _queryItemMap
+                .add({'ggTitle': ggTitle, 'ggTime': ggTime, 'ggUrl': ggUrl});
           });
         });
       }
@@ -122,17 +159,17 @@ class GonggaoPageState extends State<GonggaoPage> {
 
   Future<bool> getData() async {
     setState(() {
-          loadingFlag = "1";
-        });
+      loadingFlag = "1";
+    });
     bool result = false;
     result = await getHttpData().then((_v) {
       setState(() {
         _itemMap.addAll(_queryItemMap);
-         if (_itemMap.length > 0) {
-                  loadingFlag = "2";
-              } else {
-                loadingFlag = "3";
-              }
+        if (_itemMap.length > 0) {
+          loadingFlag = "2";
+        } else {
+          loadingFlag = "3";
+        }
       });
     });
     return result;
@@ -161,68 +198,62 @@ class GonggaoPageState extends State<GonggaoPage> {
     _scrollController.dispose();
   }
 
-
   Widget getBody() {
     if (loadingFlag == '1') {
-      return new Stack(
-            children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
-                  child: new Center(
-                    child: SpinKitFadingCircle(
-                      color: Colors.greenAccent,
-                      size: 30.0,
-                    ),
-                  ),
-                ),
-                new Padding(
-                  padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
-                  child: new Center(
-                    child: new Text(
-                      '公告列表加载中...',
-                      style: TextStyle(color: Colors.greenAccent),
-                    ),
-                  ),
-                ),
-              ]);
+      return new Stack(children: <Widget>[
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
+          child: new Center(
+            child: SpinKitFadingCircle(
+              color: Colors.greenAccent,
+              size: 30.0,
+            ),
+          ),
+        ),
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
+          child: new Center(
+            child: new Text(
+              '公告列表加载中...',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
+          ),
+        ),
+      ]);
     } else if (loadingFlag == '2') {
       return RefreshIndicator(
-                    onRefresh: _onSearch,
-                    child: ListView.builder(
-                        itemBuilder: _renderRow,
-                        itemCount: _itemMap.length,
-                        controller: _scrollController),
-                  );
+        onRefresh: _onSearch,
+        child: ListView.builder(
+            itemBuilder: _renderRow,
+            itemCount: _itemMap.length,
+            controller: _scrollController),
+      );
     } else {
       return new Stack(
-                    children: <Widget>[
-                      new Padding(
-                        padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
-                        child: new Center(
-                          child: new Text(
-                            '未查询到数据',
-                            style: TextStyle(color: Colors.greenAccent),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+        children: <Widget>[
+          new Padding(
+            padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
+            child: new Center(
+              child: new Text(
+                '未查询到数据',
+                style: TextStyle(color: Colors.greenAccent),
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: 
-              AppBar(
-                title: Text('公告列表'),
-                backgroundColor: Colors.greenAccent,
-              ),
-        body: getBody()
-    );
+        appBar: AppBar(
+          title: Text('公告列表'),
+          backgroundColor: Colors.greenAccent,
+        ),
+        body: getBody());
   }
-
-
 
   Widget itemCard(int i) {
     return new Card(
@@ -235,9 +266,15 @@ class GonggaoPageState extends State<GonggaoPage> {
               color: Colors.greenAccent,
               size: 30.0,
             ),
-            onTap: () => onItemClick(i)));
+            trailing: new Icon(
+              Icons.arrow_right,
+              color: Colors.greenAccent,
+              size: 30.0,
+            ),
+            onTap: () => onItemClick(i),
+          )
+        );
   }
-
 
   void onItemClick(int i) {
     String h5_url = _itemMap[i]['ggUrl'];
@@ -270,5 +307,4 @@ class GonggaoPageState extends State<GonggaoPage> {
   Widget _renderRow(BuildContext context, int index) {
     return itemCard(index);
   }
-
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:marine_app/member/ModifyPwdPage.dart';
 
 class MemberCenter extends StatefulWidget {
   @override
@@ -102,6 +103,10 @@ DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
     String _title = titles[index];
     return new InkWell(
       onTap: (){ 
+        if (index == 2) {
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => ModifyPwdPage()));
+        } else {
         Fluttertoast.showToast(
               msg: " 您点击的是:$_title ",
               toastLength: Toast.LENGTH_SHORT,
@@ -110,7 +115,7 @@ DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF)
           );
-
+        }
       },
       child: Container(
       decoration: new BoxDecoration(

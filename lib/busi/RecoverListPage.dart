@@ -13,12 +13,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 
-class RecoverAnalyse extends StatefulWidget {
+class RecoverListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => RecoverAnalyseState();
+  State<StatefulWidget> createState() => RecoverListPageState();
 }
 
-class RecoverAnalyseState extends State<RecoverAnalyse> {
+class RecoverListPageState extends State<RecoverListPage> {
   String dataFlag = '1'; //1:标示初始化，  2;表示已经查询过
 
   String barcode = "";

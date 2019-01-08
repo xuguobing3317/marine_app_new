@@ -5,6 +5,11 @@ import 'package:marine_app/HomePage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/services.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
+import 'package:marine_app/common/AppConst.dart';
+import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BoatQuery extends StatefulWidget {
   @override

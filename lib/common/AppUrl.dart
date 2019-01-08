@@ -14,5 +14,15 @@ const FactListUrl = '$BaseUrl/FactData/GetFactList';
 //船舶分析列表查询
 const BoatAnalyseListUrl  = '$BaseUrl/ShipBasal/ShipAnalyse';
 
+//密码修改接口
+const ModifyPwdUrl = '$BaseUrl/Account/Pwdchange';
 
+
+//回收分析列表查询
+const RubiAnalyseListUrl  = '$BaseUrl/RubishBasal/RubiAnalyse';
+
+
+
+//回收分析列表查询
+const GetLastRubishDataUrl  = '$BaseUrl/ShipBasal/GetLastRubishData';
 

@@ -139,10 +139,12 @@ class SwiperPageState extends State<HomePage> {
           new Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              imageExpanded('船舶', '$boatCount艘', Icons.directions_boat, '1'),
+              imageExpanded('船舶', '船舶列表', Icons.directions_boat, '1'),
+              // imageExpanded('船舶', '$boatCount艘', Icons.directions_boat, '1'),
               // VerticalDivider(color: Colors.blueGrey,),
               imageExpanded(
-                  '回收', '共$recyclCount个申请', Icons.filter_tilt_shift, '2'),
+                  '回收', '回收列表', Icons.filter_tilt_shift, '2'),
+                  // '回收', '共$recyclCount个申请', Icons.filter_tilt_shift, '2'),
             ],
           ),
           new Divider(),
@@ -178,7 +180,7 @@ class SwiperPageState extends State<HomePage> {
           ListTile(
             title: new Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.0),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.0, color: Colors.greenAccent),
             ),
             subtitle: new Text(
               subTitle,

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'SplashPage.dart';
 import 'LoginPage.dart';
 import 'HomePage.dart';
+import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
-void main() => runApp(new MyApp());
+void main() {
+  debugPaintSizeEnabled = true;
+  runApp(new MyApp());
+} 
 
 class MyApp extends StatelessWidget {
 // This widget is the root of your application.

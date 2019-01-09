@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
+import 'dart:io';
 
 class MyLoginWidget extends StatefulWidget {
   @override
@@ -109,9 +110,11 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     bool result;
     try {
       Map _params = {'UserName':userName, 'Password':password};
-      result = await http.post(url, body: _params).then((http.Response response) {
+      Map<String,String> headers = {'OsName':Platform.operatingSystem.toUpperCase()};
+      result = await http.post(url, body: _params, headers: headers).then((http.Response response) {
         var data = json.decode(response.body);
         print('请求报文:body:$_params');
+        print('请求报文:headers:$headers');
         print('响应报文:$data');
         int type = data[AppConst.RESP_CODE];
         String rescode = '$type';

@@ -47,17 +47,9 @@ class GonggaoPageState extends State<GonggaoPage> {
       'rows': _rows.toString(),
       'page': _page.toString(),
       'order': _order,
-      'sort': _sort
+      'sort': _sort,
+      'queryStr': barcode
     };
-    if (barcode.isNotEmpty) {
-      _params = {
-        'rows': _rows.toString(),
-        'page': _page.toString(),
-        'order': _order,
-        'sort': _sort,
-        'queryStr': barcode
-      };
-    }
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
     if (uMap == null) {

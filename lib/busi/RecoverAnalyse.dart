@@ -49,10 +49,10 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
   List<Map> dataMapQuery = [
     {
       'weight': '10.0',
-              'count': '12',
-              'dgtime': 'dgtime',
-              'facName': 'facName',
-              'facId': 'facId',
+      'count': '12',
+      'dgtime': 'dgtime',
+      'facName': 'facName',
+      'facId': 'facId',
     },
   ];
 
@@ -260,27 +260,33 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         title: Text('回收分析'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: getBody(),
+      body: 
+      Builder(
+        builder:(context)=>getBody(context)),
       endDrawer: getNavDrawer(context),
       bottomSheet: new BottomSheet(
         onClosing: () {},
         builder: (BuildContext context) {
-            return 
-            new Container(
+          return new Container(
               height: 40.0,
               color: bootSheetColor,
-              child:new Row(
-              children: <Widget>[
-                Expanded( child:
-                new Text(total1, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0,color: Colors.white), ),),
-              ],
-            ));
+              child: new Row(
+                children: <Widget>[
+                  Expanded(
+                    child: new Text(
+                      total1,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 14.0, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ));
         },
-),
+      ),
     );
   }
 
-  Widget getBody() {
+  Widget getBody(BuildContext context) {
     if (dataFlag == '1') {
       return loading(context);
     } else if (dataFlag == '3') {
@@ -356,31 +362,54 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
   }
 
   Widget loading(BuildContext context) {
-    return new Stack(
+    return 
+    new InkWell(
+      onTap: (){_handlerDrawerButton2(context);},
+      child:
+    new Stack(
       children: <Widget>[
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
           child: new Center(
-              child: new InkWell(
-            onTap: () {},
+            // child: 
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.search,
+            //     size: 100.0,
+            //     color: Colors.greenAccent,
+            //     ), 
+            //   onPressed:(){
+            //     debugPrint('111111111111111111111111');
+            //     _handlerDrawerButton2(context);
+            //     }
+            //     ),
+            //   child: new InkWell(
+            // onTap: () {
+            //   _handlerDrawerButton2(context);
+            // },
             child: Icon(
               Icons.search,
               size: 100.0,
               color: Colors.greenAccent,
             ),
-          )),
-        ),
+          )
+          ),
+        // ),
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
           child: new Center(
             child: new Text(
-              '请点击右上角图标进行查询',
+              '请点击图标进行查询',
               style: TextStyle(color: Colors.greenAccent),
             ),
           ),
         ),
       ],
-    );
+    ));
+  }
+
+  void _handlerDrawerButton2(context) {
+    Scaffold.of(context).openEndDrawer();
   }
 
   Drawer getNavDrawer(BuildContext context) {
@@ -557,15 +586,15 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
     String rType = boatMap['rType'];
     return new Card(
       child: InkWell(
-        onTap: (){},
+        onTap: () {},
         child: ListTile(
           contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              rType == 'A' ? 
-              Image.asset('images/life.png',width: 45.0, height: 50.0):
-              Image.asset('images/oil.png',width: 45.0, height: 50.0),
+              rType == 'A'
+                  ? Image.asset('images/life.png', width: 45.0, height: 50.0)
+                  : Image.asset('images/oil.png', width: 45.0, height: 50.0),
             ],
           ),
           title: Padding(

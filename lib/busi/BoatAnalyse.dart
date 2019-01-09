@@ -343,7 +343,8 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         title: Text('船舶分析'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: getBody(),
+      body: Builder(
+        builder:(context)=>getBody(context)),
       endDrawer: getNavDrawer(context),
       bottomSheet: new BottomSheet(
         onClosing: () {},
@@ -374,7 +375,7 @@ class BoatAnalyseState extends State<BoatAnalyse> {
     );
   }
 
-  Widget getBody() {
+  Widget getBody(BuildContext context) {
     if (dataFlag == '1') {
       return loading(context);
     } else if (dataFlag == '3') {
@@ -546,31 +547,36 @@ class BoatAnalyseState extends State<BoatAnalyse> {
   }
 
   Widget loading(BuildContext context) {
-    return new Stack(
+    return 
+    new InkWell(
+      onTap: (){_handlerDrawerButton2(context);},
+      child:new Stack(
       children: <Widget>[
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
           child: new Center(
-              child: new InkWell(
-            onTap: () {},
             child: Icon(
               Icons.search,
               size: 100.0,
               color: Colors.greenAccent,
             ),
-          )),
+          ),
         ),
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
           child: new Center(
             child: new Text(
-              '请点击右上角图标进行查询',
+              '请点击右图标进行查询',
               style: TextStyle(color: Colors.greenAccent),
             ),
           ),
         ),
       ],
-    );
+    ));
+  }
+
+  void _handlerDrawerButton2(context) {
+    Scaffold.of(context).openEndDrawer();
   }
 
   Drawer getNavDrawer(BuildContext context) {

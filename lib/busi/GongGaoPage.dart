@@ -7,7 +7,7 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
-import 'package:marine_app/bannner/NewsWebPage.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class GonggaoPage extends StatefulWidget {
   @override
@@ -269,12 +269,18 @@ class GonggaoPageState extends State<GonggaoPage> {
   }
 
   void onItemClick(int i) {
-    String h5_url = _itemMap[i]['ggUrl'];
+    String h5Url = _itemMap[i]['ggUrl'];
     String articleTitle = _itemMap[i]['ggTitle'];
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new NewsWebPage(h5_url, articleTitle)));
+            builder: (context) => new WebviewScaffold(
+              url: h5Url,
+              appBar: new AppBar(
+            title: new Text('$articleTitle'),
+            backgroundColor: Colors.greenAccent,
+          ),
+              )));
   }
 
   Future<Null> _onSearch() async {

@@ -46,6 +46,8 @@ class BoatAnalyseState extends State<BoatAnalyse> {
   static String _time = DateUtil.formatDateTime(
       DateUtil.getNowDateStr(), DateFormat.ZH_NORMAL, null, null);
 
+  int total = -1;
+
   List<Map> dataMapQuery = [
     {
       'boatNo': 'ISO88090001',
@@ -168,7 +170,9 @@ class BoatAnalyseState extends State<BoatAnalyse> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMore();
+        if (total != -1 && total > dataMap.length) {
+          _getMore();
+        }
       }
     });
   }
@@ -184,8 +188,8 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         dataMap.addAll(_queryItemMap);
         String _t1 = gettotal1();
         String _t2 = gettotal2();
-        total1 = '累计重量:$_t1吨';
-        total2 = '累计趟次:$_t2次';
+        total1 = '累计重量:$_t1 KG';
+        total2 = '累计趟次:$_t2 次';
         if (dataMap.length != 0) {
           bootSheetColor = Colors.greenAccent;
           dataFlag = '3';
@@ -246,12 +250,13 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
+          total = _dataMap['total'];
           _listMap.forEach((listItem) {
             String facId = listItem['FACID'].toString();
             String boatNo = listItem['CARNO1'].toString();
             String boatOwner = listItem['FACID'].toString();
             String weight = listItem['CARQTY2'].toString();
-            String count = listItem['CARQTY2'].toString();
+            String count = listItem['COUT'].toString();
             String dgtime = listItem['RECENTCARDATE'].toString();
             String facName = listItem['FACNAME'].toString();
             _queryItemMap.add({
@@ -343,8 +348,7 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         title: Text('船舶分析'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: Builder(
-        builder:(context)=>getBody(context)),
+      body: Builder(builder: (context) => getBody(context)),
       endDrawer: getNavDrawer(context),
       bottomSheet: new BottomSheet(
         onClosing: () {},
@@ -356,15 +360,8 @@ class BoatAnalyseState extends State<BoatAnalyse> {
                 children: <Widget>[
                   Expanded(
                     child: new Text(
-                      total1,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 14.0, color: Colors.white),
-                    ),
-                  ),
-                  Expanded(
-                    child: new Text(
-                      total2,
-                      textAlign: TextAlign.right,
+                      '$total1\t\t$total2',
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14.0, color: Colors.white),
                     ),
                   )
@@ -547,32 +544,33 @@ class BoatAnalyseState extends State<BoatAnalyse> {
   }
 
   Widget loading(BuildContext context) {
-    return 
-    new InkWell(
-      onTap: (){_handlerDrawerButton2(context);},
-      child:new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-            child: Icon(
-              Icons.search,
-              size: 100.0,
-              color: Colors.greenAccent,
+    return new InkWell(
+        onTap: () {
+          _handlerDrawerButton2(context);
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+              child: new Center(
+                child: Icon(
+                  Icons.search,
+                  size: 100.0,
+                  color: Colors.greenAccent,
+                ),
+              ),
             ),
-          ),
-        ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '请点击右图标进行查询',
-              style: TextStyle(color: Colors.greenAccent),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '请点击图标进行查询',
+                  style: TextStyle(color: Colors.greenAccent),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 
   void _handlerDrawerButton2(context) {
@@ -749,10 +747,10 @@ class BoatAnalyseState extends State<BoatAnalyse> {
   Widget buildOutCard(int index) {
     Map boatMap = dataMap[index];
     String boatNo = boatMap['boatNo'];
-    String boatOwner = boatMap['boatOwner'];
     String weight = double.parse(boatMap['weight']).toStringAsFixed(2);
     String count = double.parse(boatMap['count']).toStringAsFixed(0);
     String dgtime = boatMap['dgtime'];
+    String facName = boatMap['facName'];
     return new Card(
       child: InkWell(
         onTap: () {},
@@ -771,66 +769,59 @@ class BoatAnalyseState extends State<BoatAnalyse> {
           title: Padding(
             padding: EdgeInsets.only(bottom: 1.0),
             child: Text(
-              '船号(船主): $boatNo($boatOwner)',
+              '船号: $boatNo',
               maxLines: 2,
               textAlign: TextAlign.start,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.greenAccent, fontSize: 12.0),
+              style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
             ),
           ),
-          subtitle: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
+          subtitle: 
+          
+          new Container(
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      children: <Widget>[
+                        Padding(
                     padding: const EdgeInsets.only(right: 1.0),
                     child: Text(
-                      "重量:",
-                      style: TextStyle(fontSize: 10.0),
+                      "港口:$facName",
+                      style: TextStyle(fontSize: 13.0),
                     ),
                   ),
-                  Padding(
+                      ],
+                    ),
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '重量: $weight KG',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            '趟次: $count 次',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        )
+                      ],
+                    ),
+                    new Row(
+                      children: <Widget>[
+                        Padding(
                     padding: const EdgeInsets.only(right: 1.0),
                     child: Text(
-                      '$weight吨',
-                      style: TextStyle(fontSize: 10.0),
+                      "最近到港时间:$dgtime",
+                      style: TextStyle(fontSize: 13.0),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 1.0),
-                    child: Text(
-                      "\t趟次:",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 10.0),
+                      ],
                     ),
-                  ),
-                  Text(
-                    '$count次',
-                    style: TextStyle(fontSize: 10.0),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 1.0),
-                    child: Text(
-                      "最近到港时间:",
-                      style: TextStyle(fontSize: 10.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 1.0),
-                    child: Text(
-                      '$dgtime',
-                      style: TextStyle(fontSize: 10.0),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
+                  ],
+                ),
+              )
         ),
       ),
     );

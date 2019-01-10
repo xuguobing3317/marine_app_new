@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:marine_app/HomePage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/services.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -10,6 +9,11 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
+import 'package:marine_app/common/AppConst.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 
 class BoatQuery extends StatefulWidget {
   @override
@@ -57,22 +61,60 @@ class BoatQueryPageState extends State<BoatQuery> {
       loadFlag = '2';
     });
 
-    await Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        facId = "KXXX_000001"; //港口信息
-        carNo = "CBPZ_000002"; //船舶牌照
-        carType = "CBLX_00000r"; //船舶类型
-        carBelong = "CGJ_999999"; //船港籍
-        carUnit = "CDW_877666"; //船吨位
-        carOwner = "CZ_OWNER_123"; //船主
-        carContact = "13888888888"; //联系方式
-        totalLifeWeight = "100.23吨"; //累计回收生活垃圾
-        totalOilWeight = "1870.23吨"; //累计回收油污垃圾
-        lastDgTime = "2018-12-27 17:25:48"; //上次到岗时间
-        totalDgCount = "67 次"; //累计到岗次数
-      });
-      loadFlag = '3';
+    String url = marineURL.GetLastRubishDataUrl;
+
+    Map<String, String> _params = {
+      'Carid': barcode,
+    };
+    DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+    String dbPath = await marineUser.createNewDb();
+    Map uMap = await marineUser.getFirstData(dbPath);
+    if (uMap == null) {
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    }
+    DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
+    String _token = mUser.token;
+    Map<String, String> _header = {'token': _token};
+    await http
+        .post(url, body: _params, headers: _header)
+        .then((http.Response response) {
+      var data = json.decode(response.body);
+      print('url:$url');
+      print('body:$_params');
+      print('headers:$_header');
+      print('data:$data');
+
+      int type = data[AppConst.RESP_CODE];
+      String rescode = '$type';
+      String resMsg = data[AppConst.RESP_MSG];
+      if (rescode != '10' && rescode != '20') {
+        String _msg = '未查询到数据[$resMsg]';
+        Fluttertoast.showToast(
+            msg: _msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+      } else {
+        setState(() {
+          var content = json.decode(data[AppConst.RESP_DATA]);
+          print(content);
+          facId = (null==content['FACNAME'])?'-':content['FACNAME'].toString(); //港口信息
+          carNo = (null==content['CARNO'])?'-':content['CARNO'].toString(); //船舶牌照
+          carType = (null==content['CARTYPE'])?'-':content['CARTYPE'].toString();  //船舶类型
+          carBelong = (null==content['CARVENDID'])?'-':content['CARVENDID'].toString();  //船港籍
+          carUnit =  (null==content['CARCAP'])?'-':content['CARCAP'].toString(); //船吨位
+          carOwner = (null==content['EMPID'])?'-':content['EMPID'].toString(); //船主
+          carContact = (null==content['MEMO'])?'-':content['MEMO'].toString(); //联系方式
+          totalLifeWeight = (null==content['CARRQTY'])?'-':content['CARRQTY'].toString();  //累计回收生活垃圾
+          totalOilWeight = (null==content['CARQTY2'])?'-':content['CARQTY2'].toString(); //累计回收油污垃圾
+          lastDgTime = (null==content['CARDATE1'])?'-':content['CARDATE1'].toString(); //上次到岗时间
+          totalDgCount = (null==content['CARSENO'])?'-':content['CARSENO'].toString();//累计到岗次数
+        });
+      }
     });
+    loadFlag = '3';
     return true;
   }
 
@@ -120,7 +162,10 @@ class BoatQueryPageState extends State<BoatQuery> {
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
           child: new Center(
-            child: new Text('船舶信息加载中...', style: TextStyle(color: Colors.greenAccent),),
+            child: new Text(
+              '船舶信息加载中...',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
           ),
         ),
       ],
@@ -190,119 +235,9 @@ class BoatQueryPageState extends State<BoatQuery> {
                 ])));
   }
 
-  Widget geneButton(_title, _key, {Widget w3}) {
-    return new Container(
-      color: Colors.white70,
-      height: 60.0,
-      child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            new Container(
-              width: 50.0,
-              child: new Text(
-                '$_title',
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.black45,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
-            Expanded(
-                child: new Container(
-              padding: new EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
-              child: new RaisedButton(
-                color: Colors.greenAccent,
-                elevation: 10,
-                highlightElevation: 10,
-                disabledElevation: 10,
-                child: new Text(
-                  '保 存',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0),
-                ),
-                onPressed: () {
-                  _forSubmitted(facId, context);
-                },
-              ),
-            )),
-            null == w3
-                ? new Container(
-                    width: 50.0,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.camera_enhance,
-                        size: 40.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: null,
-                    ),
-                  )
-                : w3
-          ]),
-    );
-  }
+  
 
-  Future<bool> _forSubmitted(String _fileOwner, BuildContext context) async {
-    try {
-      if (facId == '') {
-        Fluttertoast.showToast(
-            msg: " 请输入港口信息 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-        return false;
-      }
-
-      String url =
-          "http://116.62.149.237:8080/USR000100001?usrName=admin&passwd=123456";
-
-      // result = await http.get(url).then((http.Response response) {
-      // var data = json.decode(response.body);
-      // String rescode = data["rescode"];
-      String rescode = '000000';
-      if (rescode == '999999') {
-        Fluttertoast.showToast(
-            msg: " 保存失败 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-        return false;
-      } else if (rescode == '000000') {
-        Navigator.of(context).push(new PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (BuildContext context, _, __) {
-            return new HomePage();
-          },
-        ));
-        Fluttertoast.showToast(
-            msg: "  保存成功！ ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-      }
-    } catch (e) {
-      Fluttertoast.showToast(
-          msg: "  保存失败 ",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIos: 1,
-          backgroundColor: Color(0xFF499292),
-          textColor: Color(0xFFFFFFFF));
-      return false;
-    }
-    return true;
-  }
+  
 
   Widget _div() {
     return new Container(

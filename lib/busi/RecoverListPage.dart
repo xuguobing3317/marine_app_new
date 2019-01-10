@@ -18,7 +18,7 @@ class RecoverListPage extends StatefulWidget {
 
 class RecoverListPageState extends State<RecoverListPage> {
   // String url = marineURL.RecoverListUrl;
-  String url = marineURL.BoatListUrl;
+  String url = marineURL.RecoverListUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
   List<Map> _itemMap = new List<Map>();
@@ -29,7 +29,8 @@ class RecoverListPageState extends State<RecoverListPage> {
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
   String _order = 'Asc';
-  String _sort = 'CARNO1';
+  String _sort = 'CARDATE';
+  int total = -1;
 
   @override
   void initState() {
@@ -38,7 +39,9 @@ class RecoverListPageState extends State<RecoverListPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMore();
+            if (total != -1 && total > _itemMap.length) {
+              _getMore();
+            }
       }
     });
   }
@@ -50,17 +53,10 @@ class RecoverListPageState extends State<RecoverListPage> {
       'rows': _rows.toString(),
       'page': _page.toString(),
       'order': _order,
-      'sort': _sort
+      'sort': _sort,
+      'Carid': barcode,
+      'queryStr': barcode
     };
-    if (barcode.isNotEmpty) {
-      _params = {
-        'rows': _rows.toString(),
-        'page': _page.toString(),
-        'order': _order,
-        'sort': _sort,
-        'queryStr': barcode
-      };
-    }
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
     if (uMap == null) {
@@ -75,10 +71,10 @@ class RecoverListPageState extends State<RecoverListPage> {
         .then((http.Response response) {
       var data = json.decode(response.body);
 
-      print('url:$url');
-      print('body:$_params');
-      print('headers:$_header');
-      print('data:$data');
+      debugPrint('url:$url');
+      debugPrint('body:$_params');
+      debugPrint('headers:$_header');
+      debugPrint('data:$data');
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
@@ -95,33 +91,120 @@ class RecoverListPageState extends State<RecoverListPage> {
       } else {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
-          
-          _queryItemMap=[
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'A'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'B'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'A'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'B'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'A'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'B'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'A'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'B'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'A'},
-          {'gkName':'无名港','dgTime':'2019-01-08 08:08:08','boatNo':'沪 太空货00001','weight':'100.00','count':'3','totalWeight':'20000.00','rbType':'B'},
-        ];
-        List _listMap = _dataMap['rows'];
-          // _listMap.forEach((listItem) {
-          //   String carid = listItem['CARID'].toString();
-          //   String facid = listItem['FACID'].toString();
-          //   String empid = listItem['EMPID'].toString();
-          //   String carNo = listItem['CARNO1'].toString();
-          //   _queryItemMap.add({
-          //     'boatNo': '$carid',
-          //     'carid': '船牌号：$carid',
-          //     'facid': '码头：$facid,  所有人:$empid',
-          //     'empId': '$empid',
-          //     'carNo': '$carNo'
-          //   });
-          // });
+
+          // _queryItemMap = [
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'A'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'B'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'A'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'B'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'A'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'B'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'A'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'B'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'A'
+          //   },
+          //   {
+          //     'gkName': '无名港',
+          //     'dgTime': '2019-01-08 08:08:08',
+          //     'boatNo': '沪 太空货00001',
+          //     'weight': '100.00',
+          //     'count': '3',
+          //     'totalWeight': '20000.00',
+          //     'rbType': 'B'
+          //   },
+          // ];
+          List _listMap = _dataMap['rows'];
+          total = _dataMap['total'];
+          debugPrint('$total');
+          _listMap.forEach((listItem) {
+            String gkName = (null==listItem['FACNAME'])?'-':listItem['FACNAME'].toString();
+            String dgTime = (null==listItem['CARDATE'])?'-':listItem['CARDATE'].toString();
+            String boatNo = (null==listItem['CARID'])?'-':listItem['CARID'].toString();
+            String weight = (null==listItem['CARQTY2'])?'-':listItem['CARQTY2'].toString();
+            String count = (null==listItem['CARSENO'])?'-':listItem['CARSENO'].toString();
+            String totalWeight = (null==listItem['CARRQTY'])?'-':listItem['CARRQTY'].toString();
+            String rbType = (null==listItem['RTYPE'])?'A':listItem['RTYPE'].toString();
+            _queryItemMap.add({
+              'gkName': gkName,
+              'dgTime': dgTime,
+              'boatNo': boatNo,
+              'weight': weight,
+              'count': count,
+              'totalWeight': totalWeight,
+              'rbType': rbType,
+            });
+          });
         });
       }
     });
@@ -130,17 +213,17 @@ class RecoverListPageState extends State<RecoverListPage> {
 
   Future<bool> getData() async {
     setState(() {
-          loadingFlag = "1";
-        });
+      loadingFlag = "1";
+    });
     bool result = false;
     result = await getHttpData().then((_v) {
       setState(() {
         _itemMap.addAll(_queryItemMap);
-         if (_itemMap.length > 0) {
-                  loadingFlag = "2";
-              } else {
-                loadingFlag = "3";
-              }
+        if (_itemMap.length > 0) {
+          loadingFlag = "2";
+        } else {
+          loadingFlag = "3";
+        }
       });
     });
     return result;
@@ -153,7 +236,6 @@ class RecoverListPageState extends State<RecoverListPage> {
     });
     await getHttpData().then((_v) {
       setState(() {
-        
         _itemMap.addAll(_queryItemMap);
         if (_itemMap.length > 0) {
           loadingFlag = "2";
@@ -170,52 +252,50 @@ class RecoverListPageState extends State<RecoverListPage> {
     _scrollController.dispose();
   }
 
-
   Widget getBody() {
     if (loadingFlag == '1') {
-      return new Stack(
-            children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
-                  child: new Center(
-                    child: SpinKitFadingCircle(
-                      color: Colors.greenAccent,
-                      size: 30.0,
-                    ),
-                  ),
-                ),
-                new Padding(
-                  padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
-                  child: new Center(
-                    child: new Text(
-                      '回收列表加载中...',
-                      style: TextStyle(color: Colors.greenAccent),
-                    ),
-                  ),
-                ),
-              ]);
+      return new Stack(children: <Widget>[
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
+          child: new Center(
+            child: SpinKitFadingCircle(
+              color: Colors.greenAccent,
+              size: 30.0,
+            ),
+          ),
+        ),
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
+          child: new Center(
+            child: new Text(
+              '回收列表加载中...',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
+          ),
+        ),
+      ]);
     } else if (loadingFlag == '2') {
       return RefreshIndicator(
-                    onRefresh: _onSearch,
-                    child: ListView.builder(
-                        itemBuilder: _renderRow,
-                        itemCount: _itemMap.length,
-                        controller: _scrollController),
-                  );
+        onRefresh: _onSearch,
+        child: ListView.builder(
+            itemBuilder: _renderRow,
+            itemCount: _itemMap.length,
+            controller: _scrollController),
+      );
     } else {
       return new Stack(
-                    children: <Widget>[
-                      new Padding(
-                        padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
-                        child: new Center(
-                          child: new Text(
-                            '未查询到数据',
-                            style: TextStyle(color: Colors.greenAccent),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
+        children: <Widget>[
+          new Padding(
+            padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
+            child: new Center(
+              child: new Text(
+                '未查询到数据',
+                style: TextStyle(color: Colors.greenAccent),
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -237,8 +317,12 @@ class RecoverListPageState extends State<RecoverListPage> {
                       color: Colors.white70,
                     ),
                     tooltip: '添加回收信息',
-                    onPressed: () {Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => RecoverPage()));},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => RecoverPage()));
+                    },
                   ),
                 ],
               ),
@@ -246,11 +330,8 @@ class RecoverListPageState extends State<RecoverListPage> {
             ],
           ),
         ),
-        body: getBody()
-    );
+        body: getBody());
   }
-
-
 
   Widget itemCard(int i) {
     String gkName = _itemMap[i]['gkName'];
@@ -262,57 +343,66 @@ class RecoverListPageState extends State<RecoverListPage> {
     String rbType = _itemMap[i]['rbType'];
 
     return new Card(
-      child: InkWell(
-        onTap: () {},
-        child: new ListTile(
-            title: new Text('船舶号:$boatNo'),
-            subtitle: 
-            new Container(
-              child: new Column(
-                children: <Widget>[
-                  new Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('时间:$dgTime', style: TextStyle(fontSize: 13.0),),
+        child: InkWell(
+            onTap: () {},
+            child: new ListTile(
+              title: new Text('船舶号:$boatNo'),
+              subtitle: new Container(
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '时间:$dgTime',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
                         ),
-                      
-                    ],
-                  ),
-                  new Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('港口:$gkName', style: TextStyle(fontSize: 13.0),),
+                      ],
+                    ),
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '港口:$gkName',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
                         ),
-                      Expanded(
-                        child: Text('本次重量:$weight KG', style: TextStyle(fontSize: 13.0),),
-                      )
-                    ],
-                  ),
-                  new Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('累计次数:$count次', style: TextStyle(fontSize: 13.0),),
+                        Expanded(
+                          child: Text(
+                            '本次重量:$weight KG',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        )
+                      ],
+                    ),
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '累计次数:$count次',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
                         ),
-                      Expanded(
-                        child: Text('累计重量:$totalWeight KG', style: TextStyle(fontSize: 13.0),),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            )
-            //new Text(_itemMap[i]['facid'])
-            ,
-            //之前显示icon
-            leading: rbType == 'A' ? 
-              Image.asset('images/life.png',width: 30.0, height: 50.0):
-              Image.asset('images/oil.png',width: 30.0, height: 50.0),
-          )
-      )
-    );
+                        Expanded(
+                          child: Text(
+                            '累计重量:$totalWeight KG',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+                  //new Text(_itemMap[i]['facid'])
+                  ,
+              //之前显示icon
+              leading: rbType == 'A'
+                  ? Image.asset('images/life.png', width: 30.0, height: 50.0)
+                  : Image.asset('images/oil.png', width: 30.0, height: 50.0),
+            )));
   }
-
- 
 
   Future<Null> _onSearch() async {
     print('开始查询');
@@ -336,7 +426,6 @@ class RecoverListPageState extends State<RecoverListPage> {
   Widget _renderRow(BuildContext context, int index) {
     return itemCard(index);
   }
-
 
   Widget search() {
     return new Container(

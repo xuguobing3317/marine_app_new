@@ -23,10 +23,16 @@ const RubiAnalyseListUrl  = '$BaseUrl/RubishBasal/RubiAnalyse';
 
 
 
-//回收分析列表查询
+//获取最近一笔回收记录接口
 const GetLastRubishDataUrl  = '$BaseUrl/ShipBasal/GetLastRubishData';
 
 
-//船舶列表URL
-const RecoverListUrl = '$BaseUrl/RubiBasal/GetRbList';
+//回收列表URL
+const RecoverListUrl = '$BaseUrl/RubishBasal/GetRbList';
 
+//创建船舶URL
+const BoatSaveUrl = '$BaseUrl/ShipBasal/CreateShip';
+
+
+//垃圾回收URL
+const CreateRubishUrl = '$BaseUrl/RubishBasal/CreateRubish';

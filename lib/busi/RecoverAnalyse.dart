@@ -78,6 +78,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
 
   int _page = 1;
   int _rows = 10;
+  int total = -1;
   String _order = 'Asc';
   String _sort = 'CARDATE';
 
@@ -90,7 +91,9 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMore();
+            if (total!=-1 && total>dataMap.length) {
+              _getMore();
+            }
       }
     });
   }
@@ -105,7 +108,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         dataMap.addAll(_queryItemMap);
         String _t1 = gettotal1();
         String _t2 = gettotal2();
-        total1 = '总计: $_t1吨\t\t $_t2次';
+        total1 = '总计: $_t1 kg, $_t2次';
         if (dataMap.length != 0) {
           bootSheetColor = Colors.greenAccent;
           dataFlag = '3';
@@ -167,6 +170,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
+          total = _dataMap['total'];
           _listMap.forEach((listItem) {
             String dgtime = listItem['CARDATE'].toString();
             String facId = listItem['FACID'].toString();
@@ -275,7 +279,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
                   Expanded(
                     child: new Text(
                       total1,
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14.0, color: Colors.white),
                     ),
                   ),
@@ -549,7 +553,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         dataMap.addAll(_queryItemMap);
         String _t1 = gettotal1();
         String _t2 = gettotal2();
-        total1 = '总计: $_t1吨\t\t $_t2次';
+        total1 = '总计: $_t1 kg, $_t2次';
         if (dataMap.length != 0) {
           bootSheetColor = Colors.greenAccent;
           dataFlag = '3';
@@ -607,36 +611,33 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
               style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
             ),
           ),
-          subtitle: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: Text(
-                  "重量:",
-                  style: TextStyle(fontSize: 12.0),
+          subtitle: 
+          new Container(
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '重量: $weight KG',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                    new Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            '趟次: $count 次',
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: Text(
-                  '$weight吨',
-                  style: TextStyle(fontSize: 12.0),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: Text(
-                  "趟次:",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12.0),
-                ),
-              ),
-              Text(
-                '$count次',
-                style: TextStyle(fontSize: 12.0),
-              ),
-            ],
-          ),
+              )
           // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'BoatDetail.dart';
+import 'BoatAdd.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
@@ -29,6 +30,7 @@ class BoatPageState extends State<BoatPage> {
   int _rows = 10;
   String _order = 'Asc';
   String _sort = 'CARNO1';
+  int total = -1;
 
   @override
   void initState() {
@@ -37,7 +39,9 @@ class BoatPageState extends State<BoatPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMore();
+            if (total != -1 && total > _itemMap.length) {
+              _getMore();
+            }
       }
     });
   }
@@ -46,20 +50,12 @@ class BoatPageState extends State<BoatPage> {
     _queryItemMap = new List<Map>();
     bool result = false;
     Map<String, String> _params = {
-      'rows': _rows.toString(),
-      'page': _page.toString(),
-      'order': _order,
-      'sort': _sort
-    };
-    if (barcode.isNotEmpty) {
-      _params = {
         'rows': _rows.toString(),
         'page': _page.toString(),
         'order': _order,
         'sort': _sort,
         'queryStr': barcode
-      };
-    }
+    };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
     if (uMap == null) {
@@ -94,17 +90,30 @@ class BoatPageState extends State<BoatPage> {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
+          total = _dataMap['total'];
           _listMap.forEach((listItem) {
             String carid = listItem['CARID'].toString();
             String facid = listItem['FACID'].toString();
             String empid = listItem['EMPID'].toString();
             String carNo = listItem['CARNO1'].toString();
+            String carType = listItem['CARTYPE'].toString();
+            String carvendId = listItem['CARVENDID'].toString();
+            String carCap = listItem['CARCAP'].toString();
+            String empId = listItem['EMPID'].toString();
+            String carContact = listItem['MEMO'].toString();
             _queryItemMap.add({
               'boatNo': '$carid',
               'carid': '船牌号：$carid',
               'facid': '码头：$facid,  所有人:$empid',
               'empId': '$empid',
-              'carNo': '$carNo'
+              'carNo': '$carNo',
+              '_facId':'$facid',
+              '_carType':'$carType',
+              '_carNo':'$carid',
+              '_carBelong':'$carvendId',
+              '_carUnit':'$carCap',
+              '_carOwner':'$empId',
+              '_carContact':'$carContact',
             });
           });
         });
@@ -221,7 +230,7 @@ class BoatPageState extends State<BoatPage> {
                       color: Colors.white70,
                     ),
                     tooltip: '添加船舶信息',
-                    onPressed: () => showBoatDetail(''),
+                    onPressed: addBoat,
                   ),
                 ],
               ),
@@ -236,12 +245,36 @@ class BoatPageState extends State<BoatPage> {
 
 
   Widget itemCard(int i) {
+    String _carBelong = _itemMap[i]['_carBelong'];
+    String _carOwner = _itemMap[i]['_carOwner'];
     return new Card(
       child: InkWell(
-        onTap: () => showBoatDetail(_itemMap[i]['boatNo']),
+        onTap: () => showBoatDetail(i),
         child: new ListTile(
-            title: new Text(_itemMap[i]['carid']),
-            subtitle: new Text(_itemMap[i]['facid']),
+            title: new Text(_itemMap[i]['carNo']),
+            subtitle: 
+            new Container(
+              child: new Column(
+                children: <Widget>[
+                  new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text('船籍港:$_carBelong', style: TextStyle(fontSize: 13.0),),
+                        ),
+                      
+                    ],
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text('船主:$_carOwner', style: TextStyle(fontSize: 13.0),),
+                        ),
+                      
+                    ],
+                  ),
+                ],
+              ),
+            ),
             //之前显示icon
             leading: new Icon(
               Icons.directions_boat,
@@ -258,9 +291,38 @@ class BoatPageState extends State<BoatPage> {
     );
   }
 
-  void showBoatDetail(String _v) {
+  void showBoatDetail(int _v) {
+
+  String facId = _itemMap[_v]['_facId'];
+  String carType = _itemMap[_v]['_carType'];
+  String carNo = _itemMap[_v]['_carNo'];
+  String carBelong = _itemMap[_v]['_carBelong'];
+  String carUnit = _itemMap[_v]['_carUnit'];
+  String carOwner = _itemMap[_v]['_carOwner'];
+  String carContact = _itemMap[_v]['_carContact'];
+
     Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => BoatDetailPage(carId: _v)));
+        new MaterialPageRoute(
+          builder: (context) => 
+            BoatDetailPage(
+              facId: facId,
+              carType: carType,
+              carNo: carNo,
+              carBelong: carBelong,
+              carUnit: carUnit,
+              carOwner: carOwner,
+              carContact: carContact,
+            )
+          )
+        );
+
+
+  }
+
+  
+  void addBoat() {
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => BoatAddPage()));
   }
 
   Future<Null> _onSearch() async {

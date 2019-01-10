@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:marine_app/bannner/NewsWebPage.dart';
+// import 'package:marine_app/bannner/NewsWebPage.dart';
 import 'package:marine_app/contain/MyWell_Screen.dart';
 import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/busi/BoatQuery.dart';
@@ -14,6 +14,7 @@ import 'package:marine_app/busi/RecoverPage.dart';
 import 'package:marine_app/busi/GonggaoPage.dart';
 import 'package:marine_app/busi/RecoverListPage.dart';
 import 'dart:async';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -346,12 +347,18 @@ class SwiperPageState extends State<HomePage> {
 
   void onItemClick(int i, String articleTitle) {
     // String h5_url = BannerList[i]['banner_url'];
-    String h5_url = 'https://www.baidu.com';
+    String h5Url = 'https://www.baidu.com';
     articleTitle = bannerList[i]['banner_title'];
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new NewsWebPage(h5_url, articleTitle)));
+            builder: (context) => new WebviewScaffold(
+              url: h5Url,
+              appBar: new AppBar(
+            title: new Text('$articleTitle'),
+            backgroundColor: Colors.greenAccent,
+          ),
+              )));
   }
 
   void onGonggaoMore() {
@@ -361,12 +368,19 @@ class SwiperPageState extends State<HomePage> {
 
   void onItemGonggaoClick(int i, String articleTitle) {
     // String h5_url = BannerList[i]['banner_url'];
-    String h5_url = 'https://www.baidu.com';
+    String h5Url = 'https://www.baidu.com';
     articleTitle = bannerList[i]['banner_title'];
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => new NewsWebPage(h5_url, articleTitle)));
+            builder: (context) => 
+            new WebviewScaffold(
+              url: h5Url,
+              appBar: new AppBar(
+            title: new Text('$articleTitle'),
+            backgroundColor: Colors.greenAccent,
+          ),
+              )));
   }
 
   Widget _swiperBuilder(BuildContext context, int index) {

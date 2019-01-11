@@ -52,8 +52,42 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         title: Text('密码修改'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: getScrollView(),
+      body: getBody(),
     );
+  }
+
+  Widget loading() {
+    return new Stack(
+      children: <Widget>[
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
+          child: new Center(
+            child: SpinKitFadingCircle(
+              color: Colors.greenAccent,
+              size: 30.0,
+            ),
+          ),
+        ),
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
+          child: new Center(
+            child: new Text(
+              '密码修改中...',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget getBody() {
+    if (_isLoading) {
+      return loading();
+    }else {
+      return getScrollView();
+    }
   }
 
   Widget getScrollView() {

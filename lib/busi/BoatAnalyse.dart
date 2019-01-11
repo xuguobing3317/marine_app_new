@@ -165,7 +165,6 @@ class BoatAnalyseState extends State<BoatAnalyse> {
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   @override
   void initState() {
-    super.initState();
     getGangkouData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -175,6 +174,7 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         }
       }
     });
+    super.initState();
   }
 
   Future _getMore() async {

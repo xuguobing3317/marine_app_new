@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, 
       theme:
       new ThemeData(
+        primarySwatch: Colors.green,
           brightness: Brightness.light,
           backgroundColor: Colors.white,
           platform: TargetPlatform.iOS),

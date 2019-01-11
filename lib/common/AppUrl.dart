@@ -36,3 +36,6 @@ const BoatSaveUrl = '$BaseUrl/ShipBasal/CreateShip';
 
 //垃圾回收URL
 const CreateRubishUrl = '$BaseUrl/RubishBasal/CreateRubish';
+
+//bannerURL
+const bannerUrl = '$BaseUrl/BanNot/GetBannerList';

@@ -15,6 +15,13 @@ import 'package:marine_app/busi/GonggaoPage.dart';
 import 'package:marine_app/busi/RecoverListPage.dart';
 import 'dart:async';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
+import 'package:marine_app/common/AppConst.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,7 +42,9 @@ class SwiperPageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadData().then((_v) {
+    var _duration = new Duration(seconds: 1);
+    new Future.delayed(_duration, (){
+      loadData().then((_v) {
       int ggLen = bannerList.length;
       if (ggLen == 0) {
         setState(() {
@@ -50,6 +59,8 @@ class SwiperPageState extends State<HomePage> {
         });
       }
     });
+    });
+    
   }
 
   @override
@@ -277,7 +288,7 @@ class SwiperPageState extends State<HomePage> {
         height: 180.0,
         child: Swiper(
           itemBuilder: _swiperBuilder,
-          itemCount: 3,
+          itemCount: bannerList.length,
           pagination: new SwiperPagination(
               builder: DotSwiperPaginationBuilder(
             color: Colors.black54,
@@ -346,8 +357,10 @@ class SwiperPageState extends State<HomePage> {
   }
 
   void onItemClick(int i, String articleTitle) {
-    // String h5_url = BannerList[i]['banner_url'];
-    String h5Url = 'https://www.baidu.com';
+    String h5Url = bannerList[i]['click_url'];
+    if (null == h5Url || h5Url.isEmpty) {
+      return;
+    }
     articleTitle = bannerList[i]['banner_title'];
     Navigator.push(
         context,
@@ -393,16 +406,58 @@ class SwiperPageState extends State<HomePage> {
   }
 
   Future loadData() async {
-    await http
-        .get('http://116.62.149.237:8080/USR000100002')
-        .then((http.Response response) {
-      var datas = json.decode(response.body);
 
-      var listData = datas["resobj"];
-      setState(() {
-        bannerList = listData;
-      });
+    String url = marineURL.bannerUrl;
+
+    Map<String, String> _params = {};
+    DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+    String dbPath = await marineUser.createNewDb();
+    Map uMap = await marineUser.getFirstData(dbPath);
+    if (uMap == null) {
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    }
+    DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
+    String _token = mUser.token;
+    Map<String, String> _header = {'token': _token};
+    await http
+        .post(url, body: _params, headers: _header)
+        .then((http.Response response) {
+      var data = json.decode(response.body);
+      print('url:$url');
+      print('body:$_params');
+      print('headers:$_header');
+      print('data:$data');
+
+      int type = data[AppConst.RESP_CODE];
+      String rescode = '$type';
+      // String resMsg = data[AppConst.RESP_MSG];
+      if (rescode != '10') {
+        // String _msg = '未查询到数据[$resMsg]';
+        // Fluttertoast.showToast(
+        //     msg: _msg,
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIos: 1,
+        //     backgroundColor: Color(0xFF499292),
+        //     textColor: Color(0xFFFFFFFF));
+      } else {
+        setState(() {
+           bannerList = json.decode(data[AppConst.RESP_DATA]);
+        });
+      }
     });
+
+    // await http
+    //     .get('http://116.62.149.237:8080/USR000100002')
+    //     .then((http.Response response) {
+    //   var datas = json.decode(response.body);
+
+    //   var listData = datas["resobj"];
+    //   print(listData.toString());
+    //   setState(() {
+    //     bannerList = listData;
+    //   });
+    // });
   }
 }
 

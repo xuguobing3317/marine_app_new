@@ -38,6 +38,7 @@ class BoatQueryPageState extends State<BoatQuery> {
   String totalOilWeight = ""; //累计回收油污垃圾
   String lastDgTime = ""; //上次到岗时间
   String totalDgCount = ""; //累计到岗次数
+  String totalWeight = ""; //累计回收
   String loadFlag = '1';
 
   @override
@@ -111,6 +112,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           totalOilWeight = (null==content['CARQTY2'])?'-':content['CARQTY2'].toString(); //累计回收油污垃圾
           lastDgTime = (null==content['CARDATE1'])?'-':content['CARDATE1'].toString(); //上次到岗时间
           totalDgCount = (null==content['CARSENO'])?'-':content['CARSENO'].toString();//累计到岗次数
+          totalWeight = (null==content['CARRQTY'])?'-':content['CARRQTY'].toString();//累计到岗次数
         });
       }
     });
@@ -225,9 +227,7 @@ class BoatQueryPageState extends State<BoatQuery> {
                   _div(),
                   _geneRow('联系方式', carContact),
                   _div(),
-                  _geneRow('累计生活垃圾', totalLifeWeight),
-                  _div(),
-                  _geneRow('累计油污垃圾', totalOilWeight),
+                  _geneRow('累计回收', totalWeight),
                   _div(),
                   _geneRow('上次到岗时间', lastDgTime),
                   _div(),

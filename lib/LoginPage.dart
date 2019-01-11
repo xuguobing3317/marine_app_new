@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'dart:io';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/rendering.dart';
 
 class MyLoginWidget extends StatefulWidget {
   @override
@@ -30,6 +32,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
   String _token;
   int _id;
   bool select = false;
+  bool _isLoading = false;
 
   //写数据
   Future<Null> _savaDate2DB() async {
@@ -104,8 +107,11 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     }
   }
 
-  Future<bool> _Login(
+  Future<bool> _Login  (
       String userName, String password, BuildContext context) async {
+        setState(() {
+                  _isLoading = true;
+                });
     String url = marineURL.LoginUrl;
     bool result;
     try {
@@ -124,6 +130,9 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
           if (resMsg != null) {
               _msg = "登录失败[$resMsg]";
           }
+          setState(() {
+              _isLoading = false;
+          });
           Fluttertoast.showToast(
               msg: _msg,
               toastLength: Toast.LENGTH_SHORT,
@@ -138,7 +147,12 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                        _token = content['token'];
                     });
           _savaDate2DB();
-          Navigator.of(context).pushReplacementNamed('/HomePage');
+          var _duration = new Duration(seconds: 1);
+          new Future.delayed(_duration, (){
+            setState(() {
+              _isLoading = false;
+          });
+          Navigator.of(context).pushReplacementNamed('/HomePage', result: _token);
           Fluttertoast.showToast(
               msg: "  登录成功！ ",
               toastLength: Toast.LENGTH_SHORT,
@@ -147,6 +161,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF)
           );
+          });
         }
       });
     } catch (e) {
@@ -291,9 +306,9 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                         ),
 
                         new SizedBox(
-                          height: 10.0,
+                          height: 1.0,
                         ),
-
+                        
                         Material(
                           elevation: 10.0,
                           color: Colors.transparent,
@@ -325,11 +340,13 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                             ),
                           ),
                         ),
+                        
                       ],
                     ),
                   ),
                 ),
-              )
+              ),
+                        _loadingContainer(),
             ],
           ),
           decoration: new BoxDecoration(
@@ -343,4 +360,21 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
       ),
     );
   }
+
+
+   Widget _loadingContainer () { 
+  return !_isLoading?SizedBox(height:1.0):
+  Container(
+        constraints: BoxConstraints.expand(),
+        color: Colors.black12,
+        child: Center(
+          child: Opacity(
+            opacity: 0.9,
+            child: SpinKitCircle(
+              color: Colors.blueAccent,
+              size: 50.0,
+            ),
+          ),
+        ));
+        }
 }

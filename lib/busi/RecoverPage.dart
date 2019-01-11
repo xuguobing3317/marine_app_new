@@ -103,6 +103,9 @@ class RecoverPageState extends State<RecoverPage> {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
+          if (_listMap.length > 0) {
+            gangkouItems.clear();
+          }
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);
             String _text = listItem['FACNAME'];

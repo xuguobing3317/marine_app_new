@@ -64,7 +64,7 @@ DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
                       shape: BoxShape.circle,
                       color: Colors.transparent,
                       image: new DecorationImage(
-                          image: new AssetImage('images/lunch_yasuo.png'),
+                          image: new AssetImage('images/cycle4.png'),
                           fit: BoxFit.none),
                       border: new Border.all(color: Colors.white, width: 2.0)),
                 ),

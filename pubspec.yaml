@@ -75,6 +75,10 @@ flutter:
     - images/ic_my_recommend.png
     - images/ic_arrow_right.png
     - images/ic_avatar_default.png
+    - images/cycle4.png
+    - images/cycle3.png
+    - images/spash2.jpg
+    - images/spash4.png
     # - assets/NVpose1.obj
     # - assets/bb.obj
     # - images/lake.jpg

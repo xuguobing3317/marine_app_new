@@ -22,7 +22,6 @@ import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   SwiperPageState createState() {
@@ -32,35 +31,40 @@ class HomePage extends StatefulWidget {
 
 class SwiperPageState extends State<HomePage> {
   var bannerList = [];
-  var gonggaoList;
+  var gonggaoList = [];
   var boatCount = 0;
   var recyclCount = 0;
   Timer _timer;
   int gonggaoIndex = 0;
   int _seconds = 0;
 
+  bool _autoPlay = false;
+
+  String _token = '';
+
   @override
   void initState() {
     super.initState();
-    var _duration = new Duration(seconds: 1);
-    new Future.delayed(_duration, (){
-      loadData().then((_v) {
-      int ggLen = bannerList.length;
-      if (ggLen == 0) {
-        setState(() {
-          gonggaoIndex = -1;
-        });
-      } else {
-        _timer = new Timer.periodic(new Duration(seconds: 3), (timer) {
-          _seconds++;
+    getToken().then((_v) {
+      loadData().then((_v){
+        _autoPlay = true;
+      });
+      loadGonggaoData().then((_v) {
+        int ggLen = gonggaoList.length;
+        if (ggLen == 0) {
           setState(() {
-            gonggaoIndex = _seconds % ggLen;
+            gonggaoIndex = -1;
           });
-        });
-      }
+        } else {
+          _timer = new Timer.periodic(new Duration(seconds: 3), (timer) {
+            _seconds++;
+            setState(() {
+              gonggaoIndex = _seconds % ggLen;
+            });
+          });
+        }
+      });
     });
-    });
-    
   }
 
   @override
@@ -83,18 +87,19 @@ class SwiperPageState extends State<HomePage> {
               ],
             )),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat ,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.greenAccent,
-          foregroundColor: Colors.white,
-          shape: new CircleBorder(),
-          isExtended: false,
-          onPressed: (){
-            Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => RecoverPage()));
-          },
-          child: Text('回收', style:TextStyle(fontWeight:FontWeight.w800, fontSize:20.0)),
-        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.greenAccent,
+        foregroundColor: Colors.white,
+        shape: new CircleBorder(),
+        isExtended: false,
+        onPressed: () {
+          Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => RecoverPage()));
+        },
+        child: Text('回收',
+            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
+      ),
     );
   }
 
@@ -157,9 +162,8 @@ class SwiperPageState extends State<HomePage> {
               imageExpanded('船舶', '船舶列表', Icons.directions_boat, '1'),
               // imageExpanded('船舶', '$boatCount艘', Icons.directions_boat, '1'),
               // VerticalDivider(color: Colors.blueGrey,),
-              imageExpanded(
-                  '回收', '回收列表', Icons.filter_tilt_shift, '2'),
-                  // '回收', '共$recyclCount个申请', Icons.filter_tilt_shift, '2'),
+              imageExpanded('回收', '回收列表', Icons.filter_tilt_shift, '2'),
+              // '回收', '共$recyclCount个申请', Icons.filter_tilt_shift, '2'),
             ],
           ),
           new Divider(),
@@ -195,7 +199,10 @@ class SwiperPageState extends State<HomePage> {
           ListTile(
             title: new Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.0, color: Colors.greenAccent),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0,
+                  color: Colors.greenAccent),
             ),
             subtitle: new Text(
               subTitle,
@@ -272,7 +279,7 @@ class SwiperPageState extends State<HomePage> {
 
   Widget _gonggaoSwiperBuilder(BuildContext context, int index) {
     return new Text(
-      bannerList[index]['banner_title'],
+      gonggaoList[index]['ggTitle'],
       style: new TextStyle(
           fontFamily: 'serif',
           fontSize: 20.0,
@@ -296,23 +303,23 @@ class SwiperPageState extends State<HomePage> {
           )),
           control: new SwiperControl(color: Colors.greenAccent),
           scrollDirection: Axis.horizontal,
-          autoplay: true,
+          autoplay: _autoPlay,
           onTap: (index) => onItemClick(index, '点击了第$index 个'),
         ));
   }
 
   Widget gonggaoSwiperWidget() {
-    return bannerList.length > 0
+    return gonggaoList.length > 0
         ? Container(
             child: new RaisedButton(
               child: new Text(
-                bannerList[gonggaoIndex]['banner_title'],
+                gonggaoList[gonggaoIndex]['ggTitle'],
                 style: TextStyle(fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               onPressed: () {
-                onItemClick(gonggaoIndex, '点击了第 $gonggaoIndex 个');
+                onGonggaoItemClick(gonggaoIndex, '点击了第 $gonggaoIndex 个');
               },
               color: Colors.white,
               elevation: 0.0,
@@ -330,7 +337,7 @@ class SwiperPageState extends State<HomePage> {
           control: new SwiperControl(iconPrevious: null, iconNext: null),
           scrollDirection: Axis.vertical,
           autoplay: true,
-          onTap: (index) => onItemClick(index, '点击了第$index 个'),
+          onTap: (index) => onGonggaoItemClick(index, '点击了第$index 个'),
         ));
   }
 
@@ -339,8 +346,8 @@ class SwiperPageState extends State<HomePage> {
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => BoatPage()));
     } else if (_page == '2') {
-      Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => RecoverListPage()));
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => RecoverListPage()));
     } else if (_page == '3') {
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => BoatAnalyse()));
@@ -351,9 +358,27 @@ class SwiperPageState extends State<HomePage> {
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => BoatQuery()));
     } else if (_page == '6') {
-      Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => MemberCenter()));
+      Navigator.push(
+          context, new MaterialPageRoute(builder: (context) => MemberCenter()));
     }
+  }
+
+  void onGonggaoItemClick(int i, String articleTitle) {
+    String h5Url = gonggaoList[i]['ggUrl'];
+    if (null == h5Url || h5Url.isEmpty) {
+      return;
+    }
+    articleTitle = gonggaoList[i]['ggTitle'];
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new WebviewScaffold(
+                  url: h5Url,
+                  appBar: new AppBar(
+                    title: new Text('$articleTitle'),
+                    backgroundColor: Colors.greenAccent,
+                  ),
+                )));
   }
 
   void onItemClick(int i, String articleTitle) {
@@ -366,17 +391,17 @@ class SwiperPageState extends State<HomePage> {
         context,
         new MaterialPageRoute(
             builder: (context) => new WebviewScaffold(
-              url: h5Url,
-              appBar: new AppBar(
-            title: new Text('$articleTitle'),
-            backgroundColor: Colors.greenAccent,
-          ),
-              )));
+                  url: h5Url,
+                  appBar: new AppBar(
+                    title: new Text('$articleTitle'),
+                    backgroundColor: Colors.greenAccent,
+                  ),
+                )));
   }
 
   void onGonggaoMore() {
-   Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => GonggaoPage()));
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (context) => GonggaoPage()));
   }
 
   void onItemGonggaoClick(int i, String articleTitle) {
@@ -386,14 +411,13 @@ class SwiperPageState extends State<HomePage> {
     Navigator.push(
         context,
         new MaterialPageRoute(
-            builder: (context) => 
-            new WebviewScaffold(
-              url: h5Url,
-              appBar: new AppBar(
-            title: new Text('$articleTitle'),
-            backgroundColor: Colors.greenAccent,
-          ),
-              )));
+            builder: (context) => new WebviewScaffold(
+                  url: h5Url,
+                  appBar: new AppBar(
+                    title: new Text('$articleTitle'),
+                    backgroundColor: Colors.greenAccent,
+                  ),
+                )));
   }
 
   Widget _swiperBuilder(BuildContext context, int index) {
@@ -405,19 +429,21 @@ class SwiperPageState extends State<HomePage> {
         : new Container();
   }
 
-  Future loadData() async {
-
-    String url = marineURL.bannerUrl;
-
-    Map<String, String> _params = {};
+  Future getToken() async {
     DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
-    if (uMap == null) {
-      Navigator.of(context).pushReplacementNamed('/LoginPage');
-    }
     DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
-    String _token = mUser.token;
+    setState(() {
+      _token = mUser.token;
+    });
+  }
+
+  Future loadData() async {
+    String url = marineURL.bannerUrl;
+
+    Map<String, String> _params = {};
+
     Map<String, String> _header = {'token': _token};
     await http
         .post(url, body: _params, headers: _header)
@@ -430,34 +456,43 @@ class SwiperPageState extends State<HomePage> {
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
-      // String resMsg = data[AppConst.RESP_MSG];
       if (rescode != '10') {
-        // String _msg = '未查询到数据[$resMsg]';
-        // Fluttertoast.showToast(
-        //     msg: _msg,
-        //     toastLength: Toast.LENGTH_SHORT,
-        //     gravity: ToastGravity.BOTTOM,
-        //     timeInSecForIos: 1,
-        //     backgroundColor: Color(0xFF499292),
-        //     textColor: Color(0xFFFFFFFF));
       } else {
         setState(() {
-           bannerList = json.decode(data[AppConst.RESP_DATA]);
+          bannerList = json.decode(data[AppConst.RESP_DATA]);
         });
       }
     });
+  }
 
-    // await http
-    //     .get('http://116.62.149.237:8080/USR000100002')
-    //     .then((http.Response response) {
-    //   var datas = json.decode(response.body);
+  Future loadGonggaoData() async {
+    String url = marineURL.gonggaoUrl;
+    Map<String, String> _params = {'rows': '5', 'page': '1'};
+    Map<String, String> _header = {'token': _token};
+    await http
+        .post(url, body: _params, headers: _header)
+        .then((http.Response response) {
+      var data = json.decode(response.body);
+      print('url:$url');
+      print('body:$_params');
+      print('headers:$_header');
+      print('data:$data');
 
-    //   var listData = datas["resobj"];
-    //   print(listData.toString());
-    //   setState(() {
-    //     bannerList = listData;
-    //   });
-    // });
+      int type = data[AppConst.RESP_CODE];
+      String rescode = '$type';
+      if (rescode != '10') {
+      } else {
+        setState(() {
+          try {
+            Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
+            gonggaoList.clear();
+            gonggaoList.addAll(_dataMap['rows']);
+          } catch (e) {
+
+          }
+        });
+      }
+    });
   }
 }
 

@@ -39,3 +39,7 @@ const CreateRubishUrl = '$BaseUrl/RubishBasal/CreateRubish';
 
 //bannerURL
 const bannerUrl = '$BaseUrl/BanNot/GetBannerList';
+
+
+//gonggaoURL
+const gonggaoUrl = '$BaseUrl/BanNot/GetNoticeList';

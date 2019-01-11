@@ -13,17 +13,24 @@ class MyContainUtils extends StatelessWidget {
       clipper: ArcClipper(),
       child: Container(
         padding: new EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
+        alignment: Alignment.center,
         child: new Container(
-            child: Image.asset('images/lunch_yasuo.png'),
+          alignment: Alignment.center,
+          width: 99.0,
+          height: 99.0,
+          child: Image.asset('images/cycle3.png',
+        width: 99.0,
+        height: 99.0,
         ),
+        ),
+
         width: screenWidth,
         height: 250.0,
         decoration: new BoxDecoration(
-          color: Colors.blue,
+          color: Colors.greenAccent,
           gradient: new LinearGradient(
             begin: const FractionalOffset(0.5, 0.0),
             end: const FractionalOffset(0.5, 1.0),
-            // colors: <Color>[Color(0xFF00838F), Color(0xFF00838F)],
             colors: <Color>[Colors.white,Colors.greenAccent],
           ),
         ),

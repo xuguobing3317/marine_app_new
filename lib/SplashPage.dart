@@ -9,9 +9,13 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+
+  
   @override
   Widget build(BuildContext context) {
-    return new Image.asset("images/spash.jpg");
+    return new Image.asset(
+      "images/spash2.jpg",
+      fit: BoxFit.fill,);
   }
 
   @override
@@ -22,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
 
 // 倒计时
   void countDown() {
-    var _duration = new Duration(seconds: 1);
+    var _duration = new Duration(seconds: 3);
     new Future.delayed(_duration, go2LoginPage);
   }
 

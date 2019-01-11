@@ -15,7 +15,7 @@ class GonggaoPage extends StatefulWidget {
 }
 
 class GonggaoPageState extends State<GonggaoPage> {
-  String url = marineURL.BoatListUrl;
+  String url = marineURL.gonggaoUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
   List<Map> _itemMap = new List<Map>();
@@ -25,8 +25,7 @@ class GonggaoPageState extends State<GonggaoPage> {
   String loadingFlag = '1'; //1:加载中 2：加载到数据  3：无数据
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
-  String _order = 'Asc';
-  String _sort = 'CARNO1';
+  int _total = -1;
 
   @override
   void initState() {
@@ -35,7 +34,9 @@ class GonggaoPageState extends State<GonggaoPage> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMore();
+            if (_total != -1 && _total>_itemMap.length) {
+              _getMore(); 
+            }
       }
     });
   }
@@ -46,9 +47,6 @@ class GonggaoPageState extends State<GonggaoPage> {
     Map<String, String> _params = {
       'rows': _rows.toString(),
       'page': _page.toString(),
-      'order': _order,
-      'sort': _sort,
-      'queryStr': barcode
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -83,66 +81,12 @@ class GonggaoPageState extends State<GonggaoPage> {
       } else {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
-          List _listMap = _dataMap['rows'];
-          _listMap = [
-            {
-              'ggTitle': '系统上线',
-              'ggTime': '2019-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告1',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告2',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告3',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告4',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告5',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告6',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告7',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告8',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            },
-            {
-              'ggTitle': '系统上线公告9',
-              'ggTime': '2018-01-08 08:08:08',
-              'ggUrl': 'https://www.baidu.com'
-            }
-          ];
+           List _listMap = _dataMap['rows'];
           _listMap.forEach((listItem) {
-            String ggTitle = listItem['ggTitle'].toString();
-            String ggTime = listItem['ggTime'].toString();
-            String ggUrl = listItem['ggUrl'].toString();
-            _queryItemMap
-                .add({'ggTitle': ggTitle, 'ggTime': ggTime, 'ggUrl': ggUrl});
+            print(listItem);
+            _itemMap.add(listItem);
           });
+          _total = _dataMap['total'];
         });
       }
     });
@@ -244,7 +188,9 @@ class GonggaoPageState extends State<GonggaoPage> {
           title: Text('公告列表'),
           backgroundColor: Colors.greenAccent,
         ),
-        body: getBody());
+        body: 
+        getBody()
+      );
   }
 
   Widget itemCard(int i) {
@@ -270,6 +216,9 @@ class GonggaoPageState extends State<GonggaoPage> {
 
   void onItemClick(int i) {
     String h5Url = _itemMap[i]['ggUrl'];
+    if (null == h5Url || h5Url.isEmpty) {
+      return;
+    }
     String articleTitle = _itemMap[i]['ggTitle'];
     Navigator.push(
         context,

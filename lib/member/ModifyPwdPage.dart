@@ -7,6 +7,8 @@ import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/busi/MemberCenter.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/rendering.dart';
 
 class ModifyPwdPage extends StatefulWidget {
   @override
@@ -17,11 +19,24 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
   String oldPwd = ""; //老密码
   String newPwd1 = ""; //新密码
   String newPwd2 = ""; //新密码
+  bool _isLoading = false;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+
+  String _userName = '';
+  String _token = '';
 
   @override
   void initState() {
     super.initState();
+
+    getDataForSql().then((dataMap) {
+      if (null != dataMap) {
+        setState(() {
+          _userName = dataMap[DBUtil.columnName];
+          _token = dataMap[DBUtil.columnToken];
+        });
+      }
+    });
   }
 
   @override
@@ -37,21 +52,25 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         title: Text('密码修改'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: new SingleChildScrollView(
-        child: new ConstrainedBox(
-            constraints: new BoxConstraints(
-              minHeight: 200.0,
-            ),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                geneColumn(_geneOtherNo('老密码', '请输入老密码', 'oldPwd'), _div()),
-                geneColumn(_geneOtherNo('新密码', '请输入新密码', 'newPwd1'), _div()),
-                geneColumn(_geneOtherNo('确认新密码', '请确认新密码', 'newPwd2'), _div()),
-                geneColumn(_button2('', '')),
-              ],
-            )),
-      ),
+      body: getScrollView(),
+    );
+  }
+
+  Widget getScrollView() {
+    return new SingleChildScrollView(
+      child: new ConstrainedBox(
+          constraints: new BoxConstraints(
+            minHeight: 200.0,
+          ),
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              geneColumn(_geneOtherNo('老密码', '请输入老密码', 'oldPwd'), _div()),
+              geneColumn(_geneOtherNo('新密码', '请输入新密码', 'newPwd1'), _div()),
+              geneColumn(_geneOtherNo('确认新密码', '请确认新密码', 'newPwd2'), _div()),
+              geneColumn(_button2('', '')),
+            ],
+          )),
     );
   }
 
@@ -105,6 +124,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
                       newPwd2 = world;
                     }
                   },
+                  obscureText: true,
                   style: new TextStyle(fontSize: 15.0, color: Colors.black),
                   decoration: new InputDecoration(
                     contentPadding: EdgeInsets.all(10.0),
@@ -191,7 +211,17 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
     );
   }
 
+  Future<Map> getDataForSql() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.createTable(dbPath);
+    Map uMap = await marineUser.getFirstData(dbPath);
+    return uMap;
+  }
+
   Future<bool> _forSubmitted() async {
+    setState(() {
+      _isLoading = true;
+    });
     bool result = false;
     try {
       if (oldPwd == '') {
@@ -202,6 +232,9 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
+        setState(() {
+          _isLoading = false;
+        });
         return false;
       }
 
@@ -213,6 +246,9 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
+        setState(() {
+          _isLoading = false;
+        });
         return false;
       }
 
@@ -224,10 +260,13 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
+        setState(() {
+          _isLoading = false;
+        });
         return false;
       }
 
-       if (newPwd1 != newPwd2) {
+      if (newPwd1 != newPwd2) {
         Fluttertoast.showToast(
             msg: " 密码不一致 ",
             toastLength: Toast.LENGTH_SHORT,
@@ -235,13 +274,10 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
+        setState(() {
+          _isLoading = false;
+        });
         return false;
-      }
-
-      String dbPath = await marineUser.createNewDb();
-      Map uMap = await marineUser.getFirstData(dbPath);
-      if (uMap == null) {
-        Navigator.of(context).pushReplacementNamed('/LoginPage');
       }
 
       String url = marineURL.ModifyPwdUrl;
@@ -249,8 +285,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         'oldPassword': oldPwd,
         'newPassword': newPwd1
       };
-      DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
-      String _token = mUser.token;
+
       Map<String, String> _header = {'token': _token};
       result = await http
           .post(url, body: _params, headers: _header)
@@ -258,13 +293,13 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         var data = json.decode(response.body);
 
         print('body:$_params');
-      print('headers:$_header');
-      print('data:$data');
+        print('headers:$_header');
+        print('data:$data');
         int type = data[AppConst.RESP_CODE];
         String rescode = '$type';
         String resMsg = data[AppConst.RESP_MSG];
         if (rescode == '14') {
-         Navigator.of(context).pushReplacementNamed('/LoginPage');
+          Navigator.of(context).pushReplacementNamed('/LoginPage');
           Fluttertoast.showToast(
               msg: "  登录超时， 请重新登录！",
               toastLength: Toast.LENGTH_SHORT,
@@ -273,8 +308,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF));
         } else if (rescode == '10') {
-        Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => MemberCenter()));
+          _logout();
           Fluttertoast.showToast(
               msg: "  修改成功！ ",
               toastLength: Toast.LENGTH_SHORT,
@@ -282,8 +316,8 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
               timeInSecForIos: 1,
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF));
-        }else{
-           Fluttertoast.showToast(
+        } else {
+          Fluttertoast.showToast(
               msg: " 修改失败[$resMsg]",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -293,6 +327,9 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
           return false;
         }
       });
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       Fluttertoast.showToast(
           msg: "  修改失败！ ",
@@ -301,8 +338,35 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
           timeInSecForIos: 1,
           backgroundColor: Color(0xFF499292),
           textColor: Color(0xFFFFFFFF));
+      setState(() {
+        _isLoading = false;
+      });
       return false;
     }
     return true;
+  }
+
+  Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteByName(_userName, dbPath).then((_v) {
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
+  }
+
+  Widget _loadingContainer() {
+    return !_isLoading
+        ? Container()
+        : Container(
+            constraints: BoxConstraints.expand(),
+            color: Colors.black12,
+            child: Center(
+              child: Opacity(
+                opacity: 0.9,
+                child: SpinKitCircle(
+                  color: Colors.blueAccent,
+                  size: 50.0,
+                ),
+              ),
+            ));
   }
 }

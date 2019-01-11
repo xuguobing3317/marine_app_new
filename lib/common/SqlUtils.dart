@@ -135,9 +135,7 @@ class MarineUserProvider {
     int _count =  await db.delete(tableName, where: "$columnId = ?", whereArgs: [id]);
     await db.close();
     return _count;
-    
   }
-
 
    Future<int> deleteByName(String userName, String dbPath) async {
     Database db = await openDatabase(dbPath);

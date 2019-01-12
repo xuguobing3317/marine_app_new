@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'BoatDetail.dart';
+import 'BoatAdd.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-class GonggaoPage extends StatefulWidget {
+class GongGaoPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => GonggaoPageState();
+  State<StatefulWidget> createState() => GongGaoPageState();
 }
 
-class GonggaoPageState extends State<GonggaoPage> {
+class GongGaoPageState extends State<GongGaoPage>
+    with TickerProviderStateMixin {
   String url = marineURL.gonggaoUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
@@ -25,20 +31,29 @@ class GonggaoPageState extends State<GonggaoPage> {
   String loadingFlag = '1'; //1:加载中 2：加载到数据  3：无数据
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
-  int _total = -1;
+  String _order = 'Asc';
+  String _sort = 'CARNO1';
+  int total = -1;
+  bool totalFlag = false;
+
+  ScrollController controller = new ScrollController();
+  ScrollPhysics scrollPhysics = new RefreshAlwaysScrollPhysics();
+
+  String customRefreshBoxIconPath = "images/icon_arrow.png";
+  AnimationController customBoxWaitAnimation;
+  int rotationAngle = 0;
+  String customHeaderTipText = "松开加载！";
+  String defaultRefreshBoxTipText = "松开加载！";
+
+  ///button等其他方式，通过方法调用触发下拉刷新
+  TriggerPullController triggerPullController = new TriggerPullController();
 
   @override
   void initState() {
     super.initState();
+    customBoxWaitAnimation = new AnimationController(
+        duration: const Duration(milliseconds: 1000 * 100), vsync: this);
     getData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-            if (_total != -1 && _total>_itemMap.length) {
-              _getMore(); 
-            }
-      }
-    });
   }
 
   Future<bool> getHttpData() async {
@@ -82,11 +97,11 @@ class GonggaoPageState extends State<GonggaoPage> {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
            List _listMap = _dataMap['rows'];
+           _queryItemMap.clear();
           _listMap.forEach((listItem) {
-            print(listItem);
-            _itemMap.add(listItem);
+            _queryItemMap.add(listItem);
           });
-          _total = _dataMap['total'];
+          total = _dataMap['total'];
         });
       }
     });
@@ -111,28 +126,197 @@ class GonggaoPageState extends State<GonggaoPage> {
     return result;
   }
 
-  Future _getMore() async {
-    setState(() {
-      loadingFlag = '1';
-      _page++;
-    });
-    await getHttpData().then((_v) {
-      setState(() {
-        _itemMap.addAll(_queryItemMap);
-        if (_itemMap.length > 0) {
-          loadingFlag = "2";
-        } else {
-          loadingFlag = "3";
-        }
-      });
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
     _scrollController.dispose();
   }
+
+  Widget getBody2() {
+    return new PullAndPush(
+      defaultRefreshBoxTipText: defaultRefreshBoxTipText,
+      headerRefreshBox: _getCustomHeaderBox(),
+      footerRefreshBox: _getCustomHeaderBox(),
+      triggerPullController: triggerPullController,
+      animationStateChangedCallback: (AnimationStates animationStates,
+          RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+        _handleStateCallback(animationStates, refreshBoxDirectionStatus);
+      },
+      listView: new ListView.builder(
+          //ListView的Item
+          itemCount: _itemMap.length, //+2,
+          controller: controller,
+          physics: scrollPhysics,
+          itemBuilder: (BuildContext context, int index) {
+            return itemCard(index);
+          }),
+      loadData: (isPullDown) async {
+        await _loadData(isPullDown);
+      },
+      scrollPhysicsChanged: (ScrollPhysics physics) {
+        //这个不用改，照抄即可；This does not need to change，only copy it
+        setState(() {
+          scrollPhysics = physics;
+        });
+      },
+    );
+  }
+
+  Widget _getCustomHeaderBox() {
+    return new Container(
+        color: Colors.grey,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Align(
+              alignment: Alignment.centerLeft,
+              child: new RotatedBox(
+                quarterTurns: rotationAngle,
+                child: new RotationTransition(
+                  //布局中加载时动画的weight
+                  child: new Image.asset(
+                    customRefreshBoxIconPath,
+                    height: 45.0,
+                    width: 45.0,
+                    fit: BoxFit.cover,
+                  ),
+                  turns: new Tween(begin: 100.0, end: 0.0)
+                      .animate(customBoxWaitAnimation)
+                        ..addStatusListener((animationStatus) {
+                          if (animationStatus == AnimationStatus.completed) {
+                            customBoxWaitAnimation.repeat();
+                          }
+                        }),
+                ),
+              ),
+            ),
+            new Align(
+              alignment: Alignment.centerRight,
+              child: new ClipRect(
+                child: new Text(
+                  customHeaderTipText,
+                  style:
+                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  void _handleStateCallback(AnimationStates animationStates,
+      RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+    switch (animationStates) {
+      //RefreshBox高度达到50,上下拉刷新可用;RefreshBox height reached 50，the function of load data is  available
+      case AnimationStates.DragAndRefreshEnabled:
+        setState(() {
+          //3.141592653589793是弧度，角度为180度,旋转180度；3.141592653589793 is radians，angle is 180⁰，Rotate 180⁰
+          rotationAngle = 2;
+        });
+        break;
+
+      //开始加载数据时；When loading data starts
+      case AnimationStates.StartLoadData:
+        setState(() {
+          customRefreshBoxIconPath = "images/refresh.png";
+          customHeaderTipText = "加载.....";
+        });
+        customBoxWaitAnimation.forward();
+        break;
+
+      //加载完数据时；RefreshBox会留在屏幕2秒，并不马上消失，这里可以提示用户加载成功或者失败
+      // After loading the data，RefreshBox will stay on the screen for 2 seconds, not disappearing immediately，Here you can prompt the user to load successfully or fail.
+      case AnimationStates.LoadDataEnd:
+        customBoxWaitAnimation.reset();
+        setState(() {
+          rotationAngle = 0;
+          if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            customHeaderTipText = "加载成功！";
+          } else if (refreshBoxDirectionStatus ==
+              RefreshBoxDirectionStatus.PUSH) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            if (totalFlag) {
+              customHeaderTipText = "没有更多数据了";
+            } else {
+              customHeaderTipText = "加载成功！";
+            }
+          }
+        });
+        break;
+
+      //RefreshBox已经消失，并且闲置；RefreshBox has disappeared and is idle
+      case AnimationStates.RefreshBoxIdle:
+        setState(() {
+          rotationAngle = 0;
+          defaultRefreshBoxTipText = customHeaderTipText = "松开加载";
+          customRefreshBoxIconPath = "images/icon_arrow.png";
+        });
+        break;
+    }
+  }
+
+
+Future _loadData(bool isPullDown) async {
+
+    print('_itemMap.length=' + _itemMap.length.toString());
+    if (!isPullDown) {
+      setState(() {
+        if (_itemMap.length == total) {
+          totalFlag = true;
+        } else {
+          totalFlag = false;
+          _page++;
+        }
+      });
+      if (_itemMap.length != total){
+        toGetData(isPullDown);
+      }
+    } else {
+      setState(() {
+        totalFlag = false;
+        _page = 1;
+      });
+      toGetData(isPullDown);
+    }
+  }
+
+  Future toGetData(isPullDown) async {
+    await getHttpData().then((_v) {
+      setState(() {
+        if (isPullDown) {
+          _itemMap.clear();
+        }
+        _itemMap.addAll(_queryItemMap);
+      });
+    });
+  }
+
+
+  // Future _loadData(bool isPullDown) async {
+  //   if (!isPullDown) {
+  //     setState(() {
+  //       if (_itemMap.length == total) {
+  //         totalFlag = true;
+  //         return;
+  //       }
+  //       _page++;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       totalFlag = false;
+  //       _page = 1;
+  //     });
+  //   }
+  //   await getHttpData().then((_v) {
+  //     setState(() {
+  //       if (isPullDown) {
+  //         _itemMap.clear();
+  //       }
+  //       _itemMap.addAll(_queryItemMap);
+  //     });
+  //   });
+  // }
 
   Widget getBody() {
     if (loadingFlag == '1') {
@@ -157,13 +341,7 @@ class GonggaoPageState extends State<GonggaoPage> {
         ),
       ]);
     } else if (loadingFlag == '2') {
-      return RefreshIndicator(
-        onRefresh: _onSearch,
-        child: ListView.builder(
-            itemBuilder: _renderRow,
-            itemCount: _itemMap.length,
-            controller: _scrollController),
-      );
+      return getBody2();
     } else {
       return new Stack(
         children: <Widget>[
@@ -188,9 +366,7 @@ class GonggaoPageState extends State<GonggaoPage> {
           title: Text('公告列表'),
           backgroundColor: Colors.greenAccent,
         ),
-        body: 
-        getBody()
-      );
+        body: getBody());
   }
 
   Widget itemCard(int i) {
@@ -230,28 +406,5 @@ class GonggaoPageState extends State<GonggaoPage> {
             backgroundColor: Colors.greenAccent,
           ),
               )));
-  }
-
-  Future<Null> _onSearch() async {
-    print('开始查询');
-    setState(() {
-      _itemMap = new List<Map>();
-      loadingFlag = "1";
-      _page = 1;
-    });
-    await getHttpData().then((_v) {
-      setState(() {
-        _itemMap.addAll(_queryItemMap);
-        if (_itemMap.length > 0) {
-          loadingFlag = "2";
-        } else {
-          loadingFlag = "3";
-        }
-      });
-    });
-  }
-
-  Widget _renderRow(BuildContext context, int index) {
-    return itemCard(index);
   }
 }

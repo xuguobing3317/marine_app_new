@@ -118,7 +118,7 @@ class BoatPageNewState extends State<BoatPageNew>
               'carNo': '$carNo',
               '_facId': '$facid',
               '_carType': '$carType',
-              '_carNo': '$carid',
+              '_carNo': '$carNo',
               '_carBelong': '$carvendId',
               '_carUnit': '$carCap',
               '_carOwner': '$empId',
@@ -279,21 +279,30 @@ class BoatPageNewState extends State<BoatPageNew>
     }
   }
 
-  Future _loadData(bool isPullDown) async {
+
+Future _loadData(bool isPullDown) async {
     if (!isPullDown) {
       setState(() {
         if (_itemMap.length == total) {
           totalFlag = true;
-          return;
+        } else {
+          totalFlag = false;
+          _page++;
         }
-        _page++;
       });
+      if (_itemMap.length != total){
+        toGetData(isPullDown);
+      }
     } else {
       setState(() {
         totalFlag = false;
         _page = 1;
       });
+      toGetData(isPullDown);
     }
+  }
+
+  Future toGetData(isPullDown) async {
     await getHttpData().then((_v) {
       setState(() {
         if (isPullDown) {
@@ -303,6 +312,32 @@ class BoatPageNewState extends State<BoatPageNew>
       });
     });
   }
+
+
+  // Future _loadData(bool isPullDown) async {
+  //   if (!isPullDown) {
+  //     setState(() {
+  //       if (_itemMap.length == total) {
+  //         totalFlag = true;
+  //         return;
+  //       }
+  //       _page++;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       totalFlag = false;
+  //       _page = 1;
+  //     });
+  //   }
+  //   await getHttpData().then((_v) {
+  //     setState(() {
+  //       if (isPullDown) {
+  //         _itemMap.clear();
+  //       }
+  //       _itemMap.addAll(_queryItemMap);
+  //     });
+  //   });
+  // }
 
   Widget getBody() {
     if (loadingFlag == '1') {

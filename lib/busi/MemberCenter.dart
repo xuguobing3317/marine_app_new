@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:marine_app/member/ModifyPwdPage.dart';
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
+import 'package:marine_app/common/AppConst.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MemberCenter extends StatefulWidget {
   @override
@@ -11,6 +15,18 @@ class MemberCenter extends StatefulWidget {
 class _ExpandedAppBarState extends State<MemberCenter> {
 DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String userName='';
+  String token='';
+
+//   mine	我的信息
+// helpduc	帮助中心
+// sysintrodu	系统简介
+// yaqueyang	关于鸦雀漾
+// bomar	关于宝码
+String mine = '';
+String helpduc = '';
+String sysintrodu = '';
+String yaqueyang = '';
+String bomar = '';
 
   var titles = ["我的信息", "帮助中心", "修改密码", "系统简介", "关于雅雀漾", "关于宝码"];
   var imagePaths = [
@@ -34,12 +50,60 @@ DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
     super.initState();
     getDataForSql().then((dataMap){
       if (null != dataMap) {
-
       setState(() {
         userName = dataMap[DBUtil.columnName];
+        token = dataMap[DBUtil.columnToken];
       });
       }
     });
+
+    var _duration = new Duration(seconds: 1);
+    new Future.delayed(_duration, getData);
+    
+  }
+
+
+  Future<bool> getData() async {
+
+    Map<String, String> _params = {};
+
+    String url = marineURL.memberUrl;
+    Map<String, String> _header = {'token': token};
+    await http
+        .post(url, body: _params, headers: _header)
+        .then((http.Response response) {
+      var data = json.decode(response.body);
+      print('url:$url');
+      print('body:$_params');
+      print('headers:$_header');
+      print('data:$data');
+
+      int type = data[AppConst.RESP_CODE];
+      String rescode = '$type';
+      String resMsg = data[AppConst.RESP_MSG];
+      if (rescode != '10') {
+        String _msg = '未查询到数据[$resMsg]';
+        Fluttertoast.showToast(
+            msg: _msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+      } else {
+        setState(() {
+          var content = json.decode(data[AppConst.RESP_DATA]);
+          print(content);
+          // mine = (null==content['mine'])?'-':content['mine'].toString(); //我的信息
+          // helpduc = (null==content['helpduc'])?'-':content['helpduc'].toString(); //帮助中心
+          // sysintrodu = (null==content['sysintrodu'])?'-':content['sysintrodu'].toString();  //系统简介
+          // yaqueyang = (null==content['yaqueyang'])?'-':content['yaqueyang'].toString();  //关于鸦雀漾
+          // bomar =  (null==content['bomar'])?'-':content['bomar'].toString(); //关于宝码
+        });
+      }
+    });
+    
+    return true;
   }
 
   @override

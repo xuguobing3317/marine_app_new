@@ -97,6 +97,9 @@ class BoatQueryPageState extends State<BoatQuery> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
+            setState(() {
+                          loadFlag = '4';
+                        });
       } else {
         setState(() {
           var content = json.decode(data[AppConst.RESP_DATA]);
@@ -113,10 +116,11 @@ class BoatQueryPageState extends State<BoatQuery> {
           lastDgTime = (null==content['CARDATE1'])?'-':content['CARDATE1'].toString(); //上次到岗时间
           totalDgCount = (null==content['CARSENO'])?'-':content['CARSENO'].toString();//累计到岗次数
           totalWeight = (null==content['CARRQTY'])?'-':content['CARRQTY'].toString();//累计到岗次数
+          loadFlag = '3';
         });
       }
     });
-    loadFlag = '3';
+    
     return true;
   }
 
@@ -144,9 +148,39 @@ class BoatQueryPageState extends State<BoatQuery> {
       return loading();
     } else if (loadFlag == '3') {
       return geneColumn();
+    } else if (loadFlag == '4') {
+      return noData(context);
     } else {
       return querying();
     }
+  }
+
+  Widget noData(BuildContext context) {
+    return new Stack(
+      children: <Widget>[
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+          child: new Center(
+              child: new InkWell(
+            onTap: () {},
+            child: Icon(
+              Icons.data_usage,
+              size: 100.0,
+              color: Colors.greenAccent,
+            ),
+          )),
+        ),
+        new Padding(
+          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+          child: new Center(
+            child: new Text(
+              '未查询到数据',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget querying() {

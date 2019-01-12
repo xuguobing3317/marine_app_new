@@ -12,13 +12,15 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
 
 class RecoverAnalyse extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => RecoverAnalyseState();
 }
 
-class RecoverAnalyseState extends State<RecoverAnalyse> {
+class RecoverAnalyseState extends State<RecoverAnalyse>
+    with TickerProviderStateMixin {
   String dataFlag = '1'; //1:标示初始化，  2;表示已经查询过
 
   String barcode = "";
@@ -71,7 +73,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
   String rbType = '';
   String facid = '';
 
-  String total1 = '';
+  String total1 = '总计: 0 kg, 0次';
   Color bootSheetColor = Colors.white;
 
   ScrollController _scrollController = ScrollController();
@@ -82,42 +84,28 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
   String _order = 'Asc';
   String _sort = 'CARDATE';
 
+  bool totalFlag = false;
+
+  ScrollController controller = new ScrollController();
+  ScrollPhysics scrollPhysics = new RefreshAlwaysScrollPhysics();
+
+  String customRefreshBoxIconPath = "images/icon_arrow.png";
+  AnimationController customBoxWaitAnimation;
+  int rotationAngle = 0;
+  String customHeaderTipText = "松开加载！";
+  String defaultRefreshBoxTipText = "松开加载！";
+
+  ///button等其他方式，通过方法调用触发下拉刷新
+  TriggerPullController triggerPullController = new TriggerPullController();
+
   String url = marineURL.RubiAnalyseListUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   @override
   void initState() {
     super.initState();
     getGangkouData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-            if (total!=-1 && total>dataMap.length) {
-              _getMore();
-            }
-      }
-    });
-  }
-
-  Future _getMore() async {
-    setState(() {
-      dataFlag = '2';
-      _page++;
-    });
-    await getHttpData().then((_v) {
-      setState(() {
-        dataMap.addAll(_queryItemMap);
-        String _t1 = gettotal1();
-        String _t2 = gettotal2();
-        total1 = '总计: $_t1 kg, $_t2次';
-        if (dataMap.length != 0) {
-          bootSheetColor = Colors.greenAccent;
-          dataFlag = '3';
-        } else {
-          bootSheetColor = Colors.white;
-          dataFlag = '4';
-        }
-      });
-    });
+    customBoxWaitAnimation = new AnimationController(
+        duration: const Duration(milliseconds: 1000 * 100), vsync: this);
   }
 
   Future<bool> getHttpData() async {
@@ -133,7 +121,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
       'endTime': endDate,
       'rbType': rbType,
       'Facid': gangkouId,
-      'Carid': barcode
+      'Carid': barcode.isEmpty?barcode:'%$barcode'
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -171,6 +159,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
           total = _dataMap['total'];
+
           _listMap.forEach((listItem) {
             String dgtime = listItem['CARDATE'].toString();
             String facId = listItem['FACID'].toString();
@@ -272,29 +261,9 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         title: Text('回收分析'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: 
-      Builder(
-        builder:(context)=>getBody(context)),
+      body: Builder(builder: (context) => getBody(context)),
       endDrawer: getNavDrawer(context),
-      bottomSheet: new BottomSheet(
-        onClosing: () {},
-        builder: (BuildContext context) {
-          return new Container(
-              height: 40.0,
-              color: bootSheetColor,
-              child: new Row(
-                children: <Widget>[
-                  Expanded(
-                    child: new Text(
-                      total1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14.0, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ));
-        },
-      ),
+      bottomNavigationBar: getBottom(),
     );
   }
 
@@ -302,13 +271,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
     if (dataFlag == '1') {
       return loading(context);
     } else if (dataFlag == '3') {
-      return RefreshIndicator(
-        onRefresh: _forSubmitted,
-        child: ListView.builder(
-            itemBuilder: _renderRow,
-            itemCount: dataMap.length,
-            controller: _scrollController),
-      );
+      return getBody2();
     } else if (dataFlag == '4') {
       return noData(context);
     } else {
@@ -316,9 +279,172 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
     }
   }
 
-  Widget _renderRow(BuildContext context, int index) {
-    return buildOutCard(index);
+  Widget getBody2() {
+    return new PullAndPush(
+      defaultRefreshBoxTipText: defaultRefreshBoxTipText,
+      headerRefreshBox: _getCustomHeaderBox(),
+      footerRefreshBox: _getCustomHeaderBox(),
+      triggerPullController: triggerPullController,
+      animationStateChangedCallback: (AnimationStates animationStates,
+          RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+        _handleStateCallback(animationStates, refreshBoxDirectionStatus);
+      },
+      listView: new ListView.builder(
+          //ListView的Item
+          itemCount: dataMap.length, //+2,
+          controller: controller,
+          physics: scrollPhysics,
+          itemBuilder: (BuildContext context, int index) {
+            return buildOutCard(index);
+          }),
+      loadData: (isPullDown) async {
+        await _loadData(isPullDown);
+      },
+      scrollPhysicsChanged: (ScrollPhysics physics) {
+        //这个不用改，照抄即可；This does not need to change，only copy it
+        setState(() {
+          scrollPhysics = physics;
+        });
+      },
+    );
   }
+
+  void _handleStateCallback(AnimationStates animationStates,
+      RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+    switch (animationStates) {
+      //RefreshBox高度达到50,上下拉刷新可用;RefreshBox height reached 50，the function of load data is  available
+      case AnimationStates.DragAndRefreshEnabled:
+        setState(() {
+          //3.141592653589793是弧度，角度为180度,旋转180度；3.141592653589793 is radians，angle is 180⁰，Rotate 180⁰
+          rotationAngle = 2;
+        });
+        break;
+
+      //开始加载数据时；When loading data starts
+      case AnimationStates.StartLoadData:
+        setState(() {
+          customRefreshBoxIconPath = "images/refresh.png";
+          customHeaderTipText = "加载.....";
+        });
+        customBoxWaitAnimation.forward();
+        break;
+
+      //加载完数据时；RefreshBox会留在屏幕2秒，并不马上消失，这里可以提示用户加载成功或者失败
+      // After loading the data，RefreshBox will stay on the screen for 2 seconds, not disappearing immediately，Here you can prompt the user to load successfully or fail.
+      case AnimationStates.LoadDataEnd:
+        customBoxWaitAnimation.reset();
+        setState(() {
+          rotationAngle = 0;
+          if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            customHeaderTipText = "加载成功！";
+          } else if (refreshBoxDirectionStatus ==
+              RefreshBoxDirectionStatus.PUSH) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            if (totalFlag) {
+              customHeaderTipText = "没有更多数据了";
+            } else {
+              customHeaderTipText = "加载成功！";
+            }
+          }
+        });
+        break;
+
+      //RefreshBox已经消失，并且闲置；RefreshBox has disappeared and is idle
+      case AnimationStates.RefreshBoxIdle:
+        setState(() {
+          rotationAngle = 0;
+          defaultRefreshBoxTipText = customHeaderTipText = "松开加载";
+          customRefreshBoxIconPath = "images/icon_arrow.png";
+        });
+        break;
+    }
+  }
+
+  Future _loadData(bool isPullDown) async {
+   
+    if (!isPullDown) {
+      setState(() {
+        if (dataMap.length == total) {
+          totalFlag = true;
+        } else {
+          _page++;
+        }
+      });
+      if (dataMap.length != total){
+        toGetData(isPullDown);
+      }
+    } else {
+      setState(() {
+        totalFlag = false;
+        _page = 1;
+      });
+      toGetData(isPullDown);
+    }
+  }
+
+
+  Future toGetData(isPullDown) async {
+    await getHttpData().then((_v) {
+      setState(() {
+        if (isPullDown) {
+          dataMap.clear();
+        }
+        dataMap.addAll(_queryItemMap);
+        String _t1 = gettotal1();
+        String _t2 = gettotal2();
+        total1 = '总计: $_t1 kg, $_t2次';
+        if (dataMap.length != 0) {
+          dataFlag = '3';
+        } else {
+          dataFlag = '4';
+        }
+      });
+    });
+  }
+
+  Widget _getCustomHeaderBox() {
+    return new Container(
+        color: Colors.grey,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Align(
+              alignment: Alignment.centerLeft,
+              child: new RotatedBox(
+                quarterTurns: rotationAngle,
+                child: new RotationTransition(
+                  //布局中加载时动画的weight
+                  child: new Image.asset(
+                    customRefreshBoxIconPath,
+                    height: 45.0,
+                    width: 45.0,
+                    fit: BoxFit.cover,
+                  ),
+                  turns: new Tween(begin: 100.0, end: 0.0)
+                      .animate(customBoxWaitAnimation)
+                        ..addStatusListener((animationStatus) {
+                          if (animationStatus == AnimationStatus.completed) {
+                            customBoxWaitAnimation.repeat();
+                          }
+                        }),
+                ),
+              ),
+            ),
+            new Align(
+              alignment: Alignment.centerRight,
+              child: new ClipRect(
+                child: new Text(
+                  customHeaderTipText,
+                  style:
+                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
 
   Widget querying() {
     return new Stack(
@@ -374,54 +500,48 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
   }
 
   Widget loading(BuildContext context) {
-    return 
-    new InkWell(
-      onTap: (){_handlerDrawerButton2(context);},
-      child:
-    new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-            // child: 
-            // IconButton(
-            //   icon: Icon(
-            //     Icons.search,
-            //     size: 100.0,
-            //     color: Colors.greenAccent,
-            //     ), 
-            //   onPressed:(){
-            //     debugPrint('111111111111111111111111');
-            //     _handlerDrawerButton2(context);
-            //     }
-            //     ),
-            //   child: new InkWell(
-            // onTap: () {
-            //   _handlerDrawerButton2(context);
-            // },
-            child: Icon(
-              Icons.search,
-              size: 100.0,
-              color: Colors.greenAccent,
+    return new InkWell(
+        onTap: () {
+          _handlerDrawerButton2(context);
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+                padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+                child: new Center(
+                  child: Icon(
+                    Icons.search,
+                    size: 100.0,
+                    color: Colors.greenAccent,
+                  ),
+                )),
+            // ),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '请点击图标进行查询',
+                  style: TextStyle(color: Colors.greenAccent),
+                ),
+              ),
             ),
-          )
-          ),
-        // ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '请点击图标进行查询',
-              style: TextStyle(color: Colors.greenAccent),
-            ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 
   void _handlerDrawerButton2(context) {
     Scaffold.of(context).openEndDrawer();
+  }
+
+  Widget getBottom() {
+    return new Container(
+        color: Colors.greenAccent,
+        height: 40.0,
+        alignment: Alignment.center,
+        child: new Text(
+          '$total1',
+          style: TextStyle(fontSize: 16.0, color: Colors.white),
+        ));
   }
 
   Drawer getNavDrawer(BuildContext context) {
@@ -600,52 +720,55 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-          contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
-          leading: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(Icons.cloud_circle, size: 45.0, color: Colors.greenAccent,)
-            ],
-          ),
-          title: Padding(
-            padding: EdgeInsets.only(bottom: 10.0),
-            child: Text(
-              '日期: $dgtime',
-              maxLines: 1,
-              textAlign: TextAlign.start,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
+            contentPadding: EdgeInsets.only(left: 10.0, right: 10.0),
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  Icons.cloud_circle,
+                  size: 45.0,
+                  color: Colors.greenAccent,
+                )
+              ],
             ),
-          ),
-          subtitle: 
-          new Container(
-                child: new Column(
-                  children: <Widget>[
-                    new Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            '重量: $weight KG',
-                            style: TextStyle(fontSize: 13.0),
-                          ),
+            title: Padding(
+              padding: EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                '日期: $dgtime',
+                maxLines: 1,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
+              ),
+            ),
+            subtitle: new Container(
+              child: new Column(
+                children: <Widget>[
+                  new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          '重量: $weight KG',
+                          style: TextStyle(fontSize: 13.0),
                         ),
-                      ],
-                    ),
-                    new Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            '趟次: $count 次',
-                            style: TextStyle(fontSize: 13.0),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              )
-          // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
-        ),
+                      ),
+                    ],
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          '趟次: $count 次',
+                          style: TextStyle(fontSize: 13.0),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            )
+            // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
+            ),
       ),
     );
   }
@@ -931,7 +1054,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
           String _value = value[0].toString();
           int index = int.parse(_value);
           if (index != 0) {
-             setState(() {
+            setState(() {
               gangkouName = gangkouList3[index]['FACNAME'];
               gangkouId = gangkouList3[index]['FACID'];
               gangkouColor = Colors.greenAccent;

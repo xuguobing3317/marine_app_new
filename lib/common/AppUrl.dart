@@ -43,3 +43,8 @@ const bannerUrl = '$BaseUrl/BanNot/GetBannerList';
 
 //gonggaoURL
 const gonggaoUrl = '$BaseUrl/BanNot/GetNoticeList';
+
+
+
+//gonggaoURL
+const memberUrl = '$BaseUrl/BanNot/GetMyInfo';

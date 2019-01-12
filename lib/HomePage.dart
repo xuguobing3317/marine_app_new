@@ -399,24 +399,9 @@ class SwiperPageState extends State<HomePage> {
 
   void onGonggaoMore() {
     Navigator.push(
-        context, new MaterialPageRoute(builder: (context) => GonggaoPage()));
+        context, new MaterialPageRoute(builder: (context) => GongGaoPage()));
   }
 
-  void onItemGonggaoClick(int i, String articleTitle) {
-    // String h5_url = BannerList[i]['banner_url'];
-    String h5Url = 'https://www.baidu.com';
-    articleTitle = bannerList[i]['banner_title'];
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new WebviewScaffold(
-                  url: h5Url,
-                  appBar: new AppBar(
-                    title: new Text('$articleTitle'),
-                    backgroundColor: Colors.greenAccent,
-                  ),
-                )));
-  }
 
   Widget _swiperBuilder(BuildContext context, int index) {
     return bannerList.length > 0

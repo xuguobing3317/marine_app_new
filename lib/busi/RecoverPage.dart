@@ -105,6 +105,7 @@ class RecoverPageState extends State<RecoverPage> {
           List _listMap = _dataMap['rows'];
           if (_listMap.length > 0) {
             gangkouItems.clear();
+            gangkouList3.clear();
           }
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);

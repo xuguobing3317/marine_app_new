@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'package:marine_app/bannner/NewsWebPage.dart';
 import 'package:marine_app/contain/MyWell_Screen.dart';
 import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/busi/BoatQuery.dart';
 import 'package:marine_app/busi/BoatAnalyse.dart';
-import 'package:marine_app/busi/BoatPage.dart';
+import 'package:marine_app/busi/BoatPageNew.dart';
 import 'package:marine_app/busi/MemberCenter.dart';
 import 'package:marine_app/busi/RecoverAnalyse.dart';
 import 'package:marine_app/busi/RecoverPage.dart';
 import 'package:marine_app/busi/GonggaoPage.dart';
-import 'package:marine_app/busi/RecoverListPage.dart';
+import 'package:marine_app/busi/RecoverListPageNew.dart';
 import 'dart:async';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
@@ -20,7 +19,6 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
-import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -344,10 +342,10 @@ class SwiperPageState extends State<HomePage> {
   void toBoat(_page) {
     if (_page == '1') {
       Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => BoatPage()));
+          context, new MaterialPageRoute(builder: (context) => BoatPageNew()));
     } else if (_page == '2') {
       Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => RecoverListPage()));
+          new MaterialPageRoute(builder: (context) => RecoverListPageNew()));
     } else if (_page == '3') {
       Navigator.push(
           context, new MaterialPageRoute(builder: (context) => BoatAnalyse()));

@@ -325,6 +325,11 @@ class BoatAnalyseState extends State<BoatAnalyse> {
           List _listMap = _dataMap['rows'];
           if (_listMap.length > 0) {
             gangkouItems.clear();
+            gangkouList3.clear();
+            gangkouList3.add({});
+            String _text = '- - - - - - 不选 - - - - -';
+            PickerItem gangkouItem = new PickerItem(text: Text(_text));
+            gangkouItems.add(gangkouItem);
           }
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);
@@ -1110,11 +1115,19 @@ class BoatAnalyseState extends State<BoatAnalyse> {
         onConfirm: (Picker picker, List value) {
           String _value = value[0].toString();
           int index = int.parse(_value);
-          setState(() {
-            gangkouName = gangkouList3[index]['FACNAME'];
-            gangkouId = gangkouList3[index]['FACID'];
-            gangkouColor = Colors.greenAccent;
-          });
+          if (index != 0) {
+             setState(() {
+              gangkouName = gangkouList3[index]['FACNAME'];
+              gangkouId = gangkouList3[index]['FACID'];
+              gangkouColor = Colors.greenAccent;
+            });
+          } else {
+             setState(() {
+              gangkouName = '';
+              gangkouId = '';
+              gangkouColor = Colors.grey;
+            });
+          }
         });
     picker.showModal(context);
     // picker.show(_scaffoldKey.currentState);

@@ -45,6 +45,7 @@ dev_dependencies:
   image_picker: ^0.4.7
   device_info: ^0.3.0
   flutter_webview_plugin: ^0.3.0+2
+  pulltorefresh_flutter: ^0.1.9
   
   
 
@@ -79,6 +80,11 @@ flutter:
     - images/cycle3.png
     - images/spash2.jpg
     - images/spash4.png
+    - images/refresh.png
+    - images/icon_ok.png
+    - images/icon_arrow.png
+    - images/icon_cry.png
+    - images/icon_refresh.png
     # - assets/NVpose1.obj
     # - assets/bb.obj
     # - images/lake.jpg

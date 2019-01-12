@@ -241,6 +241,11 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
           List _listMap = _dataMap['rows'];
           if (_listMap.length > 0) {
             gangkouItems.clear();
+            gangkouList3.clear();
+            gangkouList3.add({});
+            String _text = '- - - - - - 不选 - - - - -';
+            PickerItem gangkouItem = new PickerItem(text: Text(_text));
+            gangkouItems.add(gangkouItem);
           }
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);
@@ -599,9 +604,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              rType == 'A'
-                  ? Image.asset('images/life.png', width: 45.0, height: 50.0)
-                  : Image.asset('images/oil.png', width: 45.0, height: 50.0),
+              Icon(Icons.cloud_circle, size: 45.0, color: Colors.greenAccent,)
             ],
           ),
           title: Padding(
@@ -927,11 +930,13 @@ class RecoverAnalyseState extends State<RecoverAnalyse> {
         onConfirm: (Picker picker, List value) {
           String _value = value[0].toString();
           int index = int.parse(_value);
-          setState(() {
-            gangkouName = gangkouList3[index]['FACNAME'];
-            gangkouId = gangkouList3[index]['FACID'];
-            gangkouColor = Colors.greenAccent;
-          });
+          if (index != 0) {
+             setState(() {
+              gangkouName = gangkouList3[index]['FACNAME'];
+              gangkouId = gangkouList3[index]['FACID'];
+              gangkouColor = Colors.greenAccent;
+            });
+          }
         });
     picker.showModal(context);
     // picker.show(_scaffoldKey.currentState);

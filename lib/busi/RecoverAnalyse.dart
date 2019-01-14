@@ -122,7 +122,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       'endTime': endDate,
       'rbType': rbType,
       'Facid': gangkouId,
-      'Carid': barcode.isEmpty ? barcode : '%$barcode'
+      'Carid': barcode
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);

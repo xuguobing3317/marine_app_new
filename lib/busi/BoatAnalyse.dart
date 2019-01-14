@@ -921,7 +921,8 @@ class BoatAnalyseState extends State<BoatAnalyse>
             child: new InkWell(
               onTap: (){_getBoat(context);},
               child: Text((null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
-                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent)),
+                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                textAlign: TextAlign.center,),
             ),
           ),
           new Container(

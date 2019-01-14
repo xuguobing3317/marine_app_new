@@ -26,6 +26,7 @@ class BoatQuery extends StatefulWidget {
 class BoatQueryPageState extends State<BoatQuery> {
   final TextEditingController boatController = new TextEditingController();
   String barcode = "";
+  String queryCarid = "";
 
   String carId; //船舶号
   String facId = ""; //港口信息
@@ -48,7 +49,7 @@ class BoatQueryPageState extends State<BoatQuery> {
   }
 
   Future<bool> getData() async {
-    if (barcode == '') {
+    if (queryCarid == '') {
       Fluttertoast.showToast(
           msg: " 请扫描船舶二维码 ",
           toastLength: Toast.LENGTH_SHORT,
@@ -66,7 +67,7 @@ class BoatQueryPageState extends State<BoatQuery> {
     String url = marineURL.GetLastRubishDataUrl;
 
     Map<String, String> _params = {
-      'Carid': barcode,
+      'Carid': queryCarid,
     };
     DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
     String dbPath = await marineUser.createNewDb();
@@ -394,19 +395,27 @@ class BoatQueryPageState extends State<BoatQuery> {
   }
 
   Future<void> _getBoat(BuildContext context) async {
-    var boatNo = await Navigator.push(context,
+    var result = await Navigator.push(context,
         new MaterialPageRoute(builder: (context) => new BoatList()));
         setState(() {
-          barcode = boatNo;
+          print(result);
+          Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          queryCarid = _dataMap['carid'];
+          return true;
         });
   }
 
   Future<bool> scanCode() async {
     print('开始扫描二位吗');
     try {
-      barcode = await BarcodeScanner.scan();
+      String result = await BarcodeScanner.scan();
       setState(() {
-        boatController.text = barcode;
+        Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          queryCarid = _dataMap['carid'];
         return true;
       });
     } on PlatformException catch (e) {

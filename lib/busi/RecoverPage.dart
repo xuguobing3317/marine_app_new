@@ -26,6 +26,7 @@ class RecoverPageState extends State<RecoverPage> {
 
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
+  String carid = "";
 
   String _fomesWeight = "";
 
@@ -47,7 +48,8 @@ class RecoverPageState extends State<RecoverPage> {
   List<Map> gangkouList3 = new List();
 
   final TextEditingController rbTypeController = new TextEditingController();
-  final TextEditingController fomesWeightController = new TextEditingController();
+  final TextEditingController fomesWeightController =
+      new TextEditingController();
 
   @override
   void initState() {
@@ -61,7 +63,6 @@ class RecoverPageState extends State<RecoverPage> {
       });
     });
   }
-
 
   Future getGangkouData() async {
     print('查询港口列表');
@@ -110,9 +111,7 @@ class RecoverPageState extends State<RecoverPage> {
             facIdName = _listMap[0]['FACNAME'];
             facId = _listMap[0]['FACID'];
             comId = _listMap[0]['COMID'];
-          } else {
-            
-          }
+          } else {}
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);
             String _text = listItem['FACNAME'];
@@ -123,9 +122,6 @@ class RecoverPageState extends State<RecoverPage> {
       }
     });
   }
-
-
-  
 
   @override
   void dispose() {
@@ -150,41 +146,39 @@ class RecoverPageState extends State<RecoverPage> {
         title: Text('污染物回收'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: isLoading?loading():getBody(context),
+      body: isLoading ? loading() : getBody(context),
     );
   }
 
   getBody(BuildContext context) {
-    return 
-    new SingleChildScrollView(
-        child: new ConstrainedBox(
-            constraints: new BoxConstraints(
-              minHeight: 200.0,
-            ),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _geneBoatNo2(_geneBoatNo(context, '船舶编号', barcode, w3: _w3()), _div()),
-                _geneBoatNo2(_geneOtherNo2('船舶所有人', _owner), _div()),
-                _geneBoatNo2(_geneOtherNo2('入港次数', _count), _div()),
-                _geneBoatNo2(_geneOtherNo2('已回收重量', _recoverWeight), _div()),
-                _geneBoatNo2(_geneOtherNo2('船舶吨位', _boatUnit), _div()),
-                _geneBoatNo2(_geneOtherNo2('船籍港', _boatBelong), _div()),
-                _geneBoatNo2(_geneOtherNo2('上次来港', _lastTime), _div()),
-                _geneBoatNo2(_geneOtherNo2('船舶类型', _boatTypeName), _div2()),
-                _geneBoatNo2(
-                    _geneGkTypeNo('港口', 'facid', w3: _w6()), _div()),
-                _geneBoatNo2(
-                    _geneRbTypeNo('污染物种类', 'fomesType', w3: _w5()), _div()),
-                _geneBoatNo2(
-                    _geneRecoverDate('回收时间', 'recoverDate', w3: _w4()), _div()),
-                _geneBoatNo2(_geneOtherNo('重量(KG)', 'fomesWeight'), _div()),
-                _geneBoatNo2(_button2('', '')),
-              ],
-            )),
-      );
+    return new SingleChildScrollView(
+      child: new ConstrainedBox(
+          constraints: new BoxConstraints(
+            minHeight: 200.0,
+          ),
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _geneBoatNo2(
+                  _geneBoatNo(context, '船舶编号', barcode, w3: _w3()), _div()),
+              _geneBoatNo2(_geneOtherNo2('船舶所有人', _owner), _div()),
+              _geneBoatNo2(_geneOtherNo2('入港次数', _count), _div()),
+              _geneBoatNo2(_geneOtherNo2('已回收重量', _recoverWeight), _div()),
+              _geneBoatNo2(_geneOtherNo2('船舶吨位', _boatUnit), _div()),
+              _geneBoatNo2(_geneOtherNo2('船籍港', _boatBelong), _div()),
+              _geneBoatNo2(_geneOtherNo2('上次来港', _lastTime), _div()),
+              _geneBoatNo2(_geneOtherNo2('船舶类型', _boatTypeName), _div2()),
+              _geneBoatNo2(_geneGkTypeNo('港口', 'facid', w3: _w6()), _div()),
+              _geneBoatNo2(
+                  _geneRbTypeNo('污染物种类', 'fomesType', w3: _w5()), _div()),
+              _geneBoatNo2(
+                  _geneRecoverDate('回收时间', 'recoverDate', w3: _w4()), _div()),
+              _geneBoatNo2(_geneOtherNo('重量(KG)', 'fomesWeight'), _div()),
+              _geneBoatNo2(_button2('', '')),
+            ],
+          )),
+    );
   }
-
 
   Widget loading() {
     return new Stack(
@@ -201,7 +195,10 @@ class RecoverPageState extends State<RecoverPage> {
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
           child: new Center(
-            child: new Text('船舶信息保存中...', style: TextStyle(color: Colors.greenAccent),),
+            child: new Text(
+              '船舶信息保存中...',
+              style: TextStyle(color: Colors.greenAccent),
+            ),
           ),
         ),
       ],
@@ -251,11 +248,12 @@ class RecoverPageState extends State<RecoverPage> {
         size: 40.0,
         color: Colors.greenAccent,
       ),
-      onPressed: (){_getBoat(context);},
+      onPressed: () {
+        _getBoat(context);
+      },
     );
   }
 
-  
   Future<void> doGetBoat(BuildContext context) async {
     await _getBoat(context).then((flag) {
       queryBoatDetail();
@@ -263,10 +261,12 @@ class RecoverPageState extends State<RecoverPage> {
   }
 
   Future<void> _getBoat(BuildContext context) async {
-    var boatNo = await Navigator.push(context,
+    var result = await Navigator.push(context,
         new MaterialPageRoute(builder: (context) => new BoatList()));
-        setState(() {
-          barcode = boatNo;
+    setState(() {
+          Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          carid = _dataMap['carid'];
         });
   }
 
@@ -319,15 +319,13 @@ class RecoverPageState extends State<RecoverPage> {
     );
   }
 
-   Future searchGangkouData() async {
+  Future searchGangkouData() async {
     await getGangkouData().then((_v) {
       Navigator.pop(context);
       showGangkouPicker();
     });
   }
 
-
-  
   showGangkouPicker() {
     Picker picker = new Picker(
         title: gangkouSearch(),
@@ -401,7 +399,7 @@ class RecoverPageState extends State<RecoverPage> {
               child: new Container(
                 alignment: Alignment.center,
                 child: new Text(
-                  (null==_textValue||_textValue.isEmpty)?'-':_textValue,
+                  (null == _textValue || _textValue.isEmpty) ? '-' : _textValue,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   textAlign: TextAlign.right,
@@ -515,7 +513,8 @@ class RecoverPageState extends State<RecoverPage> {
     // picker.show(_scaffoldKey.currentState);
   }
 
-  Widget _geneBoatNo(BuildContext context, _title, String _keyValue, {Widget w3}) {
+  Widget _geneBoatNo(BuildContext context, _title, String _keyValue,
+      {Widget w3}) {
     return new Container(
       color: Colors.white70,
       height: 50.0,
@@ -536,10 +535,11 @@ class RecoverPageState extends State<RecoverPage> {
               ),
             ),
             Expanded(
-                child: 
-                new InkWell(
-                  onTap: (){doGetBoat(context);},
-                  child: new Text(
+              child: new InkWell(
+                onTap: () {
+                  doGetBoat(context);
+                },
+                child: new Text(
                   (_keyValue == null || _keyValue.isEmpty)
                       ? '请选择船舶或扫描'
                       : _keyValue,
@@ -551,11 +551,9 @@ class RecoverPageState extends State<RecoverPage> {
                       color: Colors.black38,
                       fontWeight: FontWeight.w400),
                 ),
-                ),
+              ),
             ),
-            
             w3,
-
           ]),
     );
   }
@@ -772,23 +770,22 @@ class RecoverPageState extends State<RecoverPage> {
     DatePicker.showDatePicker(context, showTitleActions: true,
         onChanged: (date) {
       setState(() {
-        _recoverDate =
-            DateUtil.getDateStrByDateTime(date, format: DateFormat.YEAR_MONTH_DAY);
+        _recoverDate = DateUtil.getDateStrByDateTime(date,
+            format: DateFormat.YEAR_MONTH_DAY);
       });
     }, onConfirm: (date) {
       setState(() {
-        _recoverDate =
-            DateUtil.getDateStrByDateTime(date, format: DateFormat.YEAR_MONTH_DAY);
+        _recoverDate = DateUtil.getDateStrByDateTime(date,
+            format: DateFormat.YEAR_MONTH_DAY);
       });
-    }, locale: LocaleType.zh,
-    currentTime:DateUtil.getDateTime(_recoverDate));
+    }, locale: LocaleType.zh, currentTime: DateUtil.getDateTime(_recoverDate));
   }
 
   Future<void> queryBoatDetail() async {
     String url = marineURL.GetLastRubishDataUrl;
 
     Map<String, String> _params = {
-      'Carid': barcode,
+      'Carid': carid,
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -823,12 +820,24 @@ class RecoverPageState extends State<RecoverPage> {
         setState(() {
           var content = json.decode(data[AppConst.RESP_DATA]);
           print(content);
-          _owner = content['EMPID']==null?'-':content['EMPID'].toString(); //船舶所有人
-          _count = content['CARSENO']==null?'-':content['CARSENO'].toString(); //次数
-          _recoverWeight = content['CARRQTY']==null?'-':content['CARRQTY'].toString(); //已回收重量
-          _boatUnit = content['CARCAP']==null?'-':content['CARCAP'].toString();  //船舶吨位
-          _boatBelong = content['CARVENDID']==null?'-':content['CARVENDID'].toString(); //船集港
-          _boatType = content['CARTYPE']==null?'-':content['CARTYPE'].toString(); //船舶类型
+          _owner = content['EMPID'] == null
+              ? '-'
+              : content['EMPID'].toString(); //船舶所有人
+          _count = content['CARSENO'] == null
+              ? '-'
+              : content['CARSENO'].toString(); //次数
+          _recoverWeight = content['CARRQTY'] == null
+              ? '-'
+              : content['CARRQTY'].toString(); //已回收重量
+          _boatUnit = content['CARCAP'] == null
+              ? '-'
+              : content['CARCAP'].toString(); //船舶吨位
+          _boatBelong = content['CARVENDID'] == null
+              ? '-'
+              : content['CARVENDID'].toString(); //船集港
+          _boatType = content['CARTYPE'] == null
+              ? '-'
+              : content['CARTYPE'].toString(); //船舶类型
           if (_boatType == 'Dg') {
             _boatTypeName = '危险品船只';
           } else if (_boatType == 'Nl') {
@@ -836,22 +845,23 @@ class RecoverPageState extends State<RecoverPage> {
           } else {
             _boatTypeName = _boatType;
           }
-          _lastTime = content['CARDATE1']==null?'-':content['CARDATE1'].toString();; //上次来港
+          _lastTime = content['CARDATE1'] == null
+              ? '-'
+              : content['CARDATE1'].toString();
+          ; //上次来港
         });
       }
     });
   }
 
-  
-
-
   Future<void> scanCode() async {
     print('开始扫描二位吗');
     try {
-      String barcode2 = await BarcodeScanner.scan();
-
+      String result = await BarcodeScanner.scan();
       setState(() {
-        barcode = barcode2;
+        Map _dataMap = json.decode(result);
+        barcode = _dataMap['carno1'];
+        carid = _dataMap['carid'];
         queryBoatDetail();
       });
     } on PlatformException catch (e) {
@@ -904,10 +914,9 @@ class RecoverPageState extends State<RecoverPage> {
   }
 
   Future<bool> _forSubmitted() async {
-
     setState(() {
-          isLoading = true;
-        });
+      isLoading = true;
+    });
     try {
       if (barcode == '') {
         Fluttertoast.showToast(
@@ -917,7 +926,7 @@ class RecoverPageState extends State<RecoverPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
-            setState(() {
+        setState(() {
           isLoading = false;
         });
         return false;
@@ -931,12 +940,11 @@ class RecoverPageState extends State<RecoverPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
-             setState(() {
+        setState(() {
           isLoading = false;
         });
         return false;
       }
-
 
       if (_fomesWeight == '') {
         Fluttertoast.showToast(
@@ -946,47 +954,48 @@ class RecoverPageState extends State<RecoverPage> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
-             setState(() {
+        setState(() {
           isLoading = false;
         });
         return false;
       }
 
-      if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(_fomesWeight)) {
-      Fluttertoast.showToast(
+      if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(_fomesWeight)) {
+        Fluttertoast.showToast(
             msg: " 请输入正确的污染物重量 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
-             setState(() {
+        setState(() {
           isLoading = false;
         });
         return false;
       }
 
-
-    Map<String, String> _params = {
+      Map<String, String> _params = {
         'CARID': barcode,
         'FACID': facId,
         'COMID': comId,
         'CARDATE': _recoverDate,
         'RTYPE': rbCode,
         'CARQTY2': _fomesWeight,
-    };
-    String url = marineURL.CreateRubishUrl;
-    DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
-    String dbPath = await marineUser.createNewDb();
-    Map uMap = await marineUser.getFirstData(dbPath);
-    if (uMap == null) {
-      Navigator.of(context).pushReplacementNamed('/LoginPage');
-    }
+      };
+      String url = marineURL.CreateRubishUrl;
+      DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+      String dbPath = await marineUser.createNewDb();
+      Map uMap = await marineUser.getFirstData(dbPath);
+      if (uMap == null) {
+        Navigator.of(context).pushReplacementNamed('/LoginPage');
+      }
 
-    DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
-    String _token = mUser.token;
-    Map<String, String> headers = {'token': _token};
-    await http.post(url, body: _params, headers: headers).then((http.Response response) {
+      DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
+      String _token = mUser.token;
+      Map<String, String> headers = {'token': _token};
+      await http
+          .post(url, body: _params, headers: headers)
+          .then((http.Response response) {
         var data = json.decode(response.body);
         print('请求报文:body:$_params');
         print('请求报文:headers:$headers');
@@ -994,44 +1003,45 @@ class RecoverPageState extends State<RecoverPage> {
         int type = data[AppConst.RESP_CODE];
         String rescode = '$type';
         String resMsg = data[AppConst.RESP_MSG];
-    
-      if (rescode != '10') {
-        Fluttertoast.showToast(
-            msg: " 保存失败[$resMsg] ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-        return false;
-      } else {
-        Navigator.of(context).pushReplacement(new PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (BuildContext context, _, __) {
-            return new RecoverListPageNew();
-          },
-        ));
-        Fluttertoast.showToast(
-            msg: "  保存成功！ ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-      }});
-    }catch(e) {
+
+        if (rescode != '10') {
+          Fluttertoast.showToast(
+              msg: " 保存失败[$resMsg] ",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF));
+          return false;
+        } else {
+          Navigator.of(context).pushReplacement(new PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) {
+              return new RecoverListPageNew();
+            },
+          ));
+          Fluttertoast.showToast(
+              msg: "  保存成功！ ",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos: 1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF));
+        }
+      });
+    } catch (e) {
       debugPrint(e);
       Fluttertoast.showToast(
-            msg: " 保存失败 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
+          msg: " 保存失败 ",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Color(0xFF499292),
+          textColor: Color(0xFFFFFFFF));
     }
-     setState(() {
-          isLoading = false;
-        });
+    setState(() {
+      isLoading = false;
+    });
     return true;
   }
 }

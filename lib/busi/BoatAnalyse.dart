@@ -25,6 +25,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
   String dataFlag = '1'; //1:标示初始化，  2;表示已经查询过
 
   String barcode = "";
+  String carid = "";
   String gangkou = "";
   final TextEditingController boatController = new TextEditingController();
   Color todayDateColor = Colors.greenAccent;
@@ -118,7 +119,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       'endTime': endDate,
       'rbType': rbType,
       'Facid': gangkouId,
-      'Carid': barcode
+      'Carid': carid
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -951,11 +952,16 @@ class BoatAnalyseState extends State<BoatAnalyse>
   }
 
   Future<void> _getBoat(BuildContext context) async {
-    var boatNo = await Navigator.push(context,
+    var result = await Navigator.push(context,
         new MaterialPageRoute(builder: (context) => new BoatList()));
     setState(() {
-          barcode = boatNo;
-          boatController.text = boatNo;
+          // barcode = boatNo;
+          // boatController.text = boatNo;
+
+          Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          carid = _dataMap['carid'];
         });
   }
 
@@ -1237,9 +1243,12 @@ class BoatAnalyseState extends State<BoatAnalyse>
 
   Future<bool> scanCode() async {
     try {
-      barcode = await BarcodeScanner.scan();
+      String result = await BarcodeScanner.scan();
       setState(() {
-        boatController.text = barcode;
+        Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          carid = _dataMap['carid'];
         return true;
       });
     } on PlatformException catch (e) {

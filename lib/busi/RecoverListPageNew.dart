@@ -25,6 +25,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   String url = marineURL.RecoverListUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
+  String carid = "";
   List<Map> _itemMap = new List<Map>();
   List<Map> _queryItemMap = new List<Map>();
   ScrollController _scrollController = ScrollController();
@@ -65,7 +66,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       'page': _page.toString(),
       'order': _order,
       'sort': _sort,
-      'Carid': barcode.isEmpty?barcode:'%$barcode',
+      'Carid': carid,
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -590,11 +591,13 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   }
 
   Future<void> _getBoat(BuildContext context) async {
-    var boatNo = await Navigator.push(context,
+    var result = await Navigator.push(context,
         new MaterialPageRoute(builder: (context) => new BoatList()));
     setState(() {
-          barcode = boatNo;
-          boatController.text = boatNo;
+          Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          carid = _dataMap['carid'];
         });
   }
 
@@ -606,9 +609,14 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
 
   Future<bool> scanCode() async {
     try {
-      barcode = await BarcodeScanner.scan();
+      String result = await BarcodeScanner.scan();
       setState(() {
         boatController.text = barcode;
+        Map _dataMap = json.decode(result);
+        barcode =  _dataMap['carno1'];
+        boatController.text = barcode;
+        carid = _dataMap['carid'];
+
         return true;
       });
     } on PlatformException catch (e) {

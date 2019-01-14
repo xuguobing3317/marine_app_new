@@ -23,6 +23,7 @@ class BoatPageNewState extends State<BoatPageNew>
   String url = marineURL.BoatListUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   String barcode = "";
+  String carid = "";
   List<Map> _itemMap = new List<Map>();
   List<Map> _queryItemMap = new List<Map>();
   ScrollController _scrollController = ScrollController();
@@ -590,9 +591,12 @@ Future _loadData(bool isPullDown) async {
 
   Future<bool> scanCode() async {
     try {
-      barcode = await BarcodeScanner.scan();
+      String result = await BarcodeScanner.scan();
       setState(() {
+        Map _dataMap = json.decode(result);
+        barcode =  _dataMap['carno1'];
         boatController.text = barcode;
+        carid = _dataMap['carid'];
         return true;
       });
     } on PlatformException catch (e) {

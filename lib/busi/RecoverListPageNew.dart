@@ -642,7 +642,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
           Fluttertoast.showToast(
-              msg: " 请重新扫描 ",
+              msg: " 请打开权限 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIos: 1,

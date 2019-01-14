@@ -11,6 +11,8 @@ import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'RecoverPage.dart';
 import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
+import 'BoatList.dart';
+
 
 class RecoverListPageNew extends StatefulWidget {
   @override
@@ -231,7 +233,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
                   ),
                 ],
               ),
-              search()
+              search(context)
             ],
           ),
         ),
@@ -486,7 +488,45 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
     });
   }
 
-  Widget search() {
+  Widget search(BuildContext context) {
+    return new Container(
+      decoration: new BoxDecoration(
+        border: new Border.all(width: 1.0, color: Colors.greenAccent),
+      ),
+      height: 50.0,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Expanded(
+            child: new InkWell(
+             onTap: (){doGetBoat(context);},
+            child: new Container(
+              alignment: Alignment.center,
+              child: Text(
+                (null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
+                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),),
+            )),
+          ),
+          new Container(
+            child: IconButton(
+              icon: Icon(Icons.camera),
+              iconSize: 40.0,
+              onPressed: doScanCode,
+              color: Colors.greenAccent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> doGetBoat(BuildContext context) async {
+    await _getBoat(context).then((flag) {
+      getData();
+    });
+  }
+
+  Widget search2(BuildContext context) {
     return new Container(
       decoration: new BoxDecoration(
         border: new Border.all(width: 2.0, color: Colors.greenAccent),
@@ -515,6 +555,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               ),
             ),
           ),
+          
           new Container(
             child: IconButton(
               icon: Icon(Icons.search),
@@ -523,6 +564,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               color: Colors.greenAccent,
             ),
           ),
+          _addBoat(context),
           new Container(
             child: IconButton(
               icon: Icon(Icons.camera),
@@ -534,6 +576,26 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
         ],
       ),
     );
+  }
+
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var boatNo = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+    setState(() {
+          barcode = boatNo;
+          boatController.text = boatNo;
+        });
   }
 
   Future<void> doScanCode() async {

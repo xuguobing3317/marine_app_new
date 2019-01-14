@@ -14,6 +14,7 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'BoatList.dart';
 
 class BoatQuery extends StatefulWidget {
   @override
@@ -159,7 +160,7 @@ class BoatQueryPageState extends State<BoatQuery> {
               title: Text('船舶信息'),
               backgroundColor: Colors.greenAccent,
             ),
-            search()
+            search(context)
           ],
         ),
       ),
@@ -335,42 +336,24 @@ class BoatQueryPageState extends State<BoatQuery> {
     );
   }
 
-  Widget search() {
+  Widget search(BuildContext context) {
     return new Container(
       decoration: new BoxDecoration(
-        border: new Border.all(width: 2.0, color: Colors.greenAccent),
+        border: new Border.all(width: 1.0, color: Colors.greenAccent),
       ),
       height: 50.0,
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
+            child: new InkWell(
+             onTap: (){doGetBoat(context);},
             child: new Container(
               alignment: Alignment.center,
-              child: TextField(
-                controller: boatController,
-                onChanged: (word) => barcode = word,
-                style: new TextStyle(fontSize: 15.0, color: Colors.black),
-                decoration: new InputDecoration(
-                  contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入搜索条件 ',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  labelStyle:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0),
-                  hintStyle: TextStyle(fontSize: 12.0),
-                ),
-              ),
-            ),
-          ),
-          new Container(
-            child: IconButton(
-              icon: Icon(Icons.search),
-              iconSize: 40.0,
-              onPressed: getData,
-              color: Colors.greenAccent,
-            ),
+              child: Text(
+                (null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
+                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),),
+            )),
           ),
           new Container(
             child: IconButton(
@@ -385,10 +368,37 @@ class BoatQueryPageState extends State<BoatQuery> {
     );
   }
 
+
+  Future<void> doGetBoat(BuildContext context) async {
+    await _getBoat(context).then((flag) {
+      getData();
+    });
+  }
+
+
   Future<void> doScanCode() async {
     await scanCode().then((flag) {
       getData();
     });
+  }
+
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var boatNo = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+        setState(() {
+          barcode = boatNo;
+        });
   }
 
   Future<bool> scanCode() async {

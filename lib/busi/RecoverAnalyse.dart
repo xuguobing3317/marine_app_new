@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
+import 'BoatList.dart';
 
 class RecoverAnalyse extends StatefulWidget {
   @override
@@ -558,7 +559,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
 
     var myNavChildren = [
       // headerChild,
-      search(),
+      search(context),
       Divider(),
       getNavItem("时间:  $dateView"),
 
@@ -774,7 +775,33 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     );
   }
 
-  Widget search() {
+  Widget search(BuildContext context) {
+    return new Container(
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Expanded(
+            child: new InkWell(
+              onTap: (){_getBoat(context);},
+              child: Text((null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
+                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                textAlign: TextAlign.center,),
+            ),
+          ),
+          new Container(
+            child: IconButton(
+              icon: Icon(Icons.camera),
+              iconSize: 40.0,
+              onPressed: doScanCode,
+              color: Colors.greenAccent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget search2(BuildContext context) {
     return new Container(
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -799,6 +826,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               ),
             ),
           ),
+          _addBoat(context),
           new Container(
             child: IconButton(
               icon: Icon(Icons.camera),
@@ -810,6 +838,27 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         ],
       ),
     );
+  }
+
+  
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var boatNo = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+    setState(() {
+          barcode = boatNo;
+          boatController.text = boatNo;
+        });
   }
 
   Widget getDateButton(String title, Color color, String range) {

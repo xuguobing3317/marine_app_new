@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
+import 'BoatList.dart';
 
 class BoatAnalyse extends StatefulWidget {
   @override
@@ -677,7 +678,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
 
     var myNavChildren = [
       // headerChild,
-      search(),
+      search(context),
       Divider(),
       getNavItem("时间:  $dateView"),
 
@@ -911,29 +912,16 @@ class BoatAnalyseState extends State<BoatAnalyse>
     );
   }
 
-  Widget search() {
+  Widget search(BuildContext context) {
     return new Container(
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
-            child: new Container(
-              alignment: Alignment.center,
-              child: TextField(
-                controller: boatController,
-                onChanged: (word) => barcode = word,
-                style: new TextStyle(fontSize: 15.0, color: Colors.black),
-                decoration: new InputDecoration(
-                  contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入船舶号 ',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide(color: Colors.grey)),
-                  labelStyle:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0),
-                  hintStyle: TextStyle(fontSize: 12.0, color: Colors.grey),
-                ),
-              ),
+            child: new InkWell(
+              onTap: (){_getBoat(context);},
+              child: Text((null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
+                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent)),
             ),
           ),
           new Container(
@@ -947,6 +935,27 @@ class BoatAnalyseState extends State<BoatAnalyse>
         ],
       ),
     );
+  }
+
+
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var boatNo = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+    setState(() {
+          barcode = boatNo;
+          boatController.text = boatNo;
+        });
   }
 
   Widget getDateButton(String title, Color color, String range) {

@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'RecoverListPageNew.dart';
+import 'BoatList.dart';
 
 class RecoverPage extends StatefulWidget {
   @override
@@ -106,6 +107,11 @@ class RecoverPageState extends State<RecoverPage> {
           if (_listMap.length > 0) {
             gangkouItems.clear();
             gangkouList3.clear();
+            facIdName = _listMap[0]['FACNAME'];
+            facId = _listMap[0]['FACID'];
+            comId = _listMap[0]['COMID'];
+          } else {
+            
           }
           _listMap.forEach((listItem) {
             gangkouList3.add(listItem);
@@ -144,11 +150,11 @@ class RecoverPageState extends State<RecoverPage> {
         title: Text('污染物回收'),
         backgroundColor: Colors.greenAccent,
       ),
-      body: isLoading?loading():getBody(),
+      body: isLoading?loading():getBody(context),
     );
   }
 
-  getBody() {
+  getBody(BuildContext context) {
     return 
     new SingleChildScrollView(
         child: new ConstrainedBox(
@@ -158,7 +164,7 @@ class RecoverPageState extends State<RecoverPage> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                _geneBoatNo2(_geneBoatNo('船舶编号', barcode, w3: _w3()), _div()),
+                _geneBoatNo2(_geneBoatNo(context, '船舶编号', barcode, w3: _w3()), _div()),
                 _geneBoatNo2(_geneOtherNo2('船舶所有人', _owner), _div()),
                 _geneBoatNo2(_geneOtherNo2('入港次数', _count), _div()),
                 _geneBoatNo2(_geneOtherNo2('已回收重量', _recoverWeight), _div()),
@@ -236,6 +242,32 @@ class RecoverPageState extends State<RecoverPage> {
       ),
       onPressed: scanCode,
     );
+  }
+
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: Colors.greenAccent,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  
+  Future<void> doGetBoat(BuildContext context) async {
+    await _getBoat(context).then((flag) {
+      queryBoatDetail();
+    });
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var boatNo = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+        setState(() {
+          barcode = boatNo;
+        });
   }
 
   Widget _w6() {
@@ -483,7 +515,7 @@ class RecoverPageState extends State<RecoverPage> {
     // picker.show(_scaffoldKey.currentState);
   }
 
-  Widget _geneBoatNo(_title, String _keyValue, {Widget w3}) {
+  Widget _geneBoatNo(BuildContext context, _title, String _keyValue, {Widget w3}) {
     return new Container(
       color: Colors.white70,
       height: 50.0,
@@ -504,34 +536,26 @@ class RecoverPageState extends State<RecoverPage> {
               ),
             ),
             Expanded(
-              child: new Container(
-                alignment: Alignment.center,
-                child: new Text(
+                child: 
+                new InkWell(
+                  onTap: (){doGetBoat(context);},
+                  child: new Text(
                   (_keyValue == null || _keyValue.isEmpty)
-                      ? '请扫描二维码'
+                      ? '请选择船舶或扫描'
                       : _keyValue,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.black38,
                       fontWeight: FontWeight.w400),
                 ),
-              ),
+                ),
             ),
-            null == w3
-                ? new Container(
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.camera_enhance,
-                        size: 40.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: null,
-                    ),
-                  )
-                : w3
+            
+            w3,
+
           ]),
     );
   }
@@ -817,6 +841,9 @@ class RecoverPageState extends State<RecoverPage> {
       }
     });
   }
+
+  
+
 
   Future<void> scanCode() async {
     print('开始扫描二位吗');

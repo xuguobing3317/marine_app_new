@@ -83,7 +83,16 @@ List urlList = [];
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
-      if (rescode != '10') {
+      if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
             msg: _msg,

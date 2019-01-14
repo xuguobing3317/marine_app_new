@@ -142,6 +142,16 @@ class BoatAnalyseState extends State<BoatAnalyse>
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
+      if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
@@ -178,6 +188,13 @@ class BoatAnalyseState extends State<BoatAnalyse>
       }
     });
     return result;
+  }
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
   }
 
   Future searchGangkouData() async {
@@ -223,6 +240,16 @@ class BoatAnalyseState extends State<BoatAnalyse>
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
+      if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
       } else {
         setState(() {

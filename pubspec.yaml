@@ -46,6 +46,7 @@ dev_dependencies:
   device_info: ^0.3.0
   flutter_webview_plugin: ^0.3.0+2
   pulltorefresh_flutter: ^0.1.9
+  qrcode_reader: ^0.4.4
   
   
 

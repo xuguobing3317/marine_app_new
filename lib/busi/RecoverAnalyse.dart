@@ -83,7 +83,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
   int _page = 1;
   int _rows = 10;
   int total = -1;
-  String _order = 'Asc';
+  String _order = 'Desc';
   String _sort = 'CARDATE';
 
   bool totalFlag = false;
@@ -147,6 +147,17 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
+        
+  if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
@@ -224,8 +235,26 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       print('data:$data');
 
       int type = data[AppConst.RESP_CODE];
+      String msg = data[AppConst.RESP_MSG];
       String rescode = '$type';
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
+        Fluttertoast.showToast(
+            msg: '$msg',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
       } else {
         setState(() {
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
@@ -246,6 +275,14 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           });
         });
       }
+    });
+  }
+
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
     });
   }
 
@@ -339,7 +376,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           rotationAngle = 0;
           if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
             customRefreshBoxIconPath = "images/icon_ok.png";
-            customHeaderTipText = "加载成功！";
+            customHeaderTipText = "刷新成功";
           } else if (refreshBoxDirectionStatus ==
               RefreshBoxDirectionStatus.PUSH) {
             customRefreshBoxIconPath = "images/icon_ok.png";

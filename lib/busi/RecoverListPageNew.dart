@@ -33,7 +33,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   String loadingFlag = '1'; //1:加载中 2：加载到数据  3：无数据
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
-  String _order = 'Asc';
+  String _order = 'Desc';
   String _sort = 'CARDATE';
   int total = -1;
   bool totalFlag = false;
@@ -66,7 +66,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       'page': _page.toString(),
       'order': _order,
       'sort': _sort,
-      'Carid': carid,
+      'carid': carid,
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -85,11 +85,21 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       debugPrint('url:$url');
       debugPrint('body:$_params');
       debugPrint('headers:$_header');
-      debugPrint('data:$data');
+      // debugPrint('data:$data');
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
@@ -104,7 +114,9 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
           total = _dataMap['total'];
+          print(_listMap.length.toString());
           _listMap.forEach((listItem) {
+            print(listItem.toString());
             String gkName = (null == listItem['FACNAME'])
                 ? '-'
                 : listItem['FACNAME'].toString();
@@ -140,6 +152,13 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       }
     });
     return result;
+  }
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
   }
 
   Future<bool> getData() async {
@@ -412,7 +431,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
           rotationAngle = 0;
           if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
             customRefreshBoxIconPath = "images/icon_ok.png";
-            customHeaderTipText = "加载成功！";
+            customHeaderTipText = "刷新成功";
           } else if (refreshBoxDirectionStatus ==
               RefreshBoxDirectionStatus.PUSH) {
             customRefreshBoxIconPath = "images/icon_ok.png";
@@ -523,7 +542,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
 
   Future<void> doGetBoat(BuildContext context) async {
     await _getBoat(context).then((flag) {
-      getData();
+      _onSearch();
     });
   }
 

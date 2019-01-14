@@ -137,6 +137,14 @@ class MarineUserProvider {
     return _count;
   }
 
+  
+  Future<int> deleteALL(String dbPath) async {
+    Database db = await openDatabase(dbPath);
+    int _count =  await db.delete(tableName);
+    await db.close();
+    return _count;
+  }
+
    Future<int> deleteByName(String userName, String dbPath) async {
     Database db = await openDatabase(dbPath);
     int _count =  await db.delete(tableName, where: "$columnName = ?", whereArgs: [userName]);

@@ -8,7 +8,7 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
-import 'BoatPage.dart';
+import 'BoatPageNew.dart';
 
 class BoatAddPage extends StatefulWidget {
 
@@ -49,6 +49,7 @@ class BoatAddPageState extends State<BoatAddPage> {
   String carUnit = ""; //船吨位
   String carOwner = ""; //船主
   String carContact = ""; //联系方式
+  DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
 
   @override
   void initState() {
@@ -297,7 +298,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         'MEMO': carContact,
     };
     String url = marineURL.BoatSaveUrl;
-    DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+    
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
     if (uMap == null) {
@@ -316,7 +317,16 @@ class BoatAddPageState extends State<BoatAddPage> {
         String rescode = '$type';
         String resMsg = data[AppConst.RESP_MSG];
 
-    
+    if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
         Fluttertoast.showToast(
             msg: " 保存失败[$resMsg] ",
@@ -330,7 +340,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         Navigator.of(context).pushReplacement(new PageRouteBuilder(
           opaque: false,
           pageBuilder: (BuildContext context, _, __) {
-            return new BoatPage();
+            return new BoatPageNew();
           },
         ));
         Fluttertoast.showToast(
@@ -357,6 +367,13 @@ class BoatAddPageState extends State<BoatAddPage> {
           isLoading = false;
         });
     return true;
+  }
+
+  Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
   }
 
   Widget _div() {
@@ -498,6 +515,10 @@ class BoatAddPageState extends State<BoatAddPage> {
 
   Widget _geneRow(String _title, String _key, TextEditingController _controller,
       {Widget w3}) {
+        TextInputType keyboardType = TextInputType.text;
+        if (_key == 'carUnit'){
+           keyboardType=TextInputType.numberWithOptions();
+        }
     return new Container(
       color: Colors.white70,
       height: 50.0,
@@ -510,6 +531,7 @@ class BoatAddPageState extends State<BoatAddPage> {
                 '$_title:',
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
+                
                 textAlign: TextAlign.right,
                 style: TextStyle(
                     fontSize: 14.0,
@@ -540,6 +562,7 @@ class BoatAddPageState extends State<BoatAddPage> {
                     }
                   },
                   style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                  keyboardType: keyboardType,
                   decoration: new InputDecoration(
                     contentPadding: EdgeInsets.all(10.0),
                     hintText: '请输入$_title ',

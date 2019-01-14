@@ -31,7 +31,7 @@ class BoatPageNewState extends State<BoatPageNew>
   String loadingFlag = '1'; //1:加载中 2：加载到数据  3：无数据
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
-  String _order = 'Asc';
+  String _order = 'Desc';
   String _sort = 'CARNO1';
   int total = -1;
   bool totalFlag = false;
@@ -87,6 +87,16 @@ class BoatPageNewState extends State<BoatPageNew>
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
@@ -148,6 +158,13 @@ class BoatPageNewState extends State<BoatPageNew>
       });
     });
     return result;
+  }
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
   }
 
   @override
@@ -256,7 +273,7 @@ class BoatPageNewState extends State<BoatPageNew>
           rotationAngle = 0;
           if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
             customRefreshBoxIconPath = "images/icon_ok.png";
-            customHeaderTipText = "加载成功！";
+            customHeaderTipText = "刷新成功";
           } else if (refreshBoxDirectionStatus ==
               RefreshBoxDirectionStatus.PUSH) {
             customRefreshBoxIconPath = "images/icon_ok.png";
@@ -551,7 +568,7 @@ Future _loadData(bool isPullDown) async {
                 style: new TextStyle(fontSize: 15.0, color: Colors.black),
                 decoration: new InputDecoration(
                   contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入搜索条件 ',
+                  hintText: '请输入船牌号 ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),

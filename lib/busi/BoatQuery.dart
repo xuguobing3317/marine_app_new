@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'BoatList.dart';
+import 'package:qrcode_reader/qrcode_reader.dart';
 
 class BoatQuery extends StatefulWidget {
   @override
@@ -42,6 +43,8 @@ class BoatQueryPageState extends State<BoatQuery> {
   String totalDgCount = ""; //累计到岗次数
   String totalWeight = ""; //累计回收
   String loadFlag = '1';
+
+   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
 
   @override
   void initState() {
@@ -90,7 +93,18 @@ class BoatQueryPageState extends State<BoatQuery> {
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
-      if (rescode != '10' && rescode != '20') {
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
+
+      if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
             msg: _msg,
@@ -142,13 +156,28 @@ class BoatQueryPageState extends State<BoatQuery> {
           totalWeight = (null == content['CARRQTY'])
               ? '-'
               : content['CARRQTY'].toString(); //累计到岗次数
-          loadFlag = '3';
+
+           String carcno = (null == content['CARCNO'])
+              ? '-'
+              : content['CARCNO'].toString(); //港口信息
+          if (carcno == '-') {
+             loadFlag = '4';
+          } else {
+          loadFlag = '3';}
         });
       }
     });
 
     return true;
   }
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
+    });
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +229,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
           child: new Center(
             child: new Text(
-              '未查询到数据',
+              '当前船舶没有进港记录！',
               style: TextStyle(color: Colors.greenAccent),
             ),
           ),
@@ -277,7 +306,7 @@ class BoatQueryPageState extends State<BoatQuery> {
                   _div(),
                   _geneRow('船舶牌照', carNo),
                   _div(),
-                  _geneRow('船舶类型', carType),
+                  _geneRow('船舶类型', (carType=='Dg')?'危险品船只':'常规船只'),
                   _div(),
                   _geneRow('船港籍', carBelong),
                   _div(),
@@ -411,6 +440,13 @@ class BoatQueryPageState extends State<BoatQuery> {
     print('开始扫描二位吗');
     try {
       String result = await BarcodeScanner.scan();
+      // String result = await QRCodeReader()
+      //  .setAutoFocusIntervalInMs(200) // default 5000
+      //          .setForceAutoFocus(true) // default false
+      //          .setTorchEnabled(true) // default false
+      //          .setHandlePermissions(true)// default true
+      //           .setExecuteAfterPermissionGranted(true) // default true
+      //          .scan(); 
       setState(() {
         Map _dataMap = json.decode(result);
           barcode =  _dataMap['carno1'];

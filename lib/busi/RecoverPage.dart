@@ -100,6 +100,16 @@ class RecoverPageState extends State<RecoverPage> {
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
       } else {
         setState(() {
@@ -120,6 +130,13 @@ class RecoverPageState extends State<RecoverPage> {
           });
         });
       }
+    });
+  }
+
+   Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
     });
   }
 
@@ -455,6 +472,7 @@ class RecoverPageState extends State<RecoverPage> {
                   onChanged: (world) {
                     _fomesWeight = world;
                   },
+                  keyboardType: TextInputType.numberWithOptions(),
                   style: new TextStyle(fontSize: 15.0, color: Colors.black),
                   decoration: new InputDecoration(
                     contentPadding: EdgeInsets.all(10.0),
@@ -807,7 +825,17 @@ class RecoverPageState extends State<RecoverPage> {
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
-      if (rescode != '10' && rescode != '20') {
+        if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
+      if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
         Fluttertoast.showToast(
             msg: _msg,
@@ -975,7 +1003,7 @@ class RecoverPageState extends State<RecoverPage> {
       }
 
       Map<String, String> _params = {
-        'CARID': barcode,
+        'CARID': carid,
         'FACID': facId,
         'COMID': comId,
         'CARDATE': _recoverDate,
@@ -1003,7 +1031,16 @@ class RecoverPageState extends State<RecoverPage> {
         int type = data[AppConst.RESP_CODE];
         String rescode = '$type';
         String resMsg = data[AppConst.RESP_MSG];
-
+          if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
         if (rescode != '10') {
           Fluttertoast.showToast(
               msg: " 保存失败[$resMsg] ",

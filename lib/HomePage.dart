@@ -19,6 +19,7 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -39,6 +40,11 @@ class SwiperPageState extends State<HomePage> {
   bool _autoPlay = false;
 
   String _token = '';
+
+
+  DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+  String userName='';
+  String token='';
 
   @override
   void initState() {
@@ -413,12 +419,12 @@ class SwiperPageState extends State<HomePage> {
   }
 
   Future getToken() async {
-    DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
     DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
     setState(() {
       _token = mUser.token;
+      userName = mUser.name;
     });
   }
 
@@ -439,12 +445,29 @@ class SwiperPageState extends State<HomePage> {
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
+      if (rescode == '14') {
+        Fluttertoast.showToast(
+            msg: '请重新登录',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+        _logout();
+      } else
       if (rescode != '10') {
       } else {
         setState(() {
           bannerList = json.decode(data[AppConst.RESP_DATA]);
         });
       }
+    });
+  }
+
+  Future<Null> _logout() async {
+    String dbPath = await marineUser.createNewDb();
+    await marineUser.deleteALL(dbPath).then((_v){
+      Navigator.of(context).pushReplacementNamed('/LoginPage');
     });
   }
 

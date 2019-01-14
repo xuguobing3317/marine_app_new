@@ -6,6 +6,7 @@ import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class MemberCenter extends StatefulWidget {
   @override
@@ -28,14 +29,15 @@ String sysintrodu = '';
 String yaqueyang = '';
 String bomar = '';
 
-  var titles = ["我的信息", "帮助中心", "修改密码", "系统简介", "关于雅雀漾", "关于宝码"];
-  var imagePaths = [
-    "images/ic_my_message.png",
-    "images/ic_my_blog.png",
-    "images/ic_my_question.png",
-    "images/ic_discover_pos.png",
-    "images/ic_my_team.png",
-    "images/ic_my_recommend.png"
+List urlList = [];
+
+  var titles = [ 
+    {'title':'我的信息','imagePath':'images/ic_my_message.png','titleKey':'mine'},
+    {'title':'帮助中心','imagePath':'images/ic_my_blog.png','titleKey':'helpduc'},
+    {'title':'修改密码','imagePath':'images/ic_my_question.png','titleKey':'modifypwd'},
+    {'title':'系统简介','imagePath':'images/ic_discover_pos.png','titleKey':'sysintrodu'},
+    {'title':'关于雅雀漾','imagePath':'images/ic_my_team.png','titleKey':'yaqueyang'},
+    {'title':'关于宝码','imagePath':'images/ic_my_recommend.png','titleKey':'bomar'}
   ];
 
   Future<Map> getDataForSql() async {
@@ -94,6 +96,17 @@ String bomar = '';
         setState(() {
           var content = json.decode(data[AppConst.RESP_DATA]);
           print(content);
+          urlList = json.decode(data[AppConst.RESP_DATA]);
+          urlList.forEach((_item){
+            String _key = _item['TYPE'];
+            String _h5Url = _item['URL'];
+            titles.forEach((_titleMap){
+              String _titleKey = _titleMap['titleKey'];
+              if(_titleKey == _key) {
+                _titleMap['h5Url']=_h5Url;
+              }
+            });
+          });
           // mine = (null==content['mine'])?'-':content['mine'].toString(); //我的信息
           // helpduc = (null==content['helpduc'])?'-':content['helpduc'].toString(); //帮助中心
           // sysintrodu = (null==content['sysintrodu'])?'-':content['sysintrodu'].toString();  //系统简介
@@ -164,23 +177,15 @@ String bomar = '';
 
 
   Widget _buildItem2(int index) {
-    String _title = titles[index];
+    String _title = titles[index]['title'];
     return new InkWell(
       onTap: (){ 
         if (index == 2) {
           Navigator.push(
               context, new MaterialPageRoute(builder: (context) => ModifyPwdPage()));
         } else {
-        Fluttertoast.showToast(
-              msg: " 您点击的是:$_title ",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIos:1,
-              backgroundColor: Color(0xFF499292),
-              textColor: Color(0xFFFFFFFF)
-          );
-        }
-      },
+        onItemClick(index);
+      }},
       child: Container(
       decoration: new BoxDecoration(
     border: new Border.all(width:1.0,color: Colors.green[50]),
@@ -191,7 +196,7 @@ String bomar = '';
           Positioned(
               left: 40.0,
               child:  Text(
-                    titles[index],
+                    titles[index]['title'],
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               )),
           ClipRRect(
@@ -199,7 +204,7 @@ String bomar = '';
               width: 25.0,
               height: 25.0,
               child: Image.asset(
-                imagePaths[index],
+                titles[index]['imagePath'],
                 fit: BoxFit.cover,
                 color: Colors.greenAccent,
               ),
@@ -211,6 +216,36 @@ String bomar = '';
     ),
     );  
     
+  }
+
+  void onItemClick(int i) {
+    String h5Url = titles[i]['h5Url'];
+    String _title = titles[i]['title'];
+    print('h5Url======================$h5Url');
+    if (null == h5Url || h5Url.isEmpty 
+    // || !h5Url.toLowerCase().startsWith('http')
+    ) {
+      Fluttertoast.showToast(
+              msg: " 您点击的是:$_title ",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos:1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF)
+          );
+      return;
+    }
+    String articleTitle = titles[i]['title'];
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new WebviewScaffold(
+              url: h5Url,
+              appBar: new AppBar(
+            title: new Text('$articleTitle'),
+            backgroundColor: Colors.greenAccent,
+          ),
+              )));
   }
 
 

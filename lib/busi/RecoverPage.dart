@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'RecoverListPage.dart';
+import 'RecoverListPageNew.dart';
 
 class RecoverPage extends StatefulWidget {
   @override
@@ -981,7 +981,7 @@ class RecoverPageState extends State<RecoverPage> {
         Navigator.of(context).pushReplacement(new PageRouteBuilder(
           opaque: false,
           pageBuilder: (BuildContext context, _, __) {
-            return new RecoverListPage();
+            return new RecoverListPageNew();
           },
         ));
         Fluttertoast.showToast(

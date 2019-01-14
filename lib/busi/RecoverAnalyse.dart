@@ -121,7 +121,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       'endTime': endDate,
       'rbType': rbType,
       'Facid': gangkouId,
-      'Carid': barcode.isEmpty?barcode:'%$barcode'
+      'Carid': barcode.isEmpty ? barcode : '%$barcode'
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -362,7 +362,6 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
   }
 
   Future _loadData(bool isPullDown) async {
-   
     if (!isPullDown) {
       setState(() {
         if (dataMap.length == total) {
@@ -371,7 +370,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           _page++;
         }
       });
-      if (dataMap.length != total){
+      if (dataMap.length != total) {
         toGetData(isPullDown);
       }
     } else {
@@ -382,7 +381,6 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       toGetData(isPullDown);
     }
   }
-
 
   Future toGetData(isPullDown) async {
     await getHttpData().then((_v) {
@@ -445,7 +443,6 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         ));
   }
 
-
   Widget querying() {
     return new Stack(
       children: <Widget>[
@@ -472,31 +469,35 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
   }
 
   Widget noData(BuildContext context) {
-    return new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-              child: new InkWell(
-            onTap: () {},
-            child: Icon(
-              Icons.data_usage,
-              size: 100.0,
-              color: Colors.greenAccent,
+    return new InkWell(
+        onTap: () {
+          _handlerDrawerButton2(context);
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+              child: new Center(
+                  child: new InkWell(
+                onTap: () {},
+                child: Icon(
+                  Icons.data_usage,
+                  size: 100.0,
+                  color: Colors.greenAccent,
+                ),
+              )),
             ),
-          )),
-        ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '未查询到数据',
-              style: TextStyle(color: Colors.greenAccent),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '未查询到数据',
+                  style: TextStyle(color: Colors.greenAccent),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
   }
 
   Widget loading(BuildContext context) {
@@ -1058,6 +1059,12 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               gangkouName = gangkouList3[index]['FACNAME'];
               gangkouId = gangkouList3[index]['FACID'];
               gangkouColor = Colors.greenAccent;
+            });
+          } else {
+            setState(() {
+              gangkouName = '';
+              gangkouId = '';
+              gangkouColor = Colors.grey;
             });
           }
         });

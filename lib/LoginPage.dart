@@ -109,6 +109,31 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
 
   Future<bool> _Login  (
       String userName, String password, BuildContext context) async {
+
+        if (null== userName || userName.isEmpty) {
+          Fluttertoast.showToast(
+              msg: '请输入用户名',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos:1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF)
+          );
+          return false;
+        }
+
+        if (null == password || password.isEmpty) {
+          Fluttertoast.showToast(
+              msg: '请输入密码',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos:1,
+              backgroundColor: Color(0xFF499292),
+              textColor: Color(0xFFFFFFFF)
+          );
+          return false;
+        }
+
         setState(() {
                   _isLoading = true;
                 });

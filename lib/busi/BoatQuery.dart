@@ -97,30 +97,54 @@ class BoatQueryPageState extends State<BoatQuery> {
             timeInSecForIos: 1,
             backgroundColor: Color(0xFF499292),
             textColor: Color(0xFFFFFFFF));
-            setState(() {
-                          loadFlag = '4';
-                        });
+        setState(() {
+          loadFlag = '4';
+        });
       } else {
         setState(() {
           var content = json.decode(data[AppConst.RESP_DATA]);
           print(content);
-          facId = (null==content['FACNAME'])?'-':content['FACNAME'].toString(); //港口信息
-          carNo = (null==content['CARNO'])?'-':content['CARNO'].toString(); //船舶牌照
-          carType = (null==content['CARTYPE'])?'-':content['CARTYPE'].toString();  //船舶类型
-          carBelong = (null==content['CARVENDID'])?'-':content['CARVENDID'].toString();  //船港籍
-          carUnit =  (null==content['CARCAP'])?'-':content['CARCAP'].toString(); //船吨位
-          carOwner = (null==content['EMPID'])?'-':content['EMPID'].toString(); //船主
-          carContact = (null==content['MEMO'])?'-':content['MEMO'].toString(); //联系方式
-          totalLifeWeight = (null==content['CARRQTY'])?'-':content['CARRQTY'].toString();  //累计回收生活垃圾
-          totalOilWeight = (null==content['CARQTY2'])?'-':content['CARQTY2'].toString(); //累计回收油污垃圾
-          lastDgTime = (null==content['CARDATE1'])?'-':content['CARDATE1'].toString(); //上次到岗时间
-          totalDgCount = (null==content['CARSENO'])?'-':content['CARSENO'].toString();//累计到岗次数
-          totalWeight = (null==content['CARRQTY'])?'-':content['CARRQTY'].toString();//累计到岗次数
+          facId = (null == content['FACNAME'])
+              ? '-'
+              : content['FACNAME'].toString(); //港口信息
+          carNo = (null == content['CARNO'])
+              ? '-'
+              : content['CARNO'].toString(); //船舶牌照
+          carType = (null == content['CARTYPE'])
+              ? '-'
+              : content['CARTYPE'].toString(); //船舶类型
+          carBelong = (null == content['CARVENDID'])
+              ? '-'
+              : content['CARVENDID'].toString(); //船港籍
+          carUnit = (null == content['CARCAP'])
+              ? '-'
+              : content['CARCAP'].toString(); //船吨位
+          carOwner = (null == content['EMPID'])
+              ? '-'
+              : content['EMPID'].toString(); //船主
+          carContact = (null == content['MEMO'])
+              ? '-'
+              : content['MEMO'].toString(); //联系方式
+          totalLifeWeight = (null == content['CARRQTY'])
+              ? '-'
+              : content['CARRQTY'].toString(); //累计回收生活垃圾
+          totalOilWeight = (null == content['CARQTY2'])
+              ? '-'
+              : content['CARQTY2'].toString(); //累计回收油污垃圾
+          lastDgTime = (null == content['CARDATE1'])
+              ? '-'
+              : content['CARDATE1'].toString(); //上次到岗时间
+          totalDgCount = (null == content['CARSENO'])
+              ? '-'
+              : content['CARSENO'].toString(); //累计到岗次数
+          totalWeight = (null == content['CARRQTY'])
+              ? '-'
+              : content['CARRQTY'].toString(); //累计到岗次数
           loadFlag = '3';
         });
       }
     });
-    
+
     return true;
   }
 
@@ -209,33 +233,33 @@ class BoatQueryPageState extends State<BoatQuery> {
   }
 
   Widget loading() {
-    return new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-              child: new InkWell(
-            onTap: () {
-              doScanCode();
-            },
-            child: Icon(
-              Icons.search,
-              size: 100.0,
-              color: Colors.greenAccent,
+    return new InkWell(
+        onTap: () {
+          doScanCode();
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+              child: new Center(
+                child: Icon(
+                  Icons.search,
+                  size: 100.0,
+                  color: Colors.greenAccent,
+                ),
+              ),
             ),
-          )),
-        ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '请扫描二维码',
-              style: TextStyle(color: Colors.greenAccent),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '请扫描二维码',
+                  style: TextStyle(color: Colors.greenAccent),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
   }
 
   Widget geneColumn() {
@@ -268,10 +292,6 @@ class BoatQueryPageState extends State<BoatQuery> {
                   _geneRow('累计到岗次数', totalDgCount),
                 ])));
   }
-
-  
-
-  
 
   Widget _div() {
     return new Container(

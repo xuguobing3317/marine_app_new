@@ -441,7 +441,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
           _page++;
         }
       });
-      if (dataMap.length != total){
+      if (dataMap.length != total) {
         toGetData(isPullDown);
       }
     } else {
@@ -599,31 +599,35 @@ class BoatAnalyseState extends State<BoatAnalyse>
   // }
 
   Widget noData(BuildContext context) {
-    return new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-              child: new InkWell(
-            onTap: () {},
-            child: Icon(
-              Icons.data_usage,
-              size: 100.0,
-              color: Colors.greenAccent,
+    return new InkWell(
+        onTap: () {
+          _handlerDrawerButton2(context);
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+              child: new Center(
+                  child: new InkWell(
+                onTap: () {},
+                child: Icon(
+                  Icons.data_usage,
+                  size: 100.0,
+                  color: Colors.greenAccent,
+                ),
+              )),
             ),
-          )),
-        ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '未查询到数据',
-              style: TextStyle(color: Colors.greenAccent),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '未查询到数据',
+                  style: TextStyle(color: Colors.greenAccent),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
   }
 
   Widget loading(BuildContext context) {

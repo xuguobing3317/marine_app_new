@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'BoatDetail.dart';
-import 'BoatAdd.dart';
 import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;

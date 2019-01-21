@@ -36,8 +36,8 @@ class RecoverPageState extends State<RecoverPage> {
     {'rbCode': 'B', 'rbName': '油污垃圾'}
   ];
 
-  String rbName = '油污垃圾';
-  String rbCode = 'B';
+  String rbName = '生活垃圾';
+  String rbCode = 'A';
 
   String gangkou = "";
   String facIdName = '请选择港口';
@@ -158,10 +158,11 @@ class RecoverPageState extends State<RecoverPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return 
+    new Scaffold(
       appBar: AppBar(
         title: Text('污染物回收'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
       ),
       body: isLoading ? loading() : getBody(context),
     );
@@ -173,7 +174,10 @@ class RecoverPageState extends State<RecoverPage> {
           constraints: new BoxConstraints(
             minHeight: 200.0,
           ),
-          child: new Column(
+          child: 
+          new InkWell(
+            child:
+          new Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               _geneBoatNo2(
@@ -184,8 +188,8 @@ class RecoverPageState extends State<RecoverPage> {
               _geneBoatNo2(_geneOtherNo2('船舶吨位', _boatUnit), _div()),
               _geneBoatNo2(_geneOtherNo2('船籍港', _boatBelong), _div()),
               _geneBoatNo2(_geneOtherNo2('上次来港', _lastTime), _div()),
-              _geneBoatNo2(_geneOtherNo2('船舶类型', _boatTypeName), _div2()),
-              _geneBoatNo2(_geneGkTypeNo('港口', 'facid', w3: _w6()), _div()),
+              _geneBoatNo2(_geneOtherNo2('船舶类型', _boatTypeName), _div()),
+              _geneBoatNo2(_geneGkTypeNo('港口', 'facid'), _div2()),
               _geneBoatNo2(
                   _geneRbTypeNo('污染物种类', 'fomesType', w3: _w5()), _div()),
               _geneBoatNo2(
@@ -193,7 +197,10 @@ class RecoverPageState extends State<RecoverPage> {
               _geneBoatNo2(_geneOtherNo('重量(KG)', 'fomesWeight'), _div()),
               _geneBoatNo2(_button2('', '')),
             ],
-          )),
+          )
+          , onTap: (){
+            FocusScope.of(context).requestFocus(FocusNode());
+          },)),
     );
   }
 
@@ -204,7 +211,7 @@ class RecoverPageState extends State<RecoverPage> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -214,7 +221,7 @@ class RecoverPageState extends State<RecoverPage> {
           child: new Center(
             child: new Text(
               '船舶信息保存中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -224,7 +231,7 @@ class RecoverPageState extends State<RecoverPage> {
 
   Widget _div2() {
     return new Container(
-      color: Colors.greenAccent,
+      color: AppConst.appColor,
       height: 1.5,
       child: new Divider(),
     );
@@ -234,7 +241,7 @@ class RecoverPageState extends State<RecoverPage> {
     return new Container(
       height: 1.0,
       child: new Divider(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
     );
   }
@@ -252,24 +259,12 @@ class RecoverPageState extends State<RecoverPage> {
       icon: Icon(
         Icons.camera_enhance,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: scanCode,
     );
   }
 
-  Widget _addBoat(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        Icons.add_circle,
-        size: 40.0,
-        color: Colors.greenAccent,
-      ),
-      onPressed: () {
-        _getBoat(context);
-      },
-    );
-  }
 
   Future<void> doGetBoat(BuildContext context) async {
     await _getBoat(context).then((flag) {
@@ -292,7 +287,7 @@ class RecoverPageState extends State<RecoverPage> {
       icon: Icon(
         Icons.satellite,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: showGangkouPicker,
     );
@@ -318,7 +313,7 @@ class RecoverPageState extends State<RecoverPage> {
                   labelStyle:
                       TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0),
                   hintStyle:
-                      TextStyle(fontSize: 12.0, color: Colors.greenAccent),
+                      TextStyle(fontSize: 12.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -328,7 +323,7 @@ class RecoverPageState extends State<RecoverPage> {
               icon: Icon(Icons.search),
               iconSize: 40.0,
               onPressed: searchGangkouData,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -352,9 +347,9 @@ class RecoverPageState extends State<RecoverPage> {
         changeToFirst: true,
         textAlign: TextAlign.left,
         cancelText: '取消',
-        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        cancelTextStyle: TextStyle(color: AppConst.appColor),
         confirmText: '确定',
-        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmTextStyle: TextStyle(color: AppConst.appColor),
         // hideHeader: true,
         columnPadding: const EdgeInsets.all(8.0),
         onConfirm: (Picker picker, List value) {
@@ -375,7 +370,7 @@ class RecoverPageState extends State<RecoverPage> {
       icon: Icon(
         Icons.restore_from_trash,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: showPicker,
     );
@@ -386,7 +381,7 @@ class RecoverPageState extends State<RecoverPage> {
       icon: Icon(
         Icons.date_range,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: toSetTime,
     );
@@ -479,7 +474,7 @@ class RecoverPageState extends State<RecoverPage> {
                     hintText: '请输入$_title ',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.greenAccent),
+                      borderSide: BorderSide(color: AppConst.appColor),
                     ),
                     labelStyle:
                         TextStyle(fontWeight: FontWeight.w500, fontSize: 13.0),
@@ -512,9 +507,9 @@ class RecoverPageState extends State<RecoverPage> {
         changeToFirst: true,
         textAlign: TextAlign.left,
         cancelText: '取消',
-        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        cancelTextStyle: TextStyle(color: AppConst.appColor),
         confirmText: '确定',
-        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmTextStyle: TextStyle(color: AppConst.appColor),
         textStyle: TextStyle(fontSize: 30.0),
         // hideHeader: true,
         columnPadding: const EdgeInsets.all(8.0),
@@ -600,7 +595,7 @@ class RecoverPageState extends State<RecoverPage> {
                 child: new Container(
               padding: new EdgeInsets.fromLTRB(1.0, 1.0, 1.0, 1.0),
               child: new RaisedButton(
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
                 textTheme: ButtonTextTheme.normal,
                 elevation: 10,
                 highlightElevation: 10,

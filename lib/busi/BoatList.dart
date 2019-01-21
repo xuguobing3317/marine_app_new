@@ -237,7 +237,7 @@ class BoatListState extends State<BoatList>
                 child: new Text(
                   customHeaderTipText,
                   style:
-                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                      new TextStyle(fontSize: 18.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -331,32 +331,6 @@ Future _loadData(bool isPullDown) async {
     });
   }
 
-
-  // Future _loadData(bool isPullDown) async {
-  //   if (!isPullDown) {
-  //     setState(() {
-  //       if (_itemMap.length == total) {
-  //         totalFlag = true;
-  //         return;
-  //       }
-  //       _page++;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       totalFlag = false;
-  //       _page = 1;
-  //     });
-  //   }
-  //   await getHttpData().then((_v) {
-  //     setState(() {
-  //       if (isPullDown) {
-  //         _itemMap.clear();
-  //       }
-  //       _itemMap.addAll(_queryItemMap);
-  //     });
-  //   });
-  // }
-
   Widget getBody() {
     if (loadingFlag == '1') {
       return new Stack(children: <Widget>[
@@ -364,7 +338,7 @@ Future _loadData(bool isPullDown) async {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -374,7 +348,7 @@ Future _loadData(bool isPullDown) async {
           child: new Center(
             child: new Text(
               '船舶列表加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -389,7 +363,7 @@ Future _loadData(bool isPullDown) async {
             child: new Center(
               child: new Text(
                 '未查询到数据',
-                style: TextStyle(color: Colors.greenAccent),
+                style: TextStyle(color: AppConst.appColor),
               ),
             ),
           ),
@@ -407,25 +381,7 @@ Future _loadData(bool isPullDown) async {
             children: <Widget>[
               AppBar(
                 title: Text('请选择船舶'),
-                backgroundColor: Colors.greenAccent,
-              ),
-              search()
-            ],
-          ),
-        ),
-        body: getBody());
-  }
-
-  @override
-  Widget build2(BuildContext context) {
-    return new Scaffold(
-        appBar: new PreferredSize(
-          preferredSize: Size.fromHeight(110),
-          child: new Column(
-            children: <Widget>[
-              AppBar(
-                title: Text('船舶查询'),
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: AppConst.appColor,
               ),
               search()
             ],
@@ -471,12 +427,12 @@ Future _loadData(bool isPullDown) async {
                 //之前显示icon
                 leading: new Icon(
                   Icons.directions_boat,
-                  color: Colors.greenAccent,
+                  color: AppConst.appColor,
                   size: 30.0,
                 ),
                 trailing: new Icon(
                   Icons.arrow_right,
-                  color: Colors.greenAccent,
+                  color: AppConst.appColor,
                   size: 30.0,
                 ))));
   }
@@ -516,7 +472,7 @@ Future _loadData(bool isPullDown) async {
   Widget search() {
     return new Container(
       decoration: new BoxDecoration(
-        border: new Border.all(width: 2.0, color: Colors.greenAccent),
+        border: new Border.all(width: 2.0, color: AppConst.appColor),
       ),
       height: 50.0,
       child: new Row(
@@ -547,7 +503,7 @@ Future _loadData(bool isPullDown) async {
               icon: Icon(Icons.search),
               iconSize: 40.0,
               onPressed: _onSearch,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
           new Container(
@@ -555,7 +511,7 @@ Future _loadData(bool isPullDown) async {
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],

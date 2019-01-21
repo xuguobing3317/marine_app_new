@@ -92,7 +92,7 @@ class SwiperPageState extends State<HomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
         foregroundColor: Colors.white,
         shape: new CircleBorder(),
         isExtended: false,
@@ -156,7 +156,7 @@ class SwiperPageState extends State<HomePage> {
               style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
-                  color: Colors.greenAccent),
+                  color: AppConst.appColor),
             ),
             subtitle: new Text(
               subTitle,
@@ -164,7 +164,7 @@ class SwiperPageState extends State<HomePage> {
             ),
             leading: new Icon(
               _icon,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 50.0,
             ),
             onTap: () => toBoat(_page),
@@ -190,13 +190,13 @@ class SwiperPageState extends State<HomePage> {
         new Text(
           AppConst.corpName + ' 版权所有',
           style: TextStyle(
-              fontSize: 16.0, fontFamily: 'serif', color: Colors.greenAccent),
+              fontSize: 16.0, fontFamily: 'serif', color: AppConst.appColor),
           textAlign: TextAlign.left,
         ),
         new Text(
           AppConst.teckName + ' 提供技术支持',
           style: TextStyle(
-              fontSize: 14.0, fontFamily: 'serif', color: Colors.greenAccent),
+              fontSize: 14.0, fontFamily: 'serif', color: AppConst.appColor),
           textAlign: TextAlign.left,
         )
       ]),
@@ -212,7 +212,7 @@ class SwiperPageState extends State<HomePage> {
           children: <Widget>[
             new Icon(
               Icons.star,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
             Expanded(
               child: new Container(
@@ -222,7 +222,7 @@ class SwiperPageState extends State<HomePage> {
             new IconButton(
               icon: Icon(
                 Icons.menu,
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
               ),
               tooltip: 'More',
               onPressed: () => onGonggaoMore(),
@@ -253,9 +253,9 @@ class SwiperPageState extends State<HomePage> {
           pagination: new SwiperPagination(
               builder: DotSwiperPaginationBuilder(
             color: Colors.black54,
-            activeColor: Colors.greenAccent,
+            activeColor: AppConst.appColor,
           )),
-          control: new SwiperControl(color: Colors.greenAccent),
+          control: new SwiperControl(color: AppConst.appColor),
           scrollDirection: Axis.horizontal,
           autoplay: _autoPlay,
           onTap: (index) => onItemClick(index, '点击了第$index 个'),
@@ -330,7 +330,7 @@ class SwiperPageState extends State<HomePage> {
                   url: h5Url,
                   appBar: new AppBar(
                     title: new Text('$articleTitle'),
-                    backgroundColor: Colors.greenAccent,
+                    backgroundColor: AppConst.appColor,
                   ),
                 )));
   }
@@ -348,7 +348,7 @@ class SwiperPageState extends State<HomePage> {
                   url: h5Url,
                   appBar: new AppBar(
                     title: new Text('$articleTitle'),
-                    backgroundColor: Colors.greenAccent,
+                    backgroundColor: AppConst.appColor,
                   ),
                 )));
   }

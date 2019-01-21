@@ -28,7 +28,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
   String carid = "";
   String gangkou = "";
   final TextEditingController boatController = new TextEditingController();
-  Color todayDateColor = Colors.greenAccent;
+  Color todayDateColor = AppConst.appColor;
   Color yesterdayDateColor = Colors.grey;
   Color weekDateColor = Colors.grey;
   Color monthDateColor = Colors.grey;
@@ -64,7 +64,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
 
   List<Map> dataMap = [];
 
-  Color allTypeColor = Colors.greenAccent;
+  Color allTypeColor = AppConst.appColor;
   Color lifeTypeColor = Colors.grey;
   Color oilTypeColor = Colors.grey;
 
@@ -298,7 +298,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     return new Scaffold(
       appBar: AppBar(
         title: Text('回收分析'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
       ),
       body: Builder(builder: (context) => getBody(context)),
       endDrawer: getNavDrawer(context),
@@ -474,7 +474,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 child: new Text(
                   customHeaderTipText,
                   style:
-                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                      new TextStyle(fontSize: 18.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -489,7 +489,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -499,7 +499,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           child: new Center(
             child: new Text(
               '加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -522,7 +522,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 child: Icon(
                   Icons.data_usage,
                   size: 100.0,
-                  color: Colors.greenAccent,
+                  color: AppConst.appColor,
                 ),
               )),
             ),
@@ -531,7 +531,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               child: new Center(
                 child: new Text(
                   '未查询到数据',
-                  style: TextStyle(color: Colors.greenAccent),
+                  style: TextStyle(color: AppConst.appColor),
                 ),
               ),
             ),
@@ -552,7 +552,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                   child: Icon(
                     Icons.search,
                     size: 100.0,
-                    color: Colors.greenAccent,
+                    color: AppConst.appColor,
                   ),
                 )),
             // ),
@@ -561,7 +561,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               child: new Center(
                 child: new Text(
                   '请点击图标进行查询',
-                  style: TextStyle(color: Colors.greenAccent),
+                  style: TextStyle(color: AppConst.appColor),
                 ),
               ),
             ),
@@ -575,7 +575,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
 
   Widget getBottom() {
     return new Container(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
         height: 40.0,
         alignment: Alignment.center,
         child: new Text(
@@ -589,7 +589,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       return new ListTile(
         title: new Text(
           s,
-          style: TextStyle(color: Colors.greenAccent, fontSize: 12.0),
+          style: TextStyle(color: AppConst.appColor, fontSize: 12.0),
         ),
         onTap: onTapFunc,
       );
@@ -674,7 +674,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 child: new Container(
               padding: new EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
               child: new RaisedButton(
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
                 elevation: 10,
                 highlightElevation: 10,
                 disabledElevation: 10,
@@ -723,7 +723,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         String _t2 = gettotal2();
         total1 = '总计: $_t1 kg, $_t2次';
         if (dataMap.length != 0) {
-          bootSheetColor = Colors.greenAccent;
+          bootSheetColor = AppConst.appColor;
           dataFlag = '3';
         } else {
           bootSheetColor = Colors.white;
@@ -767,7 +767,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 Icon(
                   Icons.cloud_circle,
                   size: 45.0,
-                  color: Colors.greenAccent,
+                  color: AppConst.appColor,
                 )
               ],
             ),
@@ -778,7 +778,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 maxLines: 1,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.greenAccent, fontSize: 16.0),
+                style: TextStyle(color: AppConst.appColor, fontSize: 16.0),
               ),
             ),
             subtitle: new Container(
@@ -807,7 +807,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                 ],
               ),
             )
-            // trailing: Icon(Icons.directions_boat, color:Colors.greenAccent, size:40.0),
+            // trailing: Icon(Icons.directions_boat, color:AppConst.appColor, size:40.0),
             ),
       ),
     );
@@ -822,7 +822,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
             child: new InkWell(
               onTap: (){_getBoat(context);},
               child: Text((null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
-                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                ,style: new TextStyle(fontSize: 18.0, color: AppConst.appColor),
                 textAlign: TextAlign.center,),
             ),
           ),
@@ -831,7 +831,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -870,7 +870,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -884,7 +884,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       icon: Icon(
         Icons.add_circle,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: (){_getBoat(context);},
     );
@@ -945,16 +945,16 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         //今天
         typeView = '全部';
         rbType = '';
-        allTypeColor = Colors.greenAccent;
+        allTypeColor = AppConst.appColor;
       } else if (range == '2') {
         //昨天
         typeView = '生活垃圾';
         rbType = 'A';
-        lifeTypeColor = Colors.greenAccent;
+        lifeTypeColor = AppConst.appColor;
       } else {
         typeView = '油污垃圾';
         rbType = 'B';
-        oilTypeColor = Colors.greenAccent;
+        oilTypeColor = AppConst.appColor;
       }
     });
   }
@@ -972,7 +972,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
             DateUtil.getNowDateStr(), DateFormat.YEAR_MONTH_DAY, null, null);
         endDate = DateUtil.formatDateTime(
             DateUtil.getNowDateStr(), DateFormat.YEAR_MONTH_DAY, null, null);
-        todayDateColor = Colors.greenAccent;
+        todayDateColor = AppConst.appColor;
       } else if (range == '2') {
         //昨天
         DateTime yesterDay = DateTime.now().subtract(Duration(days: 1));
@@ -980,10 +980,10 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
             yesterDay.toString(), DateFormat.YEAR_MONTH_DAY, null, null);
         endDate = DateUtil.formatDateTime(
             yesterDay.toString(), DateFormat.YEAR_MONTH_DAY, null, null);
-        yesterdayDateColor = Colors.greenAccent;
+        yesterdayDateColor = AppConst.appColor;
       } else if (range == '3') {
         //本周
-        weekDateColor = Colors.greenAccent;
+        weekDateColor = AppConst.appColor;
         DateTime weekBegin = DateTime.now().subtract(Duration(days: 6));
         startDate = DateUtil.formatDateTime(
             weekBegin.toString(), DateFormat.YEAR_MONTH_DAY, null, null);
@@ -991,7 +991,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
             DateUtil.getNowDateStr(), DateFormat.YEAR_MONTH_DAY, null, null);
       } else if (range == '4') {
         //一个月
-        monthDateColor = Colors.greenAccent;
+        monthDateColor = AppConst.appColor;
         DateTime _now = DateTime.now();
         int _month = _now.month;
         int _year = _now.year;
@@ -1058,7 +1058,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               yesterdayDateColor = Colors.grey;
               weekDateColor = Colors.grey;
               monthDateColor = Colors.grey;
-              otherDateColor = Colors.greenAccent;
+              otherDateColor = AppConst.appColor;
             });
           },
           child: new Text('确定'))
@@ -1070,7 +1070,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           return new AlertDialog(
             title: Text(
               "其他时间",
-              style: TextStyle(decorationColor: Colors.greenAccent),
+              style: TextStyle(decorationColor: AppConst.appColor),
             ),
             actions: actions,
             content: Container(
@@ -1111,7 +1111,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
                   labelStyle:
                       TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0),
                   hintStyle:
-                      TextStyle(fontSize: 12.0, color: Colors.greenAccent),
+                      TextStyle(fontSize: 12.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -1121,7 +1121,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
               icon: Icon(Icons.search),
               iconSize: 40.0,
               onPressed: searchGangkouData,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -1138,9 +1138,9 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         changeToFirst: true,
         textAlign: TextAlign.left,
         cancelText: '取消',
-        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        cancelTextStyle: TextStyle(color: AppConst.appColor),
         confirmText: '确定',
-        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmTextStyle: TextStyle(color: AppConst.appColor),
         // hideHeader: true,
         columnPadding: const EdgeInsets.all(8.0),
         onConfirm: (Picker picker, List value) {
@@ -1150,7 +1150,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
             setState(() {
               gangkouName = gangkouList3[index]['FACNAME'];
               gangkouId = gangkouList3[index]['FACID'];
-              gangkouColor = Colors.greenAccent;
+              gangkouColor = AppConst.appColor;
             });
           } else {
             setState(() {

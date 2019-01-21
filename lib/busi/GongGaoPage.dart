@@ -210,7 +210,7 @@ class GongGaoPageState extends State<GongGaoPage>
                 child: new Text(
                   customHeaderTipText,
                   style:
-                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                      new TextStyle(fontSize: 18.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -339,7 +339,7 @@ Future _loadData(bool isPullDown) async {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -349,7 +349,7 @@ Future _loadData(bool isPullDown) async {
           child: new Center(
             child: new Text(
               '公告列表加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -364,7 +364,7 @@ Future _loadData(bool isPullDown) async {
             child: new Center(
               child: new Text(
                 '未查询到数据',
-                style: TextStyle(color: Colors.greenAccent),
+                style: TextStyle(color: AppConst.appColor),
               ),
             ),
           ),
@@ -378,7 +378,7 @@ Future _loadData(bool isPullDown) async {
     return new Scaffold(
         appBar: AppBar(
           title: Text('公告列表'),
-          backgroundColor: Colors.greenAccent,
+          backgroundColor: AppConst.appColor,
         ),
         body: getBody());
   }
@@ -391,12 +391,12 @@ Future _loadData(bool isPullDown) async {
             //之前显示icon
             leading: new Icon(
               Icons.announcement,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
             trailing: new Icon(
               Icons.arrow_right,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
             onTap: () => onItemClick(i),
@@ -417,7 +417,7 @@ Future _loadData(bool isPullDown) async {
               url: h5Url,
               appBar: new AppBar(
             title: new Text('$articleTitle'),
-            backgroundColor: Colors.greenAccent,
+            backgroundColor: AppConst.appColor,
           ),
               )));
   }

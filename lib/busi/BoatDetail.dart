@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marine_app/HomePage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_picker/flutter_picker.dart';
+import 'package:marine_app/common/AppConst.dart';
 
 class BoatDetailPage extends StatefulWidget {
   final String facId;
@@ -87,7 +87,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
     return new Scaffold(
       appBar: AppBar(
         title: Text('船舶详情'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
       ),
       body: isLoading ? loading() : geneColumn2(),
     );
@@ -100,7 +100,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -110,7 +110,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
           child: new Center(
             child: new Text(
               '船舶信息加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -159,7 +159,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
                 child: new Container(
               padding: new EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
               child: new RaisedButton(
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
                 elevation: 10,
                 highlightElevation: 10,
                 disabledElevation: 10,
@@ -253,7 +253,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
     return new Container(
       height: 1.0,
       child: new Divider(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
     );
   }

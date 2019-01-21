@@ -136,7 +136,7 @@ List urlList = [];
         slivers: <Widget>[
           SliverAppBar(
             title: Text(''),
-          backgroundColor: Colors.greenAccent,
+          backgroundColor: AppConst.appColor,
           expandedHeight: heightScreen/4,
           floating: false,
           pinned  :true,
@@ -215,7 +215,7 @@ List urlList = [];
               child: Image.asset(
                 titles[index]['imagePath'],
                 fit: BoxFit.cover,
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
               ),
             ),
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -252,7 +252,7 @@ List urlList = [];
               url: h5Url,
               appBar: new AppBar(
             title: new Text('$articleTitle'),
-            backgroundColor: Colors.greenAccent,
+            backgroundColor: AppConst.appColor,
           ),
               )));
   }

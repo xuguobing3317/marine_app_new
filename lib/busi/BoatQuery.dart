@@ -187,7 +187,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           children: <Widget>[
             AppBar(
               title: Text('船舶信息'),
-              backgroundColor: Colors.greenAccent,
+              backgroundColor: AppConst.appColor,
             ),
             search(context)
           ],
@@ -220,7 +220,7 @@ class BoatQueryPageState extends State<BoatQuery> {
             child: Icon(
               Icons.data_usage,
               size: 100.0,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           )),
         ),
@@ -229,7 +229,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           child: new Center(
             child: new Text(
               '当前船舶没有进港记录！',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -244,7 +244,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -254,7 +254,7 @@ class BoatQueryPageState extends State<BoatQuery> {
           child: new Center(
             child: new Text(
               '船舶信息加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -275,7 +275,7 @@ class BoatQueryPageState extends State<BoatQuery> {
                 child: Icon(
                   Icons.search,
                   size: 100.0,
-                  color: Colors.greenAccent,
+                  color: AppConst.appColor,
                 ),
               ),
             ),
@@ -284,7 +284,7 @@ class BoatQueryPageState extends State<BoatQuery> {
               child: new Center(
                 child: new Text(
                   '请扫描二维码',
-                  style: TextStyle(color: Colors.greenAccent),
+                  style: TextStyle(color: AppConst.appColor),
                 ),
               ),
             ),
@@ -327,7 +327,7 @@ class BoatQueryPageState extends State<BoatQuery> {
     return new Container(
       height: 1.0,
       child: new Divider(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
     );
   }
@@ -368,7 +368,7 @@ class BoatQueryPageState extends State<BoatQuery> {
   Widget search(BuildContext context) {
     return new Container(
       decoration: new BoxDecoration(
-        border: new Border.all(width: 1.0, color: Colors.greenAccent),
+        border: new Border.all(width: 1.0, color: AppConst.appColor),
       ),
       height: 50.0,
       child: new Row(
@@ -381,7 +381,7 @@ class BoatQueryPageState extends State<BoatQuery> {
               alignment: Alignment.center,
               child: Text(
                 (null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
-                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),),
+                ,style: new TextStyle(fontSize: 18.0, color: AppConst.appColor),),
             )),
           ),
           new Container(
@@ -389,7 +389,7 @@ class BoatQueryPageState extends State<BoatQuery> {
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -416,7 +416,7 @@ class BoatQueryPageState extends State<BoatQuery> {
       icon: Icon(
         Icons.add_circle,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: (){_getBoat(context);},
     );

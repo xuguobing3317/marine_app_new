@@ -348,7 +348,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                 colors: <Color>[
-                                  Colors.greenAccent,
+                                  AppConst.appColor,
                                   Colors.green
                                 ],
                               )),
@@ -378,7 +378,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
             gradient: new LinearGradient(
               begin: const FractionalOffset(0.5, 0.0),
               end: const FractionalOffset(0.5, 1.0),
-              colors: <Color>[Colors.white, Colors.greenAccent],
+              colors: <Color>[Colors.white, AppConst.appColor],
             ),
           ),
         ),

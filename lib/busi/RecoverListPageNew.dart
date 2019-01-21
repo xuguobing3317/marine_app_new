@@ -192,7 +192,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -202,7 +202,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
           child: new Center(
             child: new Text(
               '回收列表加载中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -217,7 +217,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
             child: new Center(
               child: new Text(
                 '未查询到数据',
-                style: TextStyle(color: Colors.greenAccent),
+                style: TextStyle(color: AppConst.appColor),
               ),
             ),
           ),
@@ -228,14 +228,17 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+return new WillPopScope(
+    // return 
+    child:
+     new Scaffold(
         appBar: new PreferredSize(
           preferredSize: Size.fromHeight(110),
           child: new Column(
             children: <Widget>[
               AppBar(
                 title: Text('回收列表'),
-                backgroundColor: Colors.greenAccent,
+                backgroundColor: AppConst.appColor,
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(
@@ -257,7 +260,15 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
             ],
           ),
         ),
-        body: getBody());
+        body: getBody()
+    ),
+    onWillPop:_requestPop,
+        );
+  }
+
+  Future<bool> _requestPop() {
+   Navigator.of(context).pushReplacementNamed('/HomePage');
+    return new Future.value(false);
   }
 
   Widget getBody2() {
@@ -324,7 +335,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
                 child: new Text(
                   customHeaderTipText,
                   style:
-                      new TextStyle(fontSize: 18.0, color: Colors.greenAccent),
+                      new TextStyle(fontSize: 18.0, color: AppConst.appColor),
                 ),
               ),
             ),
@@ -511,7 +522,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   Widget search(BuildContext context) {
     return new Container(
       decoration: new BoxDecoration(
-        border: new Border.all(width: 1.0, color: Colors.greenAccent),
+        border: new Border.all(width: 1.0, color: AppConst.appColor),
       ),
       height: 50.0,
       child: new Row(
@@ -524,7 +535,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               alignment: Alignment.center,
               child: Text(
                 (null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
-                ,style: new TextStyle(fontSize: 18.0, color: Colors.greenAccent),),
+                ,style: new TextStyle(fontSize: 18.0, color: AppConst.appColor),),
             )),
           ),
           new Container(
@@ -532,7 +543,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -549,7 +560,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   Widget search2(BuildContext context) {
     return new Container(
       decoration: new BoxDecoration(
-        border: new Border.all(width: 2.0, color: Colors.greenAccent),
+        border: new Border.all(width: 2.0, color: AppConst.appColor),
       ),
       height: 50.0,
       child: new Row(
@@ -581,7 +592,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               icon: Icon(Icons.search),
               iconSize: 40.0,
               onPressed: _onSearch,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
           _addBoat(context),
@@ -590,7 +601,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
               icon: Icon(Icons.camera),
               iconSize: 40.0,
               onPressed: doScanCode,
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
             ),
           ),
         ],
@@ -603,7 +614,7 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
       icon: Icon(
         Icons.add_circle,
         size: 40.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: (){_getBoat(context);},
     );

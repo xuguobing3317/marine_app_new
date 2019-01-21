@@ -50,7 +50,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
     return new Scaffold(
       appBar: AppBar(
         title: Text('密码修改'),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
       ),
       body: getBody(),
     );
@@ -63,7 +63,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -73,7 +73,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
           child: new Center(
             child: new Text(
               '密码修改中...',
-              style: TextStyle(color: Colors.greenAccent),
+              style: TextStyle(color: AppConst.appColor),
             ),
           ),
         ),
@@ -112,7 +112,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
     return new Container(
       height: 1.0,
       child: new Divider(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
     );
   }
@@ -213,7 +213,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
                 child: new Container(
               padding: new EdgeInsets.fromLTRB(1.0, 1.0, 1.0, 1.0),
               child: new RaisedButton(
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
                 textTheme: ButtonTextTheme.normal,
                 elevation: 10,
                 highlightElevation: 10,

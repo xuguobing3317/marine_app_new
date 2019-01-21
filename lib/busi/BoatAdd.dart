@@ -72,7 +72,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         title: Text(
           '新增船舶'
         ),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: AppConst.appColor,
       ),
       body: isLoading?loading():geneColumn(),
     );
@@ -85,7 +85,7 @@ class BoatAddPageState extends State<BoatAddPage> {
           padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 35.0),
           child: new Center(
             child: SpinKitFadingCircle(
-              color: Colors.greenAccent,
+              color: AppConst.appColor,
               size: 30.0,
             ),
           ),
@@ -93,7 +93,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         new Padding(
           padding: new EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
           child: new Center(
-            child: new Text('船舶信息保存中...', style: TextStyle(color: Colors.greenAccent),),
+            child: new Text('船舶信息保存中...', style: TextStyle(color: AppConst.appColor),),
           ),
         ),
       ],
@@ -150,7 +150,7 @@ class BoatAddPageState extends State<BoatAddPage> {
                 child: new Container(
               padding: new EdgeInsets.fromLTRB(1.0, 0.0, 1.0, 0.0),
               child: new RaisedButton(
-                color: Colors.greenAccent,
+                color: AppConst.appColor,
                 elevation: 10,
                 highlightElevation: 10,
                 disabledElevation: 10,
@@ -380,7 +380,7 @@ class BoatAddPageState extends State<BoatAddPage> {
     return new Container(
       height: 1.0,
       child: new Divider(
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
     );
   }
@@ -391,7 +391,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       icon: Icon(
         Icons.navigation,
         size: 30.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: showGkTypePicker,
     );
@@ -405,9 +405,9 @@ class BoatAddPageState extends State<BoatAddPage> {
         changeToFirst: true,
         textAlign: TextAlign.left,
         cancelText: '取消',
-        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        cancelTextStyle: TextStyle(color: AppConst.appColor),
         confirmText: '确定',
-        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmTextStyle: TextStyle(color: AppConst.appColor),
         textStyle: TextStyle(fontSize: 30.0),
         // hideHeader: true,
         columnPadding: const EdgeInsets.all(8.0),
@@ -429,7 +429,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       icon: Icon(
         Icons.directions_boat,
         size: 30.0,
-        color: Colors.greenAccent,
+        color: AppConst.appColor,
       ),
       onPressed: showBoatTypePicker,
     );
@@ -443,9 +443,9 @@ class BoatAddPageState extends State<BoatAddPage> {
         changeToFirst: true,
         textAlign: TextAlign.left,
         cancelText: '取消',
-        cancelTextStyle: TextStyle(color: Colors.greenAccent),
+        cancelTextStyle: TextStyle(color: AppConst.appColor),
         confirmText: '确定',
-        confirmTextStyle: TextStyle(color: Colors.greenAccent),
+        confirmTextStyle: TextStyle(color: AppConst.appColor),
         textStyle: TextStyle(fontSize: 30.0),
         // hideHeader: true,
         columnPadding: const EdgeInsets.all(8.0),

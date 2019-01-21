@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppConst {
   static const String RESP_CODE = "type";
   static const String RESP_MSG = "message";
@@ -30,5 +32,7 @@ class AppConst {
     "18":"业务失败原因",
     "999999":"业务失败原因",
   };
+
+  static Color appColor = Color(0xFF449D44);
 
 }

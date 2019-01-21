@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marine_app/common/AppConst.dart';
 
 class MyContainUtils extends StatelessWidget {
   MyContainUtils(this.imageUrl);
@@ -27,11 +28,11 @@ class MyContainUtils extends StatelessWidget {
         width: screenWidth,
         height: 250.0,
         decoration: new BoxDecoration(
-          color: Colors.greenAccent,
+          color: AppConst.appColor,
           gradient: new LinearGradient(
             begin: const FractionalOffset(0.5, 0.0),
             end: const FractionalOffset(0.5, 1.0),
-            colors: <Color>[Colors.white,Colors.greenAccent],
+            colors: <Color>[Colors.white,AppConst.appColor],
           ),
         ),
       ),

@@ -32,7 +32,7 @@ class BoatListState extends State<BoatList>
   final TextEditingController boatController = new TextEditingController();
   int _rows = 10;
   String _order = 'Desc';
-  String _sort = 'CARNO1';
+  String _sort = 'INIUPDTIME';
   int total = -1;
   bool totalFlag = false;
 

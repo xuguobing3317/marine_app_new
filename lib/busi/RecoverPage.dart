@@ -942,6 +942,7 @@ class RecoverPageState extends State<RecoverPage> {
   }
 
   Future<bool> _forSubmitted() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(() {
       isLoading = true;
     });

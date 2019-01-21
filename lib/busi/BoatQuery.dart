@@ -15,7 +15,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'BoatList.dart';
-import 'package:qrcode_reader/qrcode_reader.dart';
 
 class BoatQuery extends StatefulWidget {
   @override

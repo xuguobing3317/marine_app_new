@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:marine_app/contain/MyWell_Screen.dart';
 import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/busi/BoatQuery.dart';
 import 'package:marine_app/busi/BoatAnalyse.dart';
@@ -103,55 +102,6 @@ class SwiperPageState extends State<HomePage> {
         },
         child: Text('回收',
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
-      ),
-    );
-  }
-
-  Widget mainWidget(BuildContext context) {
-    return new Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.width / 2 + 15,
-        width: MediaQuery.of(context).size.width,
-        child: new GridView.count(
-          childAspectRatio: 3.0,
-          primary: false,
-          padding: const EdgeInsets.all(10.0),
-          crossAxisSpacing: 10.0,
-          crossAxisCount: 2,
-          mainAxisSpacing: 6.0,
-          children: _ItemList(),
-        ));
-  }
-
-  List<Widget> _ItemList() {
-    List<Widget> widgetList = new List();
-    widgetList.add(getItemWidget('images/item1.png'));
-    widgetList.add(getItemWidget('images/item2.png'));
-    widgetList.add(getItemWidget('images/item3.png'));
-    widgetList.add(getItemWidget('images/item4.png'));
-    widgetList.add(getItemWidget('images/item3.png'));
-    widgetList.add(getItemWidget('images/item4.png'));
-    return widgetList;
-  }
-
-  Widget getItemWidget(String url) {
-    return Material(
-      child: new InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            new MaterialPageRoute(
-              builder: (context) {
-                return new MyWell_Screen();
-              },
-            ),
-          );
-        },
-        child: Image.asset(
-          url,
-          fit: BoxFit.cover,
-          width: 80.0,
-          height: 50.0,
-        ),
       ),
     );
   }

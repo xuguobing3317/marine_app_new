@@ -481,10 +481,6 @@ class BoatAnalyseState extends State<BoatAnalyse>
     });
   }
 
-  Widget _renderRow(BuildContext context, int index) {
-    return buildOutCard(index);
-  }
-
   Widget querying() {
     return new Stack(
       children: <Widget>[

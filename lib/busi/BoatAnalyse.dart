@@ -12,16 +12,20 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:pulltorefresh_flutter/pulltorefresh_flutter.dart';
+import 'BoatList.dart';
 
-class BoatAnalyseNew extends StatefulWidget {
+class BoatAnalyse extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => BoatAnalyseNewState();
+  State<StatefulWidget> createState() => BoatAnalyseState();
 }
 
-class BoatAnalyseNewState extends State<BoatAnalyseNew> {
+class BoatAnalyseState extends State<BoatAnalyse>
+    with TickerProviderStateMixin {
   String dataFlag = '1'; //1:标示初始化，  2;表示已经查询过
 
   String barcode = "";
+  String carid = "";
   String gangkou = "";
   final TextEditingController boatController = new TextEditingController();
   Color todayDateColor = AppConst.appColor;
@@ -48,92 +52,7 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
 
   int total = -1;
 
-  List<Map> dataMapQuery = [
-    {
-      'boatNo': 'ISO88090001',
-      'boatOwner': '苏州船0001',
-      'weight': '120.3',
-      'count': '32',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090002',
-      'boatOwner': '苏州船0002',
-      'weight': '67.3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090003',
-      'boatOwner': '苏州船0003',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090004',
-      'boatOwner': '苏州船0004',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090005',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090006',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090007',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090008',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090009',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090010',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090011',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-    {
-      'boatNo': 'ISO88090012',
-      'boatOwner': '苏州船0005',
-      'weight': '3',
-      'count': '3',
-      'dgtime': _time
-    },
-  ];
+  List<Map> dataMapQuery = [];
 
   List<Map> _queryItemMap = new List<Map>();
 
@@ -150,55 +69,41 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
   String rbType = '';
   String facid = '';
 
-  String total1 = '';
-  String total2 = '';
+  String total1 = '累计重量:0 KG';
+  String total2 = '累计趟次:0 次';
+
   Color bootSheetColor = Colors.white;
 
   ScrollController _scrollController = ScrollController();
 
   int _page = 1;
   int _rows = 10;
-  String _order = 'Desc';
+  String _order = 'Asc';
   String _sort = 'CARNO1';
 
   String url = marineURL.BoatAnalyseListUrl;
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
+
+  bool totalFlag = false;
+
+  ScrollController controller = new ScrollController();
+  ScrollPhysics scrollPhysics = new RefreshAlwaysScrollPhysics();
+
+  String customRefreshBoxIconPath = "images/icon_arrow.png";
+  AnimationController customBoxWaitAnimation;
+  int rotationAngle = 0;
+  String customHeaderTipText = "松开加载！";
+  String defaultRefreshBoxTipText = "松开加载！";
+
+  ///button等其他方式，通过方法调用触发下拉刷新
+  TriggerPullController triggerPullController = new TriggerPullController();
+
   @override
   void initState() {
     getGangkouData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (total != -1 && total > dataMap.length) {
-          _getMore();
-        }
-      }
-    });
+    customBoxWaitAnimation = new AnimationController(
+        duration: const Duration(milliseconds: 1000 * 100), vsync: this);
     super.initState();
-  }
-
-  Future _getMore() async {
-    setState(() {
-      dataFlag = '2';
-      _page++;
-    });
-    await getHttpData().then((_v) {
-      setState(() {
-        // _queryItemMap.addAll(dataMapQuery);
-        dataMap.addAll(_queryItemMap);
-        String _t1 = gettotal1();
-        String _t2 = gettotal2();
-        total1 = '累计重量:$_t1 KG';
-        total2 = '累计趟次:$_t2 次';
-        if (dataMap.length != 0) {
-          bootSheetColor = AppConst.appColor;
-          dataFlag = '3';
-        } else {
-          bootSheetColor = Colors.white;
-          dataFlag = '4';
-        }
-      });
-    });
   }
 
   Future<bool> getHttpData() async {
@@ -214,7 +119,7 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
       'endTime': endDate,
       'rbType': rbType,
       'Facid': gangkouId,
-      'Carid': barcode
+      'Carid': carid
     };
     String dbPath = await marineUser.createNewDb();
     Map uMap = await marineUser.getFirstData(dbPath);
@@ -237,7 +142,7 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
-        if (rescode == '14') {
+      if (rescode == '14') {
         Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
@@ -335,7 +240,7 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
 
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
-        if (rescode == '14') {
+      if (rescode == '14') {
         Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
@@ -385,44 +290,216 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
       ),
       body: Builder(builder: (context) => getBody(context)),
       endDrawer: getNavDrawer(context),
-      bottomSheet: new BottomSheet(
-        onClosing: () {},
-        builder: (BuildContext context) {
-          return new Container(
-              height: 40.0,
-              color: bootSheetColor,
-              child: new Row(
-                children: <Widget>[
-                  Expanded(
-                    child: new Text(
-                      '$total1\t\t$total2',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14.0, color: Colors.white),
-                    ),
-                  )
-                ],
-              ));
-        },
-      ),
+      bottomNavigationBar: getBottom(),
+      // bottomSheet: new BottomSheet(
+      //   onClosing: () {},
+      //   builder: (BuildContext context) {
+      //     return new Container(
+      //         height: 40.0,
+      //         color: bootSheetColor,
+      //         child: new Row(
+      //           children: <Widget>[
+      //             Expanded(
+      //               child: new Text(
+      //                 '$total1\t\t$total2',
+      //                 textAlign: TextAlign.center,
+      //                 style: TextStyle(fontSize: 14.0, color: Colors.white),
+      //               ),
+      //             )
+      //           ],
+      //         ));
+      //   },
+      // ),
     );
+  }
+
+  Widget getBottom() {
+    return new Container(
+        color: AppConst.appColor,
+        height: 40.0,
+        alignment: Alignment.center,
+        child: new Text(
+          '$total1\t\t$total2',
+          style: TextStyle(fontSize: 16.0, color: Colors.white),
+        ));
   }
 
   Widget getBody(BuildContext context) {
     if (dataFlag == '1') {
       return loading(context);
     } else if (dataFlag == '3') {
-      return RefreshIndicator(
-        onRefresh: _forSubmitted,
-        child: ListView.builder(
-            itemBuilder: _renderRow,
-            itemCount: dataMap.length,
-            controller: _scrollController),
-      );
+      return getBody2();
     } else if (dataFlag == '4') {
       return noData(context);
     } else {
       return querying();
     }
+  }
+
+  Widget _getCustomHeaderBox() {
+    return new Container(
+        color: Colors.grey,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Align(
+              alignment: Alignment.centerLeft,
+              child: new RotatedBox(
+                quarterTurns: rotationAngle,
+                child: new RotationTransition(
+                  //布局中加载时动画的weight
+                  child: new Image.asset(
+                    customRefreshBoxIconPath,
+                    height: 45.0,
+                    width: 45.0,
+                    fit: BoxFit.cover,
+                  ),
+                  turns: new Tween(begin: 100.0, end: 0.0)
+                      .animate(customBoxWaitAnimation)
+                        ..addStatusListener((animationStatus) {
+                          if (animationStatus == AnimationStatus.completed) {
+                            customBoxWaitAnimation.repeat();
+                          }
+                        }),
+                ),
+              ),
+            ),
+            new Align(
+              alignment: Alignment.centerRight,
+              child: new ClipRect(
+                child: new Text(
+                  customHeaderTipText,
+                  style:
+                      new TextStyle(fontSize: 18.0, color: AppConst.appColor),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget getBody2() {
+    return new PullAndPush(
+      defaultRefreshBoxTipText: defaultRefreshBoxTipText,
+      headerRefreshBox: _getCustomHeaderBox(),
+      footerRefreshBox: _getCustomHeaderBox(),
+      triggerPullController: triggerPullController,
+      animationStateChangedCallback: (AnimationStates animationStates,
+          RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+        _handleStateCallback(animationStates, refreshBoxDirectionStatus);
+      },
+      listView: new ListView.builder(
+          //ListView的Item
+          itemCount: dataMap.length, //+2,
+          controller: controller,
+          physics: scrollPhysics,
+          itemBuilder: (BuildContext context, int index) {
+            return buildOutCard(index);
+          }),
+      loadData: (isPullDown) async {
+        await _loadData(isPullDown);
+      },
+      scrollPhysicsChanged: (ScrollPhysics physics) {
+        //这个不用改，照抄即可；This does not need to change，only copy it
+        setState(() {
+          scrollPhysics = physics;
+        });
+      },
+    );
+  }
+
+  void _handleStateCallback(AnimationStates animationStates,
+      RefreshBoxDirectionStatus refreshBoxDirectionStatus) {
+    switch (animationStates) {
+      //RefreshBox高度达到50,上下拉刷新可用;RefreshBox height reached 50，the function of load data is  available
+      case AnimationStates.DragAndRefreshEnabled:
+        setState(() {
+          //3.141592653589793是弧度，角度为180度,旋转180度；3.141592653589793 is radians，angle is 180⁰，Rotate 180⁰
+          rotationAngle = 2;
+        });
+        break;
+
+      //开始加载数据时；When loading data starts
+      case AnimationStates.StartLoadData:
+        setState(() {
+          customRefreshBoxIconPath = "images/refresh.png";
+          customHeaderTipText = "加载.....";
+        });
+        customBoxWaitAnimation.forward();
+        break;
+
+      //加载完数据时；RefreshBox会留在屏幕2秒，并不马上消失，这里可以提示用户加载成功或者失败
+      // After loading the data，RefreshBox will stay on the screen for 2 seconds, not disappearing immediately，Here you can prompt the user to load successfully or fail.
+      case AnimationStates.LoadDataEnd:
+        customBoxWaitAnimation.reset();
+        setState(() {
+          rotationAngle = 0;
+          if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            customHeaderTipText = "加载成功！";
+          } else if (refreshBoxDirectionStatus ==
+              RefreshBoxDirectionStatus.PUSH) {
+            customRefreshBoxIconPath = "images/icon_ok.png";
+            if (totalFlag) {
+              customHeaderTipText = "没有更多数据了";
+            } else {
+              customHeaderTipText = "加载成功！";
+            }
+          }
+        });
+        break;
+
+      //RefreshBox已经消失，并且闲置；RefreshBox has disappeared and is idle
+      case AnimationStates.RefreshBoxIdle:
+        setState(() {
+          rotationAngle = 0;
+          defaultRefreshBoxTipText = customHeaderTipText = "松开加载";
+          customRefreshBoxIconPath = "images/icon_arrow.png";
+        });
+        break;
+    }
+  }
+
+  Future _loadData(bool isPullDown) async {
+    if (!isPullDown) {
+      setState(() {
+        if (dataMap.length == total) {
+          totalFlag = true;
+        } else {
+          totalFlag = false;
+          _page++;
+        }
+      });
+      if (dataMap.length != total) {
+        toGetData(isPullDown);
+      }
+    } else {
+      setState(() {
+        totalFlag = false;
+        _page = 1;
+      });
+      toGetData(isPullDown);
+    }
+  }
+
+  Future toGetData(isPullDown) async {
+    await getHttpData().then((_v) {
+      setState(() {
+        if (isPullDown) {
+          dataMap.clear();
+        }
+        dataMap.addAll(_queryItemMap);
+        String _t1 = gettotal1();
+        String _t2 = gettotal2();
+        total1 = '累计重量:$_t1 KG';
+        total2 = '累计趟次:$_t2 次';
+        if (dataMap.length != 0) {
+          dataFlag = '3';
+        } else {
+          dataFlag = '4';
+        }
+      });
+    });
   }
 
   Widget _renderRow(BuildContext context, int index) {
@@ -551,31 +628,35 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
   // }
 
   Widget noData(BuildContext context) {
-    return new Stack(
-      children: <Widget>[
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
-          child: new Center(
-              child: new InkWell(
-            onTap: () {},
-            child: Icon(
-              Icons.data_usage,
-              size: 100.0,
-              color: AppConst.appColor,
+    return new InkWell(
+        onTap: () {
+          _handlerDrawerButton2(context);
+        },
+        child: new Stack(
+          children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 80.0),
+              child: new Center(
+                  child: new InkWell(
+                onTap: () {},
+                child: Icon(
+                  Icons.data_usage,
+                  size: 100.0,
+                  color: AppConst.appColor,
+                ),
+              )),
             ),
-          )),
-        ),
-        new Padding(
-          padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
-          child: new Center(
-            child: new Text(
-              '未查询到数据',
-              style: TextStyle(color: AppConst.appColor),
+            new Padding(
+              padding: new EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
+              child: new Center(
+                child: new Text(
+                  '未查询到数据',
+                  style: TextStyle(color: AppConst.appColor),
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
   }
 
   Widget loading(BuildContext context) {
@@ -625,7 +706,7 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
 
     var myNavChildren = [
       // headerChild,
-      search(),
+      search(context),
       Divider(),
       getNavItem("时间:  $dateView"),
 
@@ -790,101 +871,86 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-          contentPadding: EdgeInsets.only(left: 1.0, right: 1.0),
-          leading: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(
-                Icons.directions_boat,
-                size: 45.0,
-                color: AppConst.appColor,
-              )
-            ],
-          ),
-          title: Padding(
-            padding: EdgeInsets.only(bottom: 1.0),
-            child: Text(
-              '船号: $boatNo',
-              maxLines: 2,
-              textAlign: TextAlign.start,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: AppConst.appColor, fontSize: 16.0),
+            contentPadding: EdgeInsets.only(left: 1.0, right: 1.0),
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  Icons.directions_boat,
+                  size: 45.0,
+                  color: AppConst.appColor,
+                )
+              ],
             ),
-          ),
-          subtitle: 
-          
-          new Container(
-                child: new Column(
-                  children: <Widget>[
-                    new Row(
-                      children: <Widget>[
-                        Padding(
-                    padding: const EdgeInsets.only(right: 1.0),
-                    child: Text(
-                      "港口:$facName",
-                      style: TextStyle(fontSize: 13.0),
-                    ),
-                  ),
-                      ],
-                    ),
-                    new Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            '重量: $weight KG',
-                            style: TextStyle(fontSize: 13.0),
-                          ),
+            title: Padding(
+              padding: EdgeInsets.only(bottom: 1.0),
+              child: Text(
+                '船号: $boatNo',
+                maxLines: 2,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: AppConst.appColor, fontSize: 16.0),
+              ),
+            ),
+            subtitle: new Container(
+              child: new Column(
+                children: <Widget>[
+                  new Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 1.0),
+                        child: Text(
+                          "港口:$facName",
+                          style: TextStyle(fontSize: 13.0),
                         ),
-                        Expanded(
-                          child: Text(
-                            '趟次: $count 次',
-                            style: TextStyle(fontSize: 13.0),
-                          ),
-                        )
-                      ],
-                    ),
-                    new Row(
-                      children: <Widget>[
-                        Padding(
-                    padding: const EdgeInsets.only(right: 1.0),
-                    child: Text(
-                      "最近到港时间:$dgtime",
-                      style: TextStyle(fontSize: 13.0),
-                    ),
+                      ),
+                    ],
                   ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-        ),
+                  new Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          '重量: $weight KG',
+                          style: TextStyle(fontSize: 13.0),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          '趟次: $count 次',
+                          style: TextStyle(fontSize: 13.0),
+                        ),
+                      )
+                    ],
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 1.0),
+                        child: Text(
+                          "最近到港时间:$dgtime",
+                          style: TextStyle(fontSize: 13.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )),
       ),
     );
   }
 
-  Widget search() {
+  Widget search(BuildContext context) {
     return new Container(
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
-            child: new Container(
-              alignment: Alignment.center,
-              child: TextField(
-                controller: boatController,
-                onChanged: (word) => barcode = word,
-                style: new TextStyle(fontSize: 15.0, color: Colors.black),
-                decoration: new InputDecoration(
-                  contentPadding: EdgeInsets.all(10.0),
-                  hintText: '请输入船舶号 ',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide(color: Colors.grey)),
-                  labelStyle:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0),
-                  hintStyle: TextStyle(fontSize: 12.0, color: Colors.grey),
-                ),
-              ),
+            child: new InkWell(
+              onTap: (){_getBoat(context);},
+              child: Text((null==barcode || barcode.isEmpty)? '选择船舶或扫描':'$barcode'
+                ,style: new TextStyle(fontSize: 18.0, color: AppConst.appColor),
+                textAlign: TextAlign.center,),
             ),
           ),
           new Container(
@@ -898,6 +964,32 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
         ],
       ),
     );
+  }
+
+
+  Widget _addBoat(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.add_circle,
+        size: 40.0,
+        color: AppConst.appColor,
+      ),
+      onPressed: (){_getBoat(context);},
+    );
+  }
+
+  Future<void> _getBoat(BuildContext context) async {
+    var result = await Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BoatList()));
+    setState(() {
+          // barcode = boatNo;
+          // boatController.text = boatNo;
+
+          Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          carid = _dataMap['carid'];
+        });
   }
 
   Widget getDateButton(String title, Color color, String range) {
@@ -1143,13 +1235,13 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
           String _value = value[0].toString();
           int index = int.parse(_value);
           if (index != 0) {
-             setState(() {
+            setState(() {
               gangkouName = gangkouList3[index]['FACNAME'];
               gangkouId = gangkouList3[index]['FACID'];
               gangkouColor = AppConst.appColor;
             });
           } else {
-             setState(() {
+            setState(() {
               gangkouName = '';
               gangkouId = '';
               gangkouColor = Colors.grey;
@@ -1178,16 +1270,19 @@ class BoatAnalyseNewState extends State<BoatAnalyseNew> {
 
   Future<bool> scanCode() async {
     try {
-      barcode = await BarcodeScanner.scan();
+      String result = await BarcodeScanner.scan();
       setState(() {
-        boatController.text = barcode;
+        Map _dataMap = json.decode(result);
+          barcode =  _dataMap['carno1'];
+          boatController.text = barcode;
+          carid = _dataMap['carid'];
         return true;
       });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
           Fluttertoast.showToast(
-              msg: " 请打开权限 ",
+              msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIos: 1,

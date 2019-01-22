@@ -70,7 +70,6 @@ class BoatAnalyseState extends State<BoatAnalyse>
   String facid = '';
 
   String total1 = '累计重量:0 KG';
-  String total2 = '累计趟次:0 次';
 
   Color bootSheetColor = Colors.white;
 
@@ -291,25 +290,6 @@ class BoatAnalyseState extends State<BoatAnalyse>
       body: Builder(builder: (context) => getBody(context)),
       endDrawer: getNavDrawer(context),
       bottomNavigationBar: getBottom(),
-      // bottomSheet: new BottomSheet(
-      //   onClosing: () {},
-      //   builder: (BuildContext context) {
-      //     return new Container(
-      //         height: 40.0,
-      //         color: bootSheetColor,
-      //         child: new Row(
-      //           children: <Widget>[
-      //             Expanded(
-      //               child: new Text(
-      //                 '$total1\t\t$total2',
-      //                 textAlign: TextAlign.center,
-      //                 style: TextStyle(fontSize: 14.0, color: Colors.white),
-      //               ),
-      //             )
-      //           ],
-      //         ));
-      //   },
-      // ),
     );
   }
 
@@ -319,7 +299,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
         height: 40.0,
         alignment: Alignment.center,
         child: new Text(
-          '$total1\t\t$total2',
+          '$total1',
           style: TextStyle(fontSize: 16.0, color: Colors.white),
         ));
   }
@@ -491,8 +471,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
         dataMap.addAll(_queryItemMap);
         String _t1 = gettotal1();
         String _t2 = gettotal2();
-        total1 = '累计重量:$_t1 KG';
-        total2 = '累计趟次:$_t2 次';
+        total1 = '累计重量:$_t1 KG,累计趟次:$_t2 次';
         if (dataMap.length != 0) {
           dataFlag = '3';
         } else {
@@ -830,8 +809,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
         dataMap.addAll(_queryItemMap);
         String _t1 = gettotal1();
         String _t2 = gettotal2();
-        total1 = '累计重量:$_t1吨';
-        total2 = '累计趟次:$_t2次';
+        total1 = '累计重量:$_t1 KG,累计趟次:$_t2 次';
         if (dataMap.length != 0) {
           bootSheetColor = AppConst.appColor;
           dataFlag = '3';

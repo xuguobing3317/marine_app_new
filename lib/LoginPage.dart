@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
+import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:http/http.dart' as http;
 import 'package:marine_app/contain/MyContainUtils.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:marine_app/common/AppUrl.dart' as marineURL;
 import 'package:marine_app/common/AppConst.dart';
 import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -18,10 +18,9 @@ class MyLoginWidget extends StatefulWidget {
   State<StatefulWidget> createState() => MyLoginState();
 }
 
-
-class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
+class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  var demonPlugin=new MethodChannel('marine.plugin');
+  var demonPlugin = new MethodChannel('marine.plugin');
 
   DBUtil.MarineUserProvider marineUser = new DBUtil.MarineUserProvider();
   AppLifecycleState _lastLifecycleState;
@@ -40,55 +39,53 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     Map uMap = await marineUser.getFirstData(dbPath);
     String flag = "0";
     if (select) {
-        flag = "1";
+      flag = "1";
     }
     if (uMap == null) {
-        DBUtil.MarineUser mUser = new DBUtil.MarineUser();
-        mUser.name = _userPhone;
-        mUser.pwd = _passWold;
-        mUser.flag = flag;
-        mUser.token = _token;
-        await marineUser.insert(mUser.toMap(), dbPath);
+      DBUtil.MarineUser mUser = new DBUtil.MarineUser();
+      mUser.name = _userPhone;
+      mUser.pwd = _passWold;
+      mUser.flag = flag;
+      mUser.token = _token;
+      await marineUser.insert(mUser.toMap(), dbPath);
     } else {
       DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
-        if (flag == "0") {
-            await marineUser.delete(mUser.id, dbPath);
-        } else {
-        mUser.name = _userPhone;
-        mUser.pwd = _passWold;
-        mUser.flag = flag;
-        mUser.token = _token;
-        await marineUser.update(mUser.toMap(), dbPath);}
+      mUser.name = _userPhone;
+      mUser.pwd = _passWold;
+      mUser.flag = flag;
+      mUser.token = _token;
+      await marineUser.update(mUser.toMap(), dbPath);
     }
-    
   }
-   AnimationController animationController;
-   final TextEditingController userNameController = new TextEditingController();
-   final TextEditingController passwordController = new TextEditingController();
+
+  AnimationController animationController;
+  final TextEditingController userNameController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    animationController=new AnimationController(vsync:this,duration:Duration(milliseconds: 2000));
-    getDataForSql().then((dataMap){
+    animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 2000));
+    getDataForSql().then((dataMap) {
       if (null != dataMap) {
-
-      setState(() {
-        _userPhone = dataMap[DBUtil.columnName];
-        _passWold = dataMap[DBUtil.columnPwd];
-        String _flag =  dataMap[DBUtil.columnFlag];
-        if (_flag == null || _flag.isEmpty || _flag == '0') {
-          select =  false;
-        } else{
-          select = true;
-        }
-        _id = dataMap[DBUtil.columnId];
-        userNameController.text = _userPhone;
-        passwordController.text = _passWold;
-      });
+        setState(() {
+          _userPhone = dataMap[DBUtil.columnName];
+          _passWold = dataMap[DBUtil.columnPwd];
+          String _flag = dataMap[DBUtil.columnFlag];
+          if (_flag == null || _flag.isEmpty || _flag == '0') {
+            select = false;
+            _userPhone = '';
+            _passWold = '';
+          } else {
+            select = true;
+          }
+          _id = dataMap[DBUtil.columnId];
+          userNameController.text = _userPhone;
+          passwordController.text = _passWold;
+        });
       }
     });
-      
   }
 
   Future<Map> getDataForSql() async {
@@ -107,42 +104,43 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     }
   }
 
-  Future<bool> _Login  (
+  Future<bool> _Login(
       String userName, String password, BuildContext context) async {
+    if (null == userName || userName.isEmpty) {
+      Fluttertoast.showToast(
+          msg: '请输入用户名',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Color(0xFF499292),
+          textColor: Color(0xFFFFFFFF));
+      return false;
+    }
 
-        if (null== userName || userName.isEmpty) {
-          Fluttertoast.showToast(
-              msg: '请输入用户名',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIos:1,
-              backgroundColor: Color(0xFF499292),
-              textColor: Color(0xFFFFFFFF)
-          );
-          return false;
-        }
+    if (null == password || password.isEmpty) {
+      Fluttertoast.showToast(
+          msg: '请输入密码',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Color(0xFF499292),
+          textColor: Color(0xFFFFFFFF));
+      return false;
+    }
 
-        if (null == password || password.isEmpty) {
-          Fluttertoast.showToast(
-              msg: '请输入密码',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIos:1,
-              backgroundColor: Color(0xFF499292),
-              textColor: Color(0xFFFFFFFF)
-          );
-          return false;
-        }
-
-        setState(() {
-                  _isLoading = true;
-                });
+    setState(() {
+      _isLoading = true;
+    });
     String url = marineURL.LoginUrl;
     bool result;
     try {
-      Map _params = {'UserName':userName, 'Password':password};
-      Map<String,String> headers = {'OsName':Platform.operatingSystem.toUpperCase()};
-      result = await http.post(url, body: _params, headers: headers).then((http.Response response) {
+      Map _params = {'UserName': userName, 'Password': password};
+      Map<String, String> headers = {
+        'OsName': Platform.operatingSystem.toUpperCase()
+      };
+      result = await http
+          .post(url, body: _params, headers: headers)
+          .then((http.Response response) {
         var data = json.decode(response.body);
         print('请求报文:body:$_params');
         print('请求报文:headers:$headers');
@@ -153,39 +151,38 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
         if (rescode != '10') {
           String _msg = '登录失败';
           if (resMsg != null) {
-              _msg = "登录失败[$resMsg]";
+            _msg = "登录失败[$resMsg]";
           }
           setState(() {
-              _isLoading = false;
+            _isLoading = false;
           });
           Fluttertoast.showToast(
               msg: _msg,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
-              timeInSecForIos:1,
+              timeInSecForIos: 1,
               backgroundColor: Color(0xFF499292),
-              textColor: Color(0xFFFFFFFF)
-          );
+              textColor: Color(0xFFFFFFFF));
         } else {
           setState(() {
             var content = json.decode(data[AppConst.RESP_DATA]);
-                       _token = content['token'];
-                    });
+            _token = content['token'];
+          });
           _savaDate2DB();
           var _duration = new Duration(seconds: 1);
-          new Future.delayed(_duration, (){
+          new Future.delayed(_duration, () {
             setState(() {
               _isLoading = false;
-          });
-          Navigator.of(context).pushReplacementNamed('/HomePage', result: _token);
-          Fluttertoast.showToast(
-              msg: "  登录成功！ ",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIos:1,
-              backgroundColor: Color(0xFF499292),
-              textColor: Color(0xFFFFFFFF)
-          );
+            });
+            Navigator.of(context)
+                .pushReplacementNamed('/HomePage', result: _token);
+            Fluttertoast.showToast(
+                msg: "  登录成功！ ",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                backgroundColor: Color(0xFF499292),
+                textColor: Color(0xFFFFFFFF));
           });
         }
       });
@@ -216,7 +213,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     final height_screen = MediaQuery.of(context).size.height;
     final width_srcreen = MediaQuery.of(context).size.width;
     return Scaffold(
-      resizeToAvoidBottomPadding:false,
+      resizeToAvoidBottomPadding: false,
       key: scaffoldState,
       backgroundColor: Colors.white,
       body: new GestureDetector(
@@ -252,7 +249,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                           style: new TextStyle(
                               fontSize: 15.0, color: Colors.black),
                           decoration: new InputDecoration(
-                            icon: Icon(Icons.person),
+                              icon: Icon(Icons.person),
                               hintText: '请输入您的用户名',
                               labelText: "用户名",
                               labelStyle: TextStyle(
@@ -269,7 +266,7 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                           style: new TextStyle(
                               fontSize: 15.0, color: Colors.black),
                           decoration: new InputDecoration(
-                            icon: Icon(Icons.lock),
+                              icon: Icon(Icons.lock),
                               hintText: '请输入您的密码',
                               labelText: "密码",
                               labelStyle: TextStyle(
@@ -279,40 +276,36 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                         new SizedBox(
                           height: 15.0,
                         ),
-
                         new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             InkWell(
-                              child:
-                              new Container(
-                                 alignment: Alignment.center,
-                                 child: new Row(
-                                   children: <Widget>[
-                                     new Text(
-                                       '记住密码', 
-                                       textAlign:TextAlign.right,
-                                       style: TextStyle(
-                                        color: Colors.black38,
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-                                      new SizedBox(
-                                        width: 20.0,
-                                        child: 
-                                        new Checkbox(
-                                      value: select,
-                                      materialTapTargetSize:MaterialTapTargetSize.padded,
-                                      onChanged: (bool cb) {
-                                        setState(() {
-                                          select = cb;
-                                        });
-                                      }),
-                                      ),
-                                     
-                                   ],
-                                 ),
+                              child: new Container(
+                                alignment: Alignment.center,
+                                child: new Row(
+                                  children: <Widget>[
+                                    new Text(
+                                      '记住密码',
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                          color: Colors.black38,
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    new SizedBox(
+                                      width: 20.0,
+                                      child: new Checkbox(
+                                          value: select,
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.padded,
+                                          onChanged: (bool cb) {
+                                            setState(() {
+                                              select = cb;
+                                            });
+                                          }),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             InkWell(
@@ -329,11 +322,9 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                             )
                           ],
                         ),
-
                         new SizedBox(
                           height: 1.0,
                         ),
-                        
                         Material(
                           elevation: 10.0,
                           color: Colors.transparent,
@@ -365,13 +356,12 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
                             ),
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
                 ),
               ),
-                        _loadingContainer(),
+              _loadingContainer(),
             ],
           ),
           decoration: new BoxDecoration(
@@ -386,20 +376,20 @@ class MyLoginState extends State<MyLoginWidget>  with TickerProviderStateMixin{
     );
   }
 
-
-   Widget _loadingContainer () { 
-  return !_isLoading?SizedBox(height:1.0):
-  Container(
-        constraints: BoxConstraints.expand(),
-        color: Colors.black12,
-        child: Center(
-          child: Opacity(
-            opacity: 0.9,
-            child: SpinKitCircle(
-              color: Colors.blueAccent,
-              size: 50.0,
-            ),
-          ),
-        ));
-        }
+  Widget _loadingContainer() {
+    return !_isLoading
+        ? SizedBox(height: 1.0)
+        : Container(
+            constraints: BoxConstraints.expand(),
+            color: Colors.black12,
+            child: Center(
+              child: Opacity(
+                opacity: 0.9,
+                child: SpinKitCircle(
+                  color: Colors.blueAccent,
+                  size: 50.0,
+                ),
+              ),
+            ));
+  }
 }

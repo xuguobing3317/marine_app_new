@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'SplashPage.dart';
 import 'LoginPage.dart';
 import 'HomePage.dart';
-import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
 void main() {
-  // debugPaintSizeEnabled = true;
   runApp(new MyApp());
 } 
 

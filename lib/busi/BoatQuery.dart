@@ -9,11 +9,6 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:marine_app/common/AppUrl.dart' as marineURL;
-import 'package:marine_app/common/AppConst.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'BoatList.dart';
 
 class BoatQuery extends StatefulWidget {
@@ -439,13 +434,6 @@ class BoatQueryPageState extends State<BoatQuery> {
     print('开始扫描二位吗');
     try {
       String result = await BarcodeScanner.scan();
-      // String result = await QRCodeReader()
-      //  .setAutoFocusIntervalInMs(200) // default 5000
-      //          .setForceAutoFocus(true) // default false
-      //          .setTorchEnabled(true) // default false
-      //          .setHandlePermissions(true)// default true
-      //           .setExecuteAfterPermissionGranted(true) // default true
-      //          .scan(); 
       setState(() {
         Map _dataMap = json.decode(result);
           barcode =  _dataMap['carno1'];

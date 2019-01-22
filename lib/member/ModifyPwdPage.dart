@@ -6,7 +6,6 @@ import 'package:marine_app/common/AppConst.dart';
 import 'package:marine_app/common/SqlUtils.dart' as DBUtil;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:marine_app/busi/MemberCenter.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/rendering.dart';
 

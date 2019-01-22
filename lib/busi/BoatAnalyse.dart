@@ -69,7 +69,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
   String rbType = '';
   String facid = '';
 
-  String total1 = '累计重量:0 KG';
+  String total1 = '累计重量:0 KG,累计趟次:0 次';
 
   Color bootSheetColor = Colors.white;
 

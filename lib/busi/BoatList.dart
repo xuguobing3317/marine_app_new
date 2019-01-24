@@ -87,7 +87,7 @@ class BoatListState extends State<BoatList>
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
         if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -98,7 +98,7 @@ class BoatListState extends State<BoatList>
       } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -537,7 +537,7 @@ Future _loadData(bool isPullDown) async {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请打开权限 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -548,7 +548,7 @@ Future _loadData(bool isPullDown) async {
         });
       } else {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -560,7 +560,7 @@ Future _loadData(bool isPullDown) async {
       }
     } on FormatException {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -571,7 +571,7 @@ Future _loadData(bool isPullDown) async {
       });
     } catch (e) {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

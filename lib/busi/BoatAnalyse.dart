@@ -142,7 +142,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
       if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -153,7 +153,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -240,7 +240,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1255,7 +1255,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -1266,7 +1266,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
         });
       } else {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -1278,7 +1278,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       }
     } on FormatException {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1289,7 +1289,7 @@ class BoatAnalyseState extends State<BoatAnalyse>
       });
     } catch (e) {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

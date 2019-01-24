@@ -101,7 +101,7 @@ class RecoverPageState extends State<RecoverPage> {
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
         if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -821,7 +821,7 @@ class RecoverPageState extends State<RecoverPage> {
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
         if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -832,7 +832,7 @@ class RecoverPageState extends State<RecoverPage> {
       } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -890,7 +890,7 @@ class RecoverPageState extends State<RecoverPage> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请打开权限 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -901,7 +901,7 @@ class RecoverPageState extends State<RecoverPage> {
         });
       } else {
         setState(() {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -913,7 +913,7 @@ class RecoverPageState extends State<RecoverPage> {
       }
     } on FormatException {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -924,7 +924,7 @@ class RecoverPageState extends State<RecoverPage> {
       });
     } catch (e) {
       setState(() {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -943,7 +943,7 @@ class RecoverPageState extends State<RecoverPage> {
     });
     try {
       if (barcode == '') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请扫描船舶二维码 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -957,7 +957,7 @@ class RecoverPageState extends State<RecoverPage> {
       }
 
       if (facId == '') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请选择港口 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -971,7 +971,7 @@ class RecoverPageState extends State<RecoverPage> {
       }
 
       if (_fomesWeight == '') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请输入污染物重量 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -985,7 +985,7 @@ class RecoverPageState extends State<RecoverPage> {
       }
 
       if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(_fomesWeight)) {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: " 请输入正确的污染物重量 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1028,7 +1028,7 @@ class RecoverPageState extends State<RecoverPage> {
         String rescode = '$type';
         String resMsg = data[AppConst.RESP_MSG];
           if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1038,7 +1038,7 @@ class RecoverPageState extends State<RecoverPage> {
         _logout();
       } else
         if (rescode != '10') {
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: " 保存失败[$resMsg] ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -1053,7 +1053,7 @@ class RecoverPageState extends State<RecoverPage> {
               return new RecoverListPageNew();
             },
           ));
-          Fluttertoast.showToast(
+          Fluttertoast.instance.showToast(
               msg: "  保存成功！ ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
@@ -1064,7 +1064,7 @@ class RecoverPageState extends State<RecoverPage> {
       });
     } catch (e) {
       debugPrint(e);
-      Fluttertoast.showToast(
+      Fluttertoast.instance.showToast(
           msg: " 保存失败 ",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,

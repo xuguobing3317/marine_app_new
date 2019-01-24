@@ -84,7 +84,7 @@ List urlList = [];
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
       if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -94,7 +94,7 @@ List urlList = [];
         _logout();
       } else if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -234,7 +234,7 @@ List urlList = [];
     if (null == h5Url || h5Url.isEmpty 
     // || !h5Url.toLowerCase().startsWith('http')
     ) {
-      Fluttertoast.showToast(
+      Fluttertoast.instance.showToast(
               msg: " 您点击的是:$_title ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,

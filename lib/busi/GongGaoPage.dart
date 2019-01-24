@@ -82,7 +82,7 @@ class GongGaoPageState extends State<GongGaoPage>
       String resMsg = data[AppConst.RESP_MSG];
 
         if (rescode == '14') {
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -93,7 +93,7 @@ class GongGaoPageState extends State<GongGaoPage>
       } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.showToast(
+        Fluttertoast.instance.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

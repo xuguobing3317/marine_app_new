@@ -1,6 +1,6 @@
 //服务器URL
-const BaseUrl = 'http://40.73.5.106:10522/api';
-//const BaseUrl = 'https://www.szbomar.cn/api';
+//const BaseUrl = 'http://40.73.5.106:10522/api';
+const BaseUrl = 'https://www.szbomar.cn/api';
 
 //登录URL
 //params:UserName Password

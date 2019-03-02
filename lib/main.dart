@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'SplashPage.dart';
 import 'LoginPage.dart';
 import 'HomePage.dart';
+import 'dart:io';
 
 void main() {
   runApp(new MyApp());
@@ -26,5 +27,17 @@ class MyApp extends StatelessWidget {
         '/HomePage': (BuildContext context) =>  new HomePage()
       },
     );
+  }
+
+
+  Widget getHome() {
+    if(Platform.isIOS){
+      //ios相关代码
+      return new MyLoginWidget();
+    }else if(Platform.isAndroid){
+      //android相关代码
+      return new SplashPage();
+    }
+    return null;
   }
 }

@@ -149,7 +149,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       String resMsg = data[AppConst.RESP_MSG];
         
   if (rescode == '14') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -160,7 +160,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       } else
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -238,7 +238,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       String msg = data[AppConst.RESP_MSG];
       String rescode = '$type';
         if (rescode == '14') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -248,7 +248,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         _logout();
       } else
       if (rescode != '10') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '$msg',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1193,7 +1193,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: " 请打开权限 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -1204,7 +1204,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         });
       } else {
         setState(() {
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -1216,7 +1216,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       }
     } on FormatException {
       setState(() {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -1227,7 +1227,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
       });
     } catch (e) {
       setState(() {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

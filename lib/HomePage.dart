@@ -393,7 +393,7 @@ class SwiperPageState extends State<HomePage> {
       int type = data[AppConst.RESP_CODE];
       String rescode = '$type';
       if (rescode == '14') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

@@ -21,14 +21,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
-                                <rect key="frame" x="187" y="333" width="1" height="1"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="spash2.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="yG9-mG-sGl">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
+                            <constraint firstAttribute="trailing" secondItem="yG9-mG-sGl" secondAttribute="trailing" id="00O-5M-NKI"/>
+                            <constraint firstItem="yG9-mG-sGl" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Gl3-jB-7Jm"/>
+                            <constraint firstItem="yG9-mG-sGl" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="TT1-Sz-EQu"/>
+                            <constraint firstAttribute="bottom" secondItem="yG9-mG-sGl" secondAttribute="bottom" id="WHB-Kh-812"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +40,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="0.5" height="0.5"/>
+        <image name="spash2.jpg" width="1474" height="2371"/>
     </resources>
 </document>

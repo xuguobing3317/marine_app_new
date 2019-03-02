@@ -1,5 +1,4 @@
+keytool -genkeypair -alias /Users/crazy/Documents/GitHub/marine_app_new/apk.keystore -keyalg RSA -validity 100000 -keystore /Users/crazy/Documents/GitHub/marine_app_new/apk.keystore
 
 
-keytool -genkeypair -alias /Users/weslie/Documents/marine_app_new/apk.keystore -keyalg RSA -validity 100000 -keystore /Users/weslie/Documents/marine_app_new/apk.keystore
-
-jarsigner -verbose -keystore /Users/weslie/Documents/marine_app_new/apk.keystore -signedjar /Users/weslie/Documents/marine_app_new/build/app/outputs/apk/release/marine.apk /Users/weslie/Documents/marine_app_new/build/app/outputs/apk/release/app-release-unsigned.apk /Users/weslie/Documents/marine_app_new/apk.keystore 
+jarsigner -verbose -keystore /Users/crazy/Documents/GitHub/marine_app_new/apk.keystore -signedjar /Users/crazy/Documents/GitHub/marine_app_new/build/app/outputs/apk/release/marine.apk /Users/crazy/Documents/GitHub/marine_app_new/build/app/outputs/apk/release/app-release-unsigned.apk /Users/crazy/Documents/GitHub/marine_app_new/apk.keystore

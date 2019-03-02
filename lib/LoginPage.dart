@@ -96,7 +96,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
   }
 
   _launchURL() async {
-    const url = 'tel:13888888888';
+    const url = 'tel:13764204000';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -107,7 +107,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
   Future<bool> _Login(
       String userName, String password, BuildContext context) async {
     if (null == userName || userName.isEmpty) {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
           msg: '请输入用户名',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -118,7 +118,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
     }
 
     if (null == password || password.isEmpty) {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
           msg: '请输入密码',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -156,7 +156,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
           setState(() {
             _isLoading = false;
           });
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: _msg,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -176,7 +176,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
             });
             Navigator.of(context)
                 .pushReplacementNamed('/HomePage', result: _token);
-            Fluttertoast.instance.showToast(
+            Fluttertoast.showToast(
                 msg: "  登录成功！ ",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,

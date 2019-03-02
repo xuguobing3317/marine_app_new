@@ -187,7 +187,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         });
     try {
       if (carType == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请选择船舶类型 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -201,7 +201,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       }
 
       if (carNo == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入船舶牌照 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -216,7 +216,7 @@ class BoatAddPageState extends State<BoatAddPage> {
 
 
       if (carBelong == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入船港籍 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -232,7 +232,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       
 
       if (carUnit == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入船吨位 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -246,7 +246,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       }
 
       if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(carUnit)) {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
             msg: " 请输入正确的船吨位 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -261,7 +261,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       
 
       if (carOwner == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入船主 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -276,7 +276,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       
 
       if (carContact == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入联系方式 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -318,7 +318,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         String resMsg = data[AppConst.RESP_MSG];
 
     if (rescode == '14') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -328,7 +328,7 @@ class BoatAddPageState extends State<BoatAddPage> {
         _logout();
       } else
       if (rescode != '10') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 保存失败[$resMsg] ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -343,7 +343,7 @@ class BoatAddPageState extends State<BoatAddPage> {
             return new BoatPageNew();
           },
         ));
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: "  保存成功！ ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
@@ -355,7 +355,7 @@ class BoatAddPageState extends State<BoatAddPage> {
       );
     }catch(e) {
       debugPrint(e);
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
             msg: " 保存失败 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

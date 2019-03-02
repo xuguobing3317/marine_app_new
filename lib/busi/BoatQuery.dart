@@ -47,7 +47,7 @@ class BoatQueryPageState extends State<BoatQuery> {
 
   Future<bool> getData() async {
     if (queryCarid == '') {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
           msg: " 请扫描船舶二维码 ",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -88,7 +88,7 @@ class BoatQueryPageState extends State<BoatQuery> {
       String rescode = '$type';
       String resMsg = data[AppConst.RESP_MSG];
         if (rescode == '14') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: '请重新登录',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -100,7 +100,7 @@ class BoatQueryPageState extends State<BoatQuery> {
 
       if (rescode != '10') {
         String _msg = '未查询到数据[$resMsg]';
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: _msg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -444,7 +444,7 @@ class BoatQueryPageState extends State<BoatQuery> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: " 请打开权限 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -455,7 +455,7 @@ class BoatQueryPageState extends State<BoatQuery> {
         });
       } else {
         setState(() {
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: " 请重新扫描 ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -467,7 +467,7 @@ class BoatQueryPageState extends State<BoatQuery> {
       }
     } on FormatException {
       setState(() {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -478,7 +478,7 @@ class BoatQueryPageState extends State<BoatQuery> {
       });
     } catch (e) {
       setState(() {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请重新扫描 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,

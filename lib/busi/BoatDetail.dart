@@ -195,7 +195,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
   Future<bool> _forSubmitted(String _fileOwner, BuildContext context) async {
     try {
       if (facId == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入港口信息 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -213,7 +213,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
       // String rescode = data["rescode"];
       String rescode = '000000';
       if (rescode == '999999') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 保存失败 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -228,7 +228,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
             return new HomePage();
           },
         ));
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: "  保存成功！ ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
@@ -237,7 +237,7 @@ class BoatDetailPageState extends State<BoatDetailPage> {
             textColor: Color(0xFFFFFFFF));
       }
     } catch (e) {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
           msg: "  保存失败 ",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,

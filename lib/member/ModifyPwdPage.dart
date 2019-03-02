@@ -258,7 +258,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
     bool result = false;
     try {
       if (oldPwd == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入原始密码 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -272,7 +272,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
       }
 
       if (newPwd1 == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请输入新密码 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -286,7 +286,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
       }
 
       if (newPwd2 == '') {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 请确认新密码 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -300,7 +300,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
       }
 
       if (newPwd1 != newPwd2) {
-        Fluttertoast.instance.showToast(
+        Fluttertoast.showToast(
             msg: " 密码不一致 ",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
@@ -333,7 +333,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         String resMsg = data[AppConst.RESP_MSG];
         if (rescode == '14') {
           Navigator.of(context).pushReplacementNamed('/LoginPage');
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: "  登录超时， 请重新登录！",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
@@ -342,7 +342,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
               textColor: Color(0xFFFFFFFF));
         } else if (rescode == '10') {
           _logout();
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: "  修改成功！ ",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
@@ -350,7 +350,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
               backgroundColor: Color(0xFF499292),
               textColor: Color(0xFFFFFFFF));
         } else {
-          Fluttertoast.instance.showToast(
+          Fluttertoast.showToast(
               msg: " 修改失败[$resMsg]",
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
@@ -364,7 +364,7 @@ class ModifyPwdPageState extends State<ModifyPwdPage> {
         _isLoading = false;
       });
     } catch (e) {
-      Fluttertoast.instance.showToast(
+      Fluttertoast.showToast(
           msg: "  修改失败！ ",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,

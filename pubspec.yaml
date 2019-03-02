@@ -70,6 +70,7 @@ flutter:
     - images/icon_arrow.png
     - images/icon_cry.png
     - images/icon_refresh.png
+    - images/spash2.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

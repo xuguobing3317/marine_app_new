@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 
+
 class SplashPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -14,7 +15,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return new Image.asset(
-      "images/spash2.jpg",
+      "images/spash2.png",
       fit: BoxFit.fill,);
   }
 

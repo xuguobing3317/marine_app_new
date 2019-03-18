@@ -38,6 +38,9 @@ class RecoverListPageNewState extends State<RecoverListPageNew>
   int total = -1;
   bool totalFlag = false;
 
+
+  
+
   ScrollController controller = new ScrollController();
   ScrollPhysics scrollPhysics = new RefreshAlwaysScrollPhysics();
 
@@ -244,15 +247,15 @@ return new WillPopScope(
                     icon: Icon(
                       Icons.add,
                       size: 40.0,
-                      color: Colors.white70,
+                      color: AppConst.getIssellead()?Colors.white70:AppConst.appColor,
                     ),
                     tooltip: '添加回收信息',
-                    onPressed: () {
+                    onPressed: AppConst.getIssellead()?() {
                       Navigator.push(
                           context,
                           new MaterialPageRoute(
                               builder: (context) => RecoverPage()));
-                    },
+                    }:(){},
                   ),
                 ],
               ),
@@ -408,9 +411,12 @@ return new WillPopScope(
                   //new Text(_itemMap[i]['facid'])
                   ,
               //之前显示icon
-              leading: rbType == 'A'
-                  ? Image.asset('images/life.png', width: 30.0, height: 50.0)
-                  : Image.asset('images/oil.png', width: 30.0, height: 50.0),
+              leading:  
+              // container,
+              AppConst.garbageMap[rbType]
+              // rbType == 'A'
+              //     ? Image.asset('images/life.png', width: 30.0, height: 50.0)
+              //     : Image.asset('images/oil.png', width: 30.0, height: 50.0),
             )));
   }
 

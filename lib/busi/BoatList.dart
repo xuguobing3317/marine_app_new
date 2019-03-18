@@ -74,13 +74,13 @@ class BoatListState extends State<BoatList>
     DBUtil.MarineUser mUser = DBUtil.MarineUser.fromMap(uMap);
     String _token = mUser.token;
     Map<String, String> _header = {'token': _token};
+
+    print('body:$_params');
+      print('headers:$_header');
     result = await http
         .post(url, body: _params, headers: _header)
         .then((http.Response response) {
       var data = json.decode(response.body);
-
-      print('body:$_params');
-      print('headers:$_header');
       print('data:$data');
 
       int type = data[AppConst.RESP_CODE];

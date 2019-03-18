@@ -215,79 +215,79 @@ class BoatAddPageState extends State<BoatAddPage> {
       }
 
 
-      if (carBelong == '') {
-        Fluttertoast.showToast(
-            msg: " 请输入船港籍 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-             setState(() {
-          isLoading = false;
-        });
-        return false;
-      }
+      // if (carBelong == '') {
+      //   Fluttertoast.showToast(
+      //       msg: " 请输入船港籍 ",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.BOTTOM,
+      //       timeInSecForIos: 1,
+      //       backgroundColor: Color(0xFF499292),
+      //       textColor: Color(0xFFFFFFFF));
+      //        setState(() {
+      //     isLoading = false;
+      //   });
+      //   return false;
+      // }
 
       
 
-      if (carUnit == '') {
-        Fluttertoast.showToast(
-            msg: " 请输入船吨位 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-             setState(() {
-          isLoading = false;
-        });
-        return false;
-      }
+      // if (carUnit == '') {
+      //   Fluttertoast.showToast(
+      //       msg: " 请输入船吨位 ",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.BOTTOM,
+      //       timeInSecForIos: 1,
+      //       backgroundColor: Color(0xFF499292),
+      //       textColor: Color(0xFFFFFFFF));
+      //        setState(() {
+      //     isLoading = false;
+      //   });
+      //   return false;
+      // }
 
-      if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(carUnit)) {
-      Fluttertoast.showToast(
-            msg: " 请输入正确的船吨位 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-             setState(() {
-          isLoading = false;
-        });
-        return false;
-      }
+      // if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(carUnit)) {
+      // Fluttertoast.showToast(
+      //       msg: " 请输入正确的船吨位 ",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.BOTTOM,
+      //       timeInSecForIos: 1,
+      //       backgroundColor: Color(0xFF499292),
+      //       textColor: Color(0xFFFFFFFF));
+      //        setState(() {
+      //     isLoading = false;
+      //   });
+      //   return false;
+      // }
       
 
-      if (carOwner == '') {
-        Fluttertoast.showToast(
-            msg: " 请输入船主 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-             setState(() {
-          isLoading = false;
-        });
-        return false;
-      }
+      // if (carOwner == '') {
+      //   Fluttertoast.showToast(
+      //       msg: " 请输入船主 ",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.BOTTOM,
+      //       timeInSecForIos: 1,
+      //       backgroundColor: Color(0xFF499292),
+      //       textColor: Color(0xFFFFFFFF));
+      //        setState(() {
+      //     isLoading = false;
+      //   });
+      //   return false;
+      // }
       
 
-      if (carContact == '') {
-        Fluttertoast.showToast(
-            msg: " 请输入联系方式 ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIos: 1,
-            backgroundColor: Color(0xFF499292),
-            textColor: Color(0xFFFFFFFF));
-             setState(() {
-          isLoading = false;
-        });
-        return false;
-      }
+      // if (carContact == '') {
+      //   Fluttertoast.showToast(
+      //       msg: " 请输入联系方式 ",
+      //       toastLength: Toast.LENGTH_SHORT,
+      //       gravity: ToastGravity.BOTTOM,
+      //       timeInSecForIos: 1,
+      //       backgroundColor: Color(0xFF499292),
+      //       textColor: Color(0xFFFFFFFF));
+      //        setState(() {
+      //     isLoading = false;
+      //   });
+      //   return false;
+      // }
 
       Map<String, String> _params = {
         'CARTYPE': carType,

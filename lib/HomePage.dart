@@ -67,10 +67,10 @@ class SwiperPageState extends State<HomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: new SingleChildScrollView(
+
+
+  Widget singleChildScrollView() {
+    return new SingleChildScrollView(
         child: new ConstrainedBox(
             constraints: new BoxConstraints(
               minHeight: 120.0,
@@ -86,7 +86,18 @@ class SwiperPageState extends State<HomePage> {
                 bottomWidget()
               ],
             )),
-      ),
+      );
+  }
+
+  Scaffold scaffold1() {
+    return new Scaffold(
+      body: singleChildScrollView())
+    ;
+  }
+
+  Scaffold scaffold2() {
+    return Scaffold(
+      body: singleChildScrollView(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppConst.appColor,
@@ -101,6 +112,14 @@ class SwiperPageState extends State<HomePage> {
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20.0)),
       ),
     );
+  }
+
+
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return AppConst.getIssellead()?scaffold2():scaffold1();
   }
 
   Widget menuWidget() {

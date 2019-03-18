@@ -390,10 +390,10 @@ Future _loadData(bool isPullDown) async {
                     icon: Icon(
                       Icons.add,
                       size: 40.0,
-                      color: Colors.white70,
+                      color: AppConst.getIssellead()?Colors.white70:AppConst.appColor,
                     ),
                     tooltip: '添加船舶信息',
-                    onPressed: addBoat,
+                    onPressed: AppConst.getIssellead()?addBoat:(){},
                   ),
                 ],
               ),

@@ -167,6 +167,7 @@ class MyLoginState extends State<MyLoginWidget> with TickerProviderStateMixin {
           setState(() {
             var content = json.decode(data[AppConst.RESP_DATA]);
             _token = content['token'];
+            AppConst.issellead=content['Issellead'];
           });
           _savaDate2DB();
           var _duration = new Duration(seconds: 1);

@@ -31,13 +31,9 @@ class RecoverPageState extends State<RecoverPage> {
   String _fomesWeight = "";
 
   List<PickerItem> rbTypeItems = new List();
-  List<Map> rbTypeList = [
-    {'rbCode': 'A', 'rbName': '生活垃圾'},
-    {'rbCode': 'B', 'rbName': '油污垃圾'}
-  ];
 
-  String rbName = '生活垃圾';
-  String rbCode = 'A';
+  String rbName = AppConst.garbageList[0]['rbName'];
+  String rbCode = AppConst.garbageList[0]['rbCode'];
 
   String gangkou = "";
   String facIdName = '请选择港口';
@@ -57,7 +53,7 @@ class RecoverPageState extends State<RecoverPage> {
     getGangkouData();
     setState(() {
       rbTypeController.text = rbName;
-      rbTypeList.forEach((item) {
+      AppConst.garbageList.forEach((item) {
         PickerItem rbTypeItem = new PickerItem(text: Text(item['rbName']));
         rbTypeItems.add(rbTypeItem);
       });
@@ -517,8 +513,8 @@ class RecoverPageState extends State<RecoverPage> {
           String _value = value[0].toString();
           int index = int.parse(_value);
           setState(() {
-            rbName = rbTypeList[index]['rbName'];
-            rbCode = rbTypeList[index]['rbCode'];
+            rbName = AppConst.garbageList[index]['rbName'];
+            rbCode = AppConst.garbageList[index]['rbCode'];
             rbTypeController.text = rbName;
           });
         });

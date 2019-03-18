@@ -64,18 +64,15 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
 
   List<Map> dataMap = [];
 
-  Color allTypeColor = AppConst.appColor;
-  Color lifeTypeColor = Colors.grey;
-  Color oilTypeColor = Colors.grey;
+  List<Map> rbTypeList = AppConst.rbTypeList;
+  String typeView = AppConst.rbTypeList[0]['rbName'];
+  String rbType = AppConst.rbTypeList[0]['rbCode'];
 
   Color gangkouColor = Colors.grey;
 
-  String typeView = '全部';
-
-  String rbType = '';
   String facid = '';
 
-  String total1 = '总计: 0 kg, 0次';
+  String total1 = '总计: 0.00 kg, 0次';
   Color bootSheetColor = Colors.white;
 
   ScrollController _scrollController = ScrollController();
@@ -108,6 +105,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     getGangkouData();
     customBoxWaitAnimation = new AnimationController(
         duration: const Duration(milliseconds: 1000 * 100), vsync: this);
+    
   }
 
   Future<bool> getHttpData() async {
@@ -172,6 +170,20 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           Map<String, dynamic> _dataMap = json.decode(data[AppConst.RESP_DATA]);
           List _listMap = _dataMap['rows'];
           total = _dataMap['total'];
+
+          List footerList = _dataMap['footer'];
+          String _t1 = '0.00';
+          String _t2 = '0';
+          footerList.forEach((footerItem){
+            try {
+              _t2 =double.parse(footerItem['COUT'].toString()).toStringAsFixed(0);
+              _t1 =double.parse(footerItem['CARQTY2'].toString()).toStringAsFixed(2);
+            } catch (e) {
+              print(e);
+            }
+          });
+
+          total1 = '总计: $_t1 kg, $_t2 次';
 
           _listMap.forEach((listItem) {
             String dgtime = listItem['CARDATE'].toString();
@@ -428,9 +440,6 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
           dataMap.clear();
         }
         dataMap.addAll(_queryItemMap);
-        String _t1 = gettotal1();
-        String _t2 = gettotal2();
-        total1 = '总计: $_t1 kg, $_t2次';
         if (dataMap.length != 0) {
           dataFlag = '3';
         } else {
@@ -623,11 +632,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
         spacing: 10.0,
         runSpacing: 10.0,
         direction: Axis.horizontal,
-        children: <Widget>[
-          getTypeButton('全部', allTypeColor, '1'),
-          getTypeButton('生活垃圾', lifeTypeColor, '2'),
-          getTypeButton('油污垃圾', oilTypeColor, '3'),
-        ],
+        children: getRbType(),
       )),
       Divider(),
       getNavItem("港口:  $gangkouName"),
@@ -717,11 +722,7 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     await getHttpData().then((_v) {
       setState(() {
         dataMap.clear();
-        // _queryItemMap.addAll(dataMapQuery);
         dataMap.addAll(_queryItemMap);
-        String _t1 = gettotal1();
-        String _t2 = gettotal2();
-        total1 = '总计: $_t1 kg, $_t2次';
         if (dataMap.length != 0) {
           bootSheetColor = AppConst.appColor;
           dataFlag = '3';
@@ -922,6 +923,14 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
     );
   }
 
+  List<Widget> getRbType() {
+    List<Widget> ret = [];
+    rbTypeList.forEach((e){
+      ret.add(getTypeButton(e['rbName'], e['rbColor'], e['rbCode']));
+    });
+    return ret;
+  }
+
   Widget getTypeButton(String title, Color color, String range) {
     return OutlineButton(
       shape: RoundedRectangleBorder(
@@ -937,25 +946,16 @@ class RecoverAnalyseState extends State<RecoverAnalyse>
   }
 
   Future<void> changeType(String range, BuildContext context) async {
-    allTypeColor = Colors.grey;
-    lifeTypeColor = Colors.grey;
-    oilTypeColor = Colors.grey;
     setState(() {
-      if (range == '1') {
-        //今天
-        typeView = '全部';
-        rbType = '';
-        allTypeColor = AppConst.appColor;
-      } else if (range == '2') {
-        //昨天
-        typeView = '生活垃圾';
-        rbType = 'A';
-        lifeTypeColor = AppConst.appColor;
-      } else {
-        typeView = '油污垃圾';
-        rbType = 'B';
-        oilTypeColor = AppConst.appColor;
-      }
+      rbTypeList.forEach((item){
+        if (item['rbCode'] == range) {
+          item['rbColor'] =AppConst.appColor;
+          typeView = item['rbName'];
+          rbType = item['rbCode'];
+        } else {
+          item['rbColor'] =Colors.grey;
+        }
+      });
     });
   }
 

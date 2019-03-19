@@ -62,6 +62,11 @@ class BoatAddPageState extends State<BoatAddPage> {
         PickerItem gangkouItem = new PickerItem(text: Text(item['rbName']));
         gkTypeItems.add(gangkouItem);
       });
+
+
+      setState(() {
+        carUnitController.text = '0';
+      });
   }
 
 
@@ -231,33 +236,23 @@ class BoatAddPageState extends State<BoatAddPage> {
 
       
 
-      // if (carUnit == '') {
-      //   Fluttertoast.showToast(
-      //       msg: " 请输入船吨位 ",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.BOTTOM,
-      //       timeInSecForIos: 1,
-      //       backgroundColor: Color(0xFF499292),
-      //       textColor: Color(0xFFFFFFFF));
-      //        setState(() {
-      //     isLoading = false;
-      //   });
-      //   return false;
-      // }
+      if (carUnit == '') {
+        carUnit = '0';
+      }
 
-      // if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(carUnit)) {
-      // Fluttertoast.showToast(
-      //       msg: " 请输入正确的船吨位 ",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.BOTTOM,
-      //       timeInSecForIos: 1,
-      //       backgroundColor: Color(0xFF499292),
-      //       textColor: Color(0xFFFFFFFF));
-      //        setState(() {
-      //     isLoading = false;
-      //   });
-      //   return false;
-      // }
+      if(!RegExp(r'^\d+(\.\d+)?$').hasMatch(carUnit)) {
+      Fluttertoast.showToast(
+            msg: " 请输入正确的船吨位 ",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Color(0xFF499292),
+            textColor: Color(0xFFFFFFFF));
+             setState(() {
+          isLoading = false;
+        });
+        return false;
+      }
       
 
       // if (carOwner == '') {

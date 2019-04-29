@@ -483,9 +483,9 @@ class BoatAnalyseState extends State<BoatAnalyse>
           dataMap.clear();
         }
         dataMap.addAll(_queryItemMap);
-        String _t1 = gettotal1();
-        String _t2 = gettotal2();
-        total1 = '累计重量:$_t1 KG,累计趟次:$_t2 次';
+        // String _t1 = gettotal1();
+        // String _t2 = gettotal2();
+        // total1 = '累计重量:$_t1 KG,累计趟次:$_t2 次';
         if (dataMap.length != 0) {
           dataFlag = '3';
         } else {
